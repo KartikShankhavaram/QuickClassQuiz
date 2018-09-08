@@ -38,7 +38,16 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         if(account != null) {
-            ((TextView)findViewById(R.id.nameTextView)).setText(String.format("Hello %s!", account.getDisplayName()));
+            String email = account.getEmail();
+            String[] parts = email.split("@");
+            String username = parts[0];
+            boolean isStudent = username.matches("[1|2]\\du[c|e|m][s|c|m|e]\\d\\d\\d");
+            String role = "";
+            if(isStudent)
+                role = "student";
+            else
+                role = "teacher";
+            ((TextView)findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
     }
 }
