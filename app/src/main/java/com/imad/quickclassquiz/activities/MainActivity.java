@@ -3,6 +3,8 @@ package com.imad.quickclassquiz.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +17,12 @@ import com.imad.quickclassquiz.R;
 public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Toast.makeText(this, String.format("Window %s focus!", hasFocus ? "has" : "lost"), Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +43,19 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
+        Intent intent = getIntent();
+
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         if(account != null) {
-            String email = account.getEmail();
-            String[] parts = email.split("@");
-            String username = parts[0];
-            boolean isStudent = username.matches("[1|2]\\du[c|e|m][s|c|m|e]\\d\\d\\d");
             String role = "";
-            if(isStudent)
-                role = "student";
-            else
-                role = "teacher";
+            if (intent != null && intent.getStringExtra("from").equals("login")) {
+                Log.e("intent", intent.getBooleanExtra("teacher", false) + "");
+                if(intent.getBooleanExtra("teacher", false))
+                    role = "teacher";
+                else
+                    role = "student";
+            }
             ((TextView)findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
     }
