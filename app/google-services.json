@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "613229284420-hjnltr0h9me6tt3u4vjsmpp8v8fr4pnc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imad.quickclassquiz",
+            "certificate_hash": "7fd1742df81f0fb91aac3167e2e70966c5b0efb3"
+          }
+        },
+        {
+          "client_id": "613229284420-5k896g4urq4pjqvo3i4hvp0a289e6n80.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imad.quickclassquiz",
+            "certificate_hash": "e620ae25639e50682e216df2df6591c26b979d65"
+          }
+        },
+        {
           "client_id": "613229284420-5ps8btoakv7pg01hvqa5ube3qi9jn3n7.apps.googleusercontent.com",
           "client_type": 3
         }
