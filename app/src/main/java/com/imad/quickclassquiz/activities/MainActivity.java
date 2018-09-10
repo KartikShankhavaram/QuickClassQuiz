@@ -3,6 +3,8 @@ package com.imad.quickclassquiz.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -12,11 +14,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.recyclerview.TeacherTestAdapter;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
+    FirebaseFirestore firestore;
+    RecyclerView testListRecyclerView;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -28,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        firestore = FirebaseFirestore.getInstance();
+
+        testListRecyclerView = findViewById(R.id.testListRecyclerView);
+        testListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        final TeacherTestAdapter adapter = new TeacherTestAdapter(this);
+        testListRecyclerView.setAdapter(adapter);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -58,5 +77,18 @@ public class MainActivity extends AppCompatActivity {
             }
             ((TextView)findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
+
+        ArrayList<Test> teacherTestList = new ArrayList<>();
+
+        CollectionReference testsCollection = firestore.collection("tests");
+        testsCollection.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            teacherTestList.add(documentSnapshot.toObject(Test.class));
+                        }
+                        adapter.setListContent(teacherTestList);
+                    }
+                });
     }
 }
