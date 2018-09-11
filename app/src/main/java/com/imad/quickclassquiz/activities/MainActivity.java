@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         testsCollection = firestore.collection("tests");
         mRecyclerView.setAdapter(questionAdapter);
-        getData();
 //        firestore = FirebaseFirestore.getInstance();
 //
 //        testListRecyclerView = findViewById(R.id.testListRecyclerView);
