@@ -2,6 +2,7 @@ package com.imad.quickclassquiz.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,26 +18,37 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.recyclerview.TeacherTestAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 //    GoogleSignInClient mGoogleSignInClient;
-//    FirebaseFirestore firestore;
+    FirebaseFirestore firestore;
+    CollectionReference testsCollection;
     RecyclerView mRecyclerView;
+    QuestionAdapter questionAdapter;
+    private List<Question> questionList = new ArrayList<Question>();
+    private String TAG;
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        Toast.makeText(this, String.format("Window %s focus!", hasFocus ? "has" : "lost"), Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        Toast.makeText(this, String.format("Window %s focus!", hasFocus ? "has" : "lost"), Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -56,9 +68,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        questionList.clear();
+        getData();
+        super.onStart();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TAG = getPackageName();
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        questionAdapter = new QuestionAdapter(questionList);
+        firestore = FirebaseFirestore.getInstance();
+        testsCollection = firestore.collection("tests");
+        mRecyclerView.setAdapter(questionAdapter);
+        getData();
 //        firestore = FirebaseFirestore.getInstance();
 //
 //        testListRecyclerView = findViewById(R.id.testListRecyclerView);
@@ -109,5 +137,21 @@ public class MainActivity extends AppCompatActivity {
 //                        adapter.setListContent(teacherTestList);
 //                    }
 //                });
+    }
+    private void getData(){
+       testsCollection.get()
+               .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                       if (task.isSuccessful()) {
+                           for (QueryDocumentSnapshot document : task.getResult()) {
+                              questionList.add(document.toObject(Question.class));
+                              questionAdapter.notifyDataSetChanged();
+                           }
+                       } else {
+                           Log.d(TAG, "Error getting documents: ", task.getException());
+                       }
+                   }
+               });
     }
 }

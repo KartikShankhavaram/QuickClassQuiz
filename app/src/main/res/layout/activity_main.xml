@@ -7,9 +7,9 @@
     tools:context=".activities.MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/listView"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:stackFromBottom="true"
         android:dividerHeight="5dp"
         android:transcriptMode="alwaysScroll"
