@@ -14,18 +14,13 @@
         android:lines="3"
         android:singleLine="false" />
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/question" >
-
         <LinearLayout
             android:id="@+id/option1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_below="@id/question"
             android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
@@ -132,7 +127,6 @@
 
         </LinearLayout>
 
-    </RadioGroup>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/saveQuestion"
