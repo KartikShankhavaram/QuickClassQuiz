@@ -34,7 +34,7 @@ public class AddQuestionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_question);
+        setContentView(R.layout.activity_add_question);
         TAG = getPackageName();
         firestore = FirebaseFirestore.getInstance();
         testsCollection = firestore.collection("tests");

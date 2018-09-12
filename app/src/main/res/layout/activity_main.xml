@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
