@@ -13,7 +13,17 @@ import android.widget.Toast;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class TeacherTestAdapter extends RecyclerView.Adapter<TeacherTestViewHolder> {
 
@@ -30,6 +40,7 @@ public class TeacherTestAdapter extends RecyclerView.Adapter<TeacherTestViewHold
     @Override
     public TeacherTestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = inflater.inflate(R.layout.cardview_test_teacher, parent, false);
+        JodaTimeAndroid.init(mContext);
         return new TeacherTestViewHolder(itemView);
     }
 
@@ -39,21 +50,26 @@ public class TeacherTestAdapter extends RecyclerView.Adapter<TeacherTestViewHold
         TextView testDesctextView = holder.getTestDescTextView();
         Button editTestButton = holder.getEditTestButton();
         Button startTestButton = holder.getStartTestButton();
+        TextView testAddDateTextView = holder.getTestAddTimeTextView();
 
         testNameTextView.setText(testArrayList.get(position).getTestName());
         testDesctextView.setText(testArrayList.get(position).getTestDesc());
         editTestButton.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Edit button clicked for " + testArrayList.get(position).getTestName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Edit button clicked for " + testArrayList.get(position).getTestId(), Toast.LENGTH_SHORT).show();
         });
         startTestButton.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Start button clicked for " + testArrayList.get(position).getTestName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Start button clicked for " + testArrayList.get(position).getTestId(), Toast.LENGTH_SHORT).show();
         });
+        String timestamp = testArrayList.get(position).getTestTimestamp();
+        DateTime dt = new DateTime(timestamp);
+        DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
+        String time = format.print(dt);
+        testAddDateTextView.setText(time);
     }
 
     public void setListContent(ArrayList<Test> testArrayList) {
         this.testArrayList = testArrayList;
-        notifyItemRangeChanged(0, testArrayList.size());
-
+        notifyDataSetChanged();
     }
 
     @Override

@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,16 +17,17 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.recyclerview.TeacherTestAdapter;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
     FirebaseFirestore firestore;
-    RecyclerView testListRecyclerView;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -42,12 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         firestore = FirebaseFirestore.getInstance();
 
-        testListRecyclerView = findViewById(R.id.testListRecyclerView);
-        testListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        final TeacherTestAdapter adapter = new TeacherTestAdapter(this);
-        testListRecyclerView.setAdapter(adapter);
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .setHostedDomain("lnmiit.ac.in")
@@ -60,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Signed out!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginActivity.class));
             });
+        });
+
+        findViewById(R.id.showTestsButton).setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, TestListActivity.class));
         });
 
         Intent intent = getIntent();
@@ -78,17 +76,34 @@ public class MainActivity extends AppCompatActivity {
             ((TextView)findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
 
-        ArrayList<Test> teacherTestList = new ArrayList<>();
+//        CollectionReference testsCollection = firestore.collection("tests");
+//
+//        String uuid = UUID.randomUUID().toString();
+//        String timestamp = Long.toString(System.currentTimeMillis() / 1000);
+//        Test test = new Test(uuid, "IMAD test", "Test on intents", timestamp);
+//
+//        Question question = new Question(1, "AAA", "fdfsd", "fff", "ffdd", "qqq", "fdfsd");
+//        Question question1 = new Question(2, "BBB", "fdfsd", "fff", "ffdd", "qqq", "fdfsd");
+//        // Add a new document with a generated ID
+//        testsCollection.add(test).addOnSuccessListener(documentReference -> {
+//            documentReference.collection("questions").add(question).addOnSuccessListener(d -> {
+//                Log.i(getPackageName(), "Added with ref " + d.getId());
+//            });
+//            documentReference.collection("questions").add(question1).addOnSuccessListener(d -> {
+//                Log.i(getPackageName(), "Added with ref " + d.getId());
+//            });
+//        });
 
-        CollectionReference testsCollection = firestore.collection("tests");
-        testsCollection.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                            teacherTestList.add(documentSnapshot.toObject(Test.class));
-                        }
-                        adapter.setListContent(teacherTestList);
-                    }
-                });
+//        String uuid1 = UUID.randomUUID().toString();
+//        String timestamp1 = Long.toString(System.currentTimeMillis() / 1000);
+//        Test test1 = new Test(uuid1, "IMAD test", "Test on intents", timestamp1);
+//
+//        Question question1 = new Question(1, "AAA", "fdfsd", "fff", "ffdd", "qqq", "fdfsd");
+//        // Add a new document with a generated ID
+//        testsCollection.add(test1).addOnSuccessListener(documentReference -> {
+//            documentReference.collection("questions").add(question1).addOnSuccessListener(d -> {
+//                Log.i(getPackageName(), "Added with ref " + d.getId());
+//            });
+//        });
     }
 }

@@ -13,13 +13,15 @@ public class TeacherTestViewHolder extends RecyclerView.ViewHolder {
     private TextView testDescTextView;
     private Button editTestButton;
     private Button startTestButton;
+    private TextView testAddTimeTextView;
 
     public TeacherTestViewHolder(View itemView) {
         super(itemView);
-        testNameTextView = itemView.findViewById(R.id.testName);
-        testDescTextView = itemView.findViewById(R.id.testDesc);
+        testNameTextView = itemView.findViewById(R.id.testNameTextView);
+        testDescTextView = itemView.findViewById(R.id.testDescTextView);
         editTestButton = itemView.findViewById(R.id.testEditButton);
         startTestButton = itemView.findViewById(R.id.testStartButton);
+        testAddTimeTextView = itemView.findViewById(R.id.testAddDateTextView);
     }
 
     public TextView getTestNameTextView() {
@@ -36,5 +38,9 @@ public class TeacherTestViewHolder extends RecyclerView.ViewHolder {
 
     public Button getStartTestButton() {
         return startTestButton;
+    }
+
+    public TextView getTestAddTimeTextView() {
+        return testAddTimeTextView;
     }
 }

@@ -18,7 +18,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddQuestionActivity"></activity>
+        <activity
+            android:name=".activities.AddQuestionActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.TestListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".activities.QuestionListActivity" />
+        <activity
+            android:name=".activities.AddTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>
