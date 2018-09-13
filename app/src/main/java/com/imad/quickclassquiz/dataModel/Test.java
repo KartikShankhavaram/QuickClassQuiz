@@ -1,6 +1,11 @@
 package com.imad.quickclassquiz.dataModel;
 
-public class Test {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.Objects;
+
+public class Test implements Parcelable {
 
     private String testId;
     private String testName;
@@ -19,6 +24,41 @@ public class Test {
     public Test() {
 
     }
+
+    private Test(Parcel in) {
+        this.testId = in.readString();
+        this.testName = in.readString();
+        this.testDesc = in.readString();
+        this.testTimestamp = in.readString();
+        this.accessCode = in.readString();
+        this.masterCode = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(testId);
+        dest.writeString(testName);
+        dest.writeString(testDesc);
+        dest.writeString(testTimestamp);
+        dest.writeString(accessCode);
+        dest.writeString(masterCode);
+    }
+
+    public static final Parcelable.Creator<Test> CREATOR = new Parcelable.Creator<Test>() {
+
+        public Test createFromParcel(Parcel in) {
+            return new Test(in);
+        }
+
+        public Test[] newArray(int size) {
+            return new Test[size];
+        }
+    };
 
     public String getTestId() {
         return testId;
@@ -79,4 +119,18 @@ public class Test {
                 ", masterCode='" + masterCode + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Test test = (Test) o;
+        return Objects.equals(testId, test.testId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testId);
+    }
+
 }

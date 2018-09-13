@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
-import com.imad.quickclassquiz.recyclerview.TeacherTestAdapter;
+import com.imad.quickclassquiz.recyclerview.TeacherTestListAdapter;
 
 import java.util.ArrayList;
 
@@ -30,11 +30,11 @@ public class TestListActivity extends AppCompatActivity {
     FloatingActionButton addTestButton;
     @BindView(R.id.testListRecyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.swipeRefresh)
+    @BindView(R.id.testListSwipeRefresh)
     SwipeRefreshLayout refreshLayout;
 
     FirebaseFirestore firestore;
-    TeacherTestAdapter adapter;
+    TeacherTestListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,21 +49,25 @@ public class TestListActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new TeacherTestAdapter(this);
+        adapter = new TeacherTestListAdapter(this);
         recyclerView.setAdapter(adapter);
 
         firestore = FirebaseFirestore.getInstance();
 
-        refreshLayout.setOnRefreshListener(() -> onRefresh());
-
-        onRefresh();
+        refreshLayout.setOnRefreshListener(() -> fetchTests());
 
         addTestButton.setOnClickListener(v -> {
             startActivity(new Intent(TestListActivity.this, AddTestActivity.class));
         });
     }
 
-    private void onRefresh() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchTests();
+    }
+
+    private void fetchTests() {
         refreshLayout.setRefreshing(true);
         ArrayList<Test> teacherTestList = new ArrayList<>();
         adapter.setListContent(teacherTestList);

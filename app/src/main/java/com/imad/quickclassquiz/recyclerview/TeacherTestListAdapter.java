@@ -1,6 +1,7 @@
 package com.imad.quickclassquiz.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.activities.QuestionListActivity;
+import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -25,13 +28,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class TeacherTestAdapter extends RecyclerView.Adapter<TeacherTestViewHolder> {
+public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestViewHolder> {
 
     private ArrayList<Test> testArrayList = new ArrayList<>();
     private Context mContext;
     private LayoutInflater inflater;
 
-    public TeacherTestAdapter(Context context) {
+    public TeacherTestListAdapter(Context context) {
         mContext = context;
         inflater = LayoutInflater.from(mContext);
     }
@@ -55,7 +58,9 @@ public class TeacherTestAdapter extends RecyclerView.Adapter<TeacherTestViewHold
         testNameTextView.setText(testArrayList.get(position).getTestName());
         testDesctextView.setText(testArrayList.get(position).getTestDesc());
         editTestButton.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Edit button clicked for " + testArrayList.get(position).getTestId(), Toast.LENGTH_SHORT).show();
+            Intent editTest = new Intent(mContext, QuestionListActivity.class);
+            editTest.putExtra("test", testArrayList.get(position));
+            mContext.startActivity(editTest);
         });
         startTestButton.setOnClickListener(v -> {
             Toast.makeText(mContext, "Start button clicked for " + testArrayList.get(position).getTestId(), Toast.LENGTH_SHORT).show();
