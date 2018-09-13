@@ -1,53 +1,99 @@
 package com.imad.quickclassquiz.activities;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
+import com.imad.quickclassquiz.dataModel.Test;
+
+import java.util.UUID;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AddQuestionActivity extends AppCompatActivity {
 
-    private static String TAG;
+    @BindView(R.id.testNameTextView)
+    EditText title;
+
+    @BindView(R.id.option1EditText)
+    EditText option1EditText;
+
+    @BindView(R.id.option2EditText)
+    EditText option2EditText;
+
+    @BindView(R.id.option3EditText)
+    EditText option3EditText;
+
+    @BindView(R.id.option4EditText)
+    EditText option4EditText;
+
+    @BindView(R.id.option1Radio)
+    RadioButton option1radio;
+
+    @BindView(R.id.option2Radio)
+    RadioButton option2radio;
+
+    @BindView(R.id.option3Radio)
+    RadioButton option3radio;
+
+    @BindView(R.id.option4Radio)
+    RadioButton option4radio;
+
+    @BindView(R.id.saveQuestion)
+    FloatingActionButton saveQuestion;
+
+    @BindView(R.id.addQuestionToolbar)
+    Toolbar toolbar;
+
+    String correctAnswer = "";
+    ProgressDialog progressDialog;
     FirebaseFirestore firestore;
-    CollectionReference testsCollection;
-    private EditText title;
-    private EditText option1;
-    private EditText option2;
-    private EditText option3;
-    private EditText option4;
-    private RadioButton option1radio;
-    private RadioButton option2radio;
-    private RadioButton option3radio;
-    private RadioButton option4radio;
-    private FloatingActionButton saveQuestion;
-    private String correctAnswer = "";
+    String url = "";
+    String testId = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_question);
-        TAG = getPackageName();
+
+        ButterKnife.bind(this);
+
         firestore = FirebaseFirestore.getInstance();
-        testsCollection = firestore.collection("tests");
-        title = findViewById(R.id.testNameTextView);
-        saveQuestion = findViewById(R.id.saveQuestion);
-        option1 = findViewById(R.id.option1EditText);
-        option2 = findViewById(R.id.option2EditText);
-        option3 = findViewById(R.id.option3EditText);
-        option4 = findViewById(R.id.option4EditText);
-        option1radio = findViewById(R.id.option1Radio);
-        option2radio = findViewById(R.id.option2Radio);
-        option3radio = findViewById(R.id.option3Radio);
-        option4radio = findViewById(R.id.option4Radio);
+
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Add a question");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        Intent intent = getIntent();
+        Test test;
+        if (intent != null && (test = intent.getParcelableExtra("test")) != null) {
+            url = String.format("tests/%s/questions", test.getTestId());
+            testId = test.getTestId();
+        }
+
+        progressDialog = new ProgressDialog(this);
 
         saveQuestion.setOnClickListener(v -> saveToDatabase());
     }
@@ -58,41 +104,41 @@ public class AddQuestionActivity extends AppCompatActivity {
             title.setError("Can't be empty");
             return;
         }
-        if (option1.getText().length() == 0) {
-            option1.requestFocus();
-            option1.setError("Can't be empty");
+        if (option1EditText.getText().length() == 0) {
+            option1EditText.requestFocus();
+            option1EditText.setError("Can't be empty");
             return;
         }
-        if (option2.getText().length() == 0) {
-            option2.requestFocus();
-            option2.setError("Can't be empty");
+        if (option2EditText.getText().length() == 0) {
+            option2EditText.requestFocus();
+            option2EditText.setError("Can't be empty");
             return;
         }
-        if (option3.getText().length() == 0) {
-            option3.requestFocus();
-            option3.setError("Can't be empty");
+        if (option3EditText.getText().length() == 0) {
+            option3EditText.requestFocus();
+            option3EditText.setError("Can't be empty");
             return;
         }
-        if (option4.getText().length() == 0) {
-            option4.requestFocus();
-            option4.setError("Can't be empty");
+        if (option4EditText.getText().length() == 0) {
+            option4EditText.requestFocus();
+            option4EditText.setError("Can't be empty");
             return;
         }
+
         String question = title.getText().toString().trim();
-        String ooption1 = option1.getText().toString().trim();
-        String ooption2 = option2.getText().toString().trim();
-        String ooption3 = option3.getText().toString().trim();
-        String ooption4 = option4.getText().toString().trim();
+        String option1 = option1EditText.getText().toString().trim();
+        String option2 = option2EditText.getText().toString().trim();
+        String option3 = option3EditText.getText().toString().trim();
+        String option4 = option4EditText.getText().toString().trim();
 
         if (option1radio.isChecked()) {
-            correctAnswer = ooption1;
+            correctAnswer = option1;
         } else if (option2radio.isChecked()) {
-            correctAnswer = ooption2;
+            correctAnswer = option2;
         } else if (option3radio.isChecked()) {
-            correctAnswer = ooption3;
-        }
-        if (option4radio.isChecked()) {
-            correctAnswer = ooption4;
+            correctAnswer = option3;
+        } else if (option4radio.isChecked()) {
+            correctAnswer = option4;
         }
 
         if (correctAnswer.length() == 0) {
@@ -100,26 +146,62 @@ public class AddQuestionActivity extends AppCompatActivity {
             return;
         }
 
-        Question question1 = new Question(1, question, ooption1, ooption2, ooption3, ooption4, correctAnswer);
-        testsCollection.document("Question")
-                .set(question1)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "DocumentSnapshot successfully written!");
-                    title.setText("");
-                    option1.setText("");
-                    option2.setText("");
-                    option3.setText("");
-                    option4.setText("");
-                    if (option1radio.isChecked()) {
-                        option1radio.setChecked(false);
-                    } else if (option2radio.isChecked()) {
-                        option2radio.setChecked(false);
-                    } else if (option3radio.isChecked()) {
-                        option3radio.setChecked(false);
+        hideKeyboard();
+
+        progressDialog.setTitle("Save Question");
+        progressDialog.setMessage("Please wait while the question is added to the test...");
+        progressDialog.show();
+
+        Question questionObj = new Question(testId, UUID.randomUUID().toString(), question, option1, option2, option3, option4, correctAnswer);
+        firestore.collection(url)
+                .document(questionObj.getQuestionId())
+                .set(questionObj)
+                .addOnCompleteListener(res -> {
+                    if (res.isSuccessful()) {
+                        Toast.makeText(this, "Question added successfully to the test.", Toast.LENGTH_SHORT).show();
+                        clearInput();
                     } else {
-                        option4radio.setChecked(false);
+                        Toast.makeText(this, "Could not add the question to the test. Please try again.", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                    progressDialog.dismiss();
+                });
+    }
+
+    private void clearInput() {
+        title.setText("");
+        option1EditText.setText("");
+        option2EditText.setText("");
+        option3EditText.setText("");
+        option4EditText.setText("");
+        if (option1radio.isChecked()) {
+            option1radio.setChecked(false);
+        } else if (option2radio.isChecked()) {
+            option2radio.setChecked(false);
+        } else if (option3radio.isChecked()) {
+            option3radio.setChecked(false);
+        } else {
+            option4radio.setChecked(false);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                this.onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void hideKeyboard() {
+        Activity activity = this;
+        View view = activity.findViewById(android.R.id.content);
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

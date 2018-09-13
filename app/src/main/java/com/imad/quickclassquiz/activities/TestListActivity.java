@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 public class TestListActivity extends AppCompatActivity {
 
@@ -52,6 +53,7 @@ public class TestListActivity extends AppCompatActivity {
         actionBar.setTitle("Upcoming tests");
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new LandingAnimator());
 
         adapter = new TeacherTestListAdapter(this);
         recyclerView.setAdapter(adapter);

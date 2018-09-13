@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 public class QuestionListActivity extends AppCompatActivity {
 
@@ -43,6 +44,7 @@ public class QuestionListActivity extends AppCompatActivity {
     QuestionListAdapter adapter;
 
     String testUrl;
+    Test test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +61,12 @@ public class QuestionListActivity extends AppCompatActivity {
         adapter = new QuestionListAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new LandingAnimator());
 
         noQuestionsTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
         Intent intent = getIntent();
-        Test test = null;
         if (intent != null) {
             test = intent.getParcelableExtra("test");
         }
@@ -75,6 +77,12 @@ public class QuestionListActivity extends AppCompatActivity {
         }
 
         refreshLayout.setOnRefreshListener(() -> fetchQuestions());
+
+        addQuestionButton.setOnClickListener(v -> {
+            Intent addQuestion = new Intent(QuestionListActivity.this, AddQuestionActivity.class);
+            addQuestion.putExtra("test", test);
+            startActivity(addQuestion);
+        });
 
     }
 

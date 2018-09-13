@@ -22,11 +22,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestViewHolder> {
 
@@ -70,15 +67,22 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
         DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
         String time = format.print(dt);
         testAddDateTextView.setText(time);
+
     }
 
     public void setListContent(ArrayList<Test> testArrayList) {
-        this.testArrayList = testArrayList;
-        notifyDataSetChanged();
+        if(!equalLists(this.testArrayList, testArrayList)) {
+            this.testArrayList = testArrayList;
+            notifyItemRangeChanged(0, testArrayList.size());
+        }
     }
 
     @Override
     public int getItemCount() {
         return testArrayList.size();
+    }
+
+    public boolean equalLists(List<Test> a, List<Test> b) {
+        return a == null && b == null || a != null && b != null && a.size() == b.size() && a.equals(b);
     }
 }

@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -53,30 +53,32 @@ public class AddTestActivity extends AppCompatActivity {
         submitTestInfoButton.setOnClickListener(v -> {
             String testName = testNameEditText.getText().toString().trim();
             String testDesc = testDescEditText.getText().toString().trim();
-            String timeStamp = TimestampUtils.getISO8601StringForCurrentDate();
-            String testId = UUID.randomUUID().toString();
-            Test test = new Test(testId, testName, testDesc, timeStamp);
-            progressDialog.setMessage(String.format("Please wait while we create '%s'...", testName));
-            progressDialog.show();
-            hideKeyboard();
-            testsCollection.document(testId).set(test).addOnCompleteListener(ref -> {
-                if (ref.isSuccessful()) {
-                    Log.e("Test added", String.format("New Test with name -> %s and ref -> %s", testName, testId));
-                    Toast.makeText(this, "Test created successfully!", Toast.LENGTH_SHORT).show();
-                    Intent toQuestionList = new Intent(AddTestActivity.this, QuestionListActivity.class);
-                    toQuestionList.putExtra("test", test);
-                    progressDialog.dismiss();
-                    startActivity(toQuestionList);
-                    finish();
-                }
-                else {
-                    Log.e("Test add failed", "FAILED with error -> " + ref.getException().getMessage());
-                    Toast.makeText(this, "Test creation failed. Please try again.", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                }
-            });
+            if (TextUtils.isEmpty(testName))
+                testNameEditText.setError("This field is mandatory.");
+            else {
+                String timeStamp = TimestampUtils.getISO8601StringForCurrentDate();
+                String testId = UUID.randomUUID().toString();
+                Test test = new Test(testId, testName, testDesc, timeStamp);
+                progressDialog.setMessage(String.format("Please wait while we create '%s'...", testName));
+                progressDialog.show();
+                hideKeyboard();
+                testsCollection.document(testId).set(test).addOnCompleteListener(ref -> {
+                    if (ref.isSuccessful()) {
+                        Log.e("Test added", String.format("New Test with name -> %s and ref -> %s", testName, testId));
+                        Toast.makeText(this, "Test created successfully!", Toast.LENGTH_SHORT).show();
+                        Intent toQuestionList = new Intent(AddTestActivity.this, QuestionListActivity.class);
+                        toQuestionList.putExtra("test", test);
+                        progressDialog.dismiss();
+                        startActivity(toQuestionList);
+                        finish();
+                    } else {
+                        Log.e("Test add failed", "FAILED with error -> " + ref.getException().getMessage());
+                        Toast.makeText(this, "Test creation failed. Please try again.", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                });
+            }
         });
-
     }
 
     private void hideKeyboard() {

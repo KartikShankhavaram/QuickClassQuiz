@@ -1,8 +1,11 @@
 package com.imad.quickclassquiz.dataModel;
 
+import java.util.Objects;
+
 public class Question {
 
-    private int questionId;
+    private String testId;
+    private String questionId;
     private String question;
     private String option1;
     private String option2;
@@ -10,7 +13,8 @@ public class Question {
     private String option4;
     private String correctOption;
 
-    public Question(int questionId, String question, String option1, String option2, String option3, String option4, String correctOption) {
+    public Question(String testId, String questionId, String question, String option1, String option2, String option3, String option4, String correctOption) {
+        this.testId = testId;
         this.questionId = questionId;
         this.question = question;
         this.option1 = option1;
@@ -23,11 +27,19 @@ public class Question {
     public Question() {
     }
 
-    public int getQuestionId() {
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
+
+    public String getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 
@@ -77,5 +89,25 @@ public class Question {
 
     public void setCorrectOption(String correctOption) {
         this.correctOption = correctOption;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question1 = (Question) o;
+        return Objects.equals(testId, question1.testId) &&
+                Objects.equals(questionId, question1.questionId) &&
+                Objects.equals(question, question1.question) &&
+                Objects.equals(option1, question1.option1) &&
+                Objects.equals(option2, question1.option2) &&
+                Objects.equals(option3, question1.option3) &&
+                Objects.equals(option4, question1.option4) &&
+                Objects.equals(correctOption, question1.correctOption);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testId, questionId);
     }
 }

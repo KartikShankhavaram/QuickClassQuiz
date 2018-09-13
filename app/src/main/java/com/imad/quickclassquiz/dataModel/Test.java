@@ -125,7 +125,12 @@ public class Test implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Test test = (Test) o;
-        return Objects.equals(testId, test.testId);
+        return Objects.equals(testId, test.testId) &&
+                Objects.equals(testName, test.testName) &&
+                Objects.equals(testDesc, test.testDesc) &&
+                Objects.equals(testTimestamp, test.testTimestamp) &&
+                Objects.equals(accessCode, test.accessCode) &&
+                Objects.equals(masterCode, test.masterCode);
     }
 
     @Override
