@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +34,8 @@ public class TestListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     @BindView(R.id.testListSwipeRefresh)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.noTestsTextView)
+    TextView noTestsTextView;
 
     FirebaseFirestore firestore;
     TeacherTestListAdapter adapter;
@@ -51,6 +55,9 @@ public class TestListActivity extends AppCompatActivity {
 
         adapter = new TeacherTestListAdapter(this);
         recyclerView.setAdapter(adapter);
+
+        noTestsTextView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -79,6 +86,13 @@ public class TestListActivity extends AppCompatActivity {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
                         adapter.setListContent(teacherTestList);
+                        if(teacherTestList.size() == 0) {
+                            noTestsTextView.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            noTestsTextView.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
                     }
                     refreshLayout.setRefreshing(false);
                 });

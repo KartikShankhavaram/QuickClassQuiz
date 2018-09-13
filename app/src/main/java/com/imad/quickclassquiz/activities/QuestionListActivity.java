@@ -1,18 +1,19 @@
 package com.imad.quickclassquiz.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
@@ -35,6 +36,8 @@ public class QuestionListActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.questionListSwipeRefresh)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.noQuestionsTextView)
+    TextView noQuestionsTextView;
 
     FirebaseFirestore firestore;
     QuestionListAdapter adapter;
@@ -57,12 +60,15 @@ public class QuestionListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        noQuestionsTextView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+
         Intent intent = getIntent();
         Test test = null;
-        if(intent != null) {
+        if (intent != null) {
             test = intent.getParcelableExtra("test");
         }
-        if(test != null && actionBar != null) {
+        if (test != null && actionBar != null) {
             actionBar.setTitle(test.getTestName());
             testUrl = String.format("tests/%s/questions", test.getTestId());
             Log.e("testUrl", testUrl);
@@ -82,13 +88,20 @@ public class QuestionListActivity extends AppCompatActivity {
         refreshLayout.setRefreshing(true);
         ArrayList<Question> list = new ArrayList<>();
         firestore.collection(testUrl).get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                     Question question = documentSnapshot.toObject(Question.class);
                     Log.e("question", question.getQuestion());
                     list.add(question);
                 }
                 adapter.setListContent(list);
+                if(list.size() == 0) {
+                    noQuestionsTextView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    noQuestionsTextView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
             } else {
                 Toast.makeText(this, "Failed to fetch.", Toast.LENGTH_SHORT).show();
             }
