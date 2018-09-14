@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 public class TestListActivity extends AppCompatActivity {
@@ -56,7 +58,7 @@ public class TestListActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new LandingAnimator());
 
         adapter = new TeacherTestListAdapter(this);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(new AlphaInAnimationAdapter(adapter));
 
         noTestsTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
@@ -71,8 +73,8 @@ public class TestListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         fetchTests();
     }
 
@@ -88,6 +90,7 @@ public class TestListActivity extends AppCompatActivity {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
                         adapter.setListContent(teacherTestList);
+                        Log.e("Test list", teacherTestList.toString());
                         if(teacherTestList.size() == 0) {
                             noTestsTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);

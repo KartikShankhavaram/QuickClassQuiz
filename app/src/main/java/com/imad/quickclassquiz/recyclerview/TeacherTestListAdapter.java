@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.utils.StaticValues;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -23,6 +25,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestViewHolder> {
@@ -57,6 +60,7 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
         editTestButton.setOnClickListener(v -> {
             Intent editTest = new Intent(mContext, QuestionListActivity.class);
             editTest.putExtra("test", testArrayList.get(position));
+            StaticValues.setCurrentTest(testArrayList.get(position));
             mContext.startActivity(editTest);
         });
         startTestButton.setOnClickListener(v -> {
@@ -72,7 +76,7 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
 
     public void setListContent(ArrayList<Test> testArrayList) {
         if(!equalLists(this.testArrayList, testArrayList)) {
-            this.testArrayList = testArrayList;
+            this.testArrayList = new ArrayList<>(testArrayList);
             notifyItemRangeChanged(0, testArrayList.size());
         }
     }
@@ -82,7 +86,26 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
         return testArrayList.size();
     }
 
-    public boolean equalLists(List<Test> a, List<Test> b) {
-        return a == null && b == null || a != null && b != null && a.size() == b.size() && a.equals(b);
+    public  boolean equalLists(List<Test> a, List<Test> b){
+        // Check for sizes and nulls
+
+        if (a == null && b == null) return true;
+
+
+        if ((a == null && b!= null) || (a != null && b== null) || (a.size() != b.size()))
+        {
+            return false;
+        }
+
+        // Sort and compare the two lists
+        ArrayList<Test> tempA = new ArrayList<>(a);
+        ArrayList<Test> tempB = new ArrayList<>(b);
+        Collections.sort(tempA, (first, second) -> first.getTestId().compareTo(second.getTestId()));
+        Collections.sort(tempB, (first, second) -> first.getTestId().compareTo(second.getTestId()));
+        boolean same = a.equals(b);
+        Log.e("isSame", same + "");
+        Log.e("Earlier", tempA.toString());
+        Log.e("Later", tempB.toString());
+        return same;
     }
 }

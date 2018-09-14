@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -33,13 +34,22 @@ public class AddTestActivity extends AppCompatActivity {
     TextInputEditText testDescEditText;
     @BindView(R.id.submitTestInfoButton)
     Button submitTestInfoButton;
+    @BindView(R.id.cancel)
+    Button cancelButton;
 
     FirebaseFirestore firestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.setFinishOnTouchOutside(false);
+
         setContentView(R.layout.activity_add_test);
+
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT );
+
+        setTitle("Create a test");
 
         ButterKnife.bind(this);
 
@@ -50,6 +60,10 @@ public class AddTestActivity extends AppCompatActivity {
 
         CollectionReference testsCollection = firestore.collection("tests");
 
+        cancelButton.setOnClickListener(v -> {
+            finish();
+        });
+
         submitTestInfoButton.setOnClickListener(v -> {
             String testName = testNameEditText.getText().toString().trim();
             String testDesc = testDescEditText.getText().toString().trim();
@@ -59,7 +73,7 @@ public class AddTestActivity extends AppCompatActivity {
                 String timeStamp = TimestampUtils.getISO8601StringForCurrentDate();
                 String testId = UUID.randomUUID().toString();
                 Test test = new Test(testId, testName, testDesc, timeStamp);
-                progressDialog.setMessage(String.format("Please wait while we create '%s'...", testName));
+                progressDialog.setMessage("Please wait while we create your test...");
                 progressDialog.show();
                 hideKeyboard();
                 testsCollection.document(testId).set(test).addOnCompleteListener(ref -> {

@@ -8,10 +8,8 @@
         android:id="@+id/addQuestionToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:titleTextColor="@color/primary_text" />
+        style="@style/Base_ToolbarStyle"/>
 
     <ScrollView
         android:id="@+id/scrollView2"

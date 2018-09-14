@@ -21,12 +21,18 @@
         <activity
             android:name=".activities.AddQuestionActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activities.TestListActivity" />
+        <activity android:name=".activities.TestListActivity" />
         <activity android:name=".activities.QuestionListActivity" />
         <activity
             android:name=".activities.AddTestActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.UpdateTestActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
