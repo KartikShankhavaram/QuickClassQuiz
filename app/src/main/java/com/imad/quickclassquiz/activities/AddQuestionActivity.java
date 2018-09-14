@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -62,6 +63,18 @@ public class AddQuestionActivity extends AppCompatActivity {
     @BindView(R.id.addQuestionToolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.option1InputLayout)
+    TextInputLayout inputLayout1;
+
+    @BindView(R.id.option2InputLayout)
+    TextInputLayout inputLayout2;
+
+    @BindView(R.id.option3InputLayout)
+    TextInputLayout inputLayout3;
+
+    @BindView(R.id.option4InputLayout)
+    TextInputLayout inputLayout4;
+
     String correctAnswer = "";
     ProgressDialog progressDialog;
     FirebaseFirestore firestore;
@@ -98,29 +111,29 @@ public class AddQuestionActivity extends AppCompatActivity {
     }
 
     private void saveToDatabase() {
-        if (title.getText().length() == 0) {
+        if(title.getText().length() == 0){
             title.requestFocus();
             title.setError("Can't be empty");
             return;
         }
-        if (option1EditText.getText().length() == 0) {
+        if(option1EditText.getText().length() == 0){
             option1EditText.requestFocus();
-            option1EditText.setError("Can't be empty");
+            inputLayout1.setError("Can't be empty");
             return;
         }
-        if (option2EditText.getText().length() == 0) {
+        if(option2EditText.getText().length() == 0){
             option2EditText.requestFocus();
-            option2EditText.setError("Can't be empty");
+            inputLayout2.setError("Can't be empty");
             return;
         }
-        if (option3EditText.getText().length() == 0) {
+        if(option3EditText.getText().length() == 0){
             option3EditText.requestFocus();
-            option3EditText.setError("Can't be empty");
+            inputLayout3.setError("Can't be empty");
             return;
         }
-        if (option4EditText.getText().length() == 0) {
+        if(option4EditText.getText().length() == 0){
             option4EditText.requestFocus();
-            option4EditText.setError("Can't be empty");
+            inputLayout4.setError("Can't be empty");
             return;
         }
 
