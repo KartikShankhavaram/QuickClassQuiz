@@ -110,6 +110,7 @@ public class QuestionListActivity extends AppCompatActivity {
     private void fetchQuestions() {
         refreshLayout.setRefreshing(true);
         ArrayList<Question> list = new ArrayList<>();
+        adapter.setListContent(list);
         firestore.collection(testUrl).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
@@ -168,6 +169,7 @@ public class QuestionListActivity extends AppCompatActivity {
                                             Toast.makeText(this, "Deleted successfully!", Toast.LENGTH_SHORT).show();
                                             progressDialog.dismiss();
                                             startActivity(new Intent(this, TestListActivity.class));
+                                            finish();
                                         } else {
                                             progressDialog.dismiss();
                                             Toast.makeText(this, "Failed to delete.", Toast.LENGTH_SHORT).show();

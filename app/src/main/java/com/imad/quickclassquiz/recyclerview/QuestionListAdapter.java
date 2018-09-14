@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,8 +76,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                         progressDialog.show();
                         firestore.document(url).delete().addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
+                                this.list.remove(position);
                                 notifyItemRemoved(position);
-                                list.remove(position);
                             } else {
                                 Toast.makeText(mContext, "Couldn't delete question. Try again.", Toast.LENGTH_SHORT).show();
                             }
@@ -95,19 +96,13 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         return list.size();
     }
 
-    public ArrayList<Question> getListContent() {
-        return list;
-    }
+    public void setListContent(List<Question> list) {
+        final QuestionDiffCallback diffCallback = new QuestionDiffCallback(this.list, list);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-    public void setListContent(ArrayList<Question> list) {
-       if(!equalLists(this.list, list)) {
-           this.list = list;
-           notifyItemRangeChanged(0, list.size());
-       }
-    }
-
-    public boolean equalLists(List<Question> a, List<Question> b) {
-        return a == null && b == null || a != null && b != null && a.size() == b.size() && a.equals(b);
+        this.list.clear();
+        this.list.addAll(list);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

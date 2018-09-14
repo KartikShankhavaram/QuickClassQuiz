@@ -3,6 +3,7 @@ package com.imad.quickclassquiz.recyclerview;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,38 +75,17 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
 
     }
 
-    public void setListContent(ArrayList<Test> testArrayList) {
-        if(!equalLists(this.testArrayList, testArrayList)) {
-            this.testArrayList = new ArrayList<>(testArrayList);
-            notifyItemRangeChanged(0, testArrayList.size());
-        }
+    public void setListContent(List<Test> testArrayList) {
+        final TestDiffCallback diffCallback = new TestDiffCallback(this.testArrayList, testArrayList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.testArrayList.clear();
+        this.testArrayList.addAll(testArrayList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
     public int getItemCount() {
         return testArrayList.size();
-    }
-
-    public  boolean equalLists(List<Test> a, List<Test> b){
-        // Check for sizes and nulls
-
-        if (a == null && b == null) return true;
-
-
-        if ((a == null && b!= null) || (a != null && b== null) || (a.size() != b.size()))
-        {
-            return false;
-        }
-
-        // Sort and compare the two lists
-        ArrayList<Test> tempA = new ArrayList<>(a);
-        ArrayList<Test> tempB = new ArrayList<>(b);
-        Collections.sort(tempA, (first, second) -> first.getTestId().compareTo(second.getTestId()));
-        Collections.sort(tempB, (first, second) -> first.getTestId().compareTo(second.getTestId()));
-        boolean same = a.equals(b);
-        Log.e("isSame", same + "");
-        Log.e("Earlier", tempA.toString());
-        Log.e("Later", tempB.toString());
-        return same;
     }
 }
