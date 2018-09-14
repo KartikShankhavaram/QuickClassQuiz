@@ -20,7 +20,6 @@ import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapter.MyViewHolder> {
@@ -118,7 +117,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
         public MyViewHolder(View view) {
             super(view);
-            question = view.findViewById(R.id.testNameTextView);
+            question = view.findViewById(R.id.testNameEditText);
             option1 = view.findViewById(R.id.option1);
             option2 = view.findViewById(R.id.option2);
             option3 = view.findViewById(R.id.option3);

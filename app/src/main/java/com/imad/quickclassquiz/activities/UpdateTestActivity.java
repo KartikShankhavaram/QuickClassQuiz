@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -22,9 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.StaticValues;
-import com.imad.quickclassquiz.utils.TimestampUtils;
-
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +48,7 @@ public class UpdateTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setFinishOnTouchOutside(false);
         setContentView(R.layout.activity_update_test);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT );
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setTitle("Update test details");
 
         ButterKnife.bind(this);
@@ -64,11 +61,13 @@ public class UpdateTestActivity extends AppCompatActivity {
         CollectionReference testsCollection = firestore.collection("tests");
 
         Intent intent = getIntent();
-        if(intent != null && (test = intent.getParcelableExtra("test")) != null) {
+        if (intent != null && (test = intent.getParcelableExtra("test")) != null) {
             testNameEditText.setText(test.getTestName());
             testDescEditText.setText(test.getTestDesc());
             testNameEditText.requestFocus();
         }
+
+        updateTestInfoButton.setEnabled(false);
 
         testNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,8 +82,8 @@ public class UpdateTestActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                nameChanged = !s.toString().equals(test.getTestName());
-                updateTestInfoButton.setEnabled(nameChanged || descChanged);
+                nameChanged = !s.toString().trim().equals(test.getTestName().trim());
+                updateTestInfoButton.setEnabled(!TextUtils.isEmpty(s.toString().trim()) && (nameChanged || descChanged));
             }
         });
 
@@ -101,7 +100,7 @@ public class UpdateTestActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                descChanged = !s.toString().equals(test.getTestDesc());
+                descChanged = !s.toString().trim().equals(test.getTestDesc().trim());
                 updateTestInfoButton.setEnabled(nameChanged || descChanged);
             }
         });

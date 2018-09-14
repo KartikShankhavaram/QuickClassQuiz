@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +29,7 @@ import butterknife.ButterKnife;
 
 public class AddQuestionActivity extends AppCompatActivity {
 
-    @BindView(R.id.testNameTextView)
+    @BindView(R.id.questionEditText)
     EditText title;
 
     @BindView(R.id.option1EditText)

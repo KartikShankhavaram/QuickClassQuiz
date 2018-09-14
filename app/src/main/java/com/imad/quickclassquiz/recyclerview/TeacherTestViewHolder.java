@@ -17,7 +17,7 @@ public class TeacherTestViewHolder extends RecyclerView.ViewHolder {
 
     public TeacherTestViewHolder(View itemView) {
         super(itemView);
-        testNameTextView = itemView.findViewById(R.id.testNameTextView);
+        testNameTextView = itemView.findViewById(R.id.testNameEditText);
         testDescTextView = itemView.findViewById(R.id.testDescTextView);
         editTestButton = itemView.findViewById(R.id.testEditButton);
         startTestButton = itemView.findViewById(R.id.testStartButton);

@@ -57,12 +57,12 @@
                         android:layout_marginTop="10dp">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/testNameTextView"
+                            android:id="@+id/questionEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Question"
                             android:inputType=""
-                            android:maxLines="3"
+                            android:maxLines="5"
                             android:scrollbars="vertical"
                             android:singleLine="false" />
                     </android.support.design.widget.TextInputLayout>
@@ -82,7 +82,7 @@
                 <com.imad.quickclassquiz.customComponents.RecursiveRadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/testNameTextView"
+                    android:layout_below="@id/testNameEditText"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
 

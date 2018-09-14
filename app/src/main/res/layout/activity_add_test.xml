@@ -22,7 +22,8 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/testNameInputLayout">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/testNameEditText"
@@ -40,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Description"
-                android:minLines="3"
+                android:maxLines="3"
                 android:scrollbars="vertical"
                 android:singleLine="false" />
         </android.support.design.widget.TextInputLayout>

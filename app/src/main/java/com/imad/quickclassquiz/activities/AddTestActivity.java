@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,8 @@ public class AddTestActivity extends AppCompatActivity {
     Button submitTestInfoButton;
     @BindView(R.id.cancel)
     Button cancelButton;
+    @BindView(R.id.testNameInputLayout)
+    TextInputLayout testNameInputLayout;
 
     FirebaseFirestore firestore;
 
@@ -47,7 +52,7 @@ public class AddTestActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_add_test);
 
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT );
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         setTitle("Create a test");
 
@@ -60,15 +65,34 @@ public class AddTestActivity extends AppCompatActivity {
 
         CollectionReference testsCollection = firestore.collection("tests");
 
+        submitTestInfoButton.setEnabled(false);
+
         cancelButton.setOnClickListener(v -> {
             finish();
+        });
+
+        testNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                submitTestInfoButton.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
+            }
         });
 
         submitTestInfoButton.setOnClickListener(v -> {
             String testName = testNameEditText.getText().toString().trim();
             String testDesc = testDescEditText.getText().toString().trim();
             if (TextUtils.isEmpty(testName))
-                testNameEditText.setError("This field is mandatory.");
+                testNameInputLayout.setError("This field is mandatory.");
             else {
                 String timeStamp = TimestampUtils.getISO8601StringForCurrentDate();
                 String testId = UUID.randomUUID().toString();

@@ -14,7 +14,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/testNameTextView"
+            android:id="@+id/testNameEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -31,7 +31,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/testNameTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/testNameEditText" />
 
         <TextView
             android:id="@+id/option2"
