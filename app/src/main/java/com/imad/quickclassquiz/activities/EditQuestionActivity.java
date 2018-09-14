@@ -2,14 +2,13 @@ package com.imad.quickclassquiz.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -17,13 +16,12 @@ import android.widget.Toast;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
-
-import java.util.UUID;
+import com.imad.quickclassquiz.utils.KeyboardUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EditQuestion extends AppCompatActivity {
+public class EditQuestionActivity extends AppCompatActivity {
 
     @BindView(R.id.questionEditText)
     EditText title;
@@ -71,12 +69,12 @@ public class EditQuestion extends AppCompatActivity {
     TextInputLayout inputLayout4;
 
     Question question;
-    private String correctAnswer;
     ProgressDialog progressDialog;
     String testId;
     String questionId;
     FirebaseFirestore firestore;
     String url = "";
+    private String correctAnswer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +90,7 @@ public class EditQuestion extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             question = intent.getParcelableExtra("Question");
             testId = question.getTestId();
             questionId = question.getQuestionId();
@@ -102,52 +100,44 @@ public class EditQuestion extends AppCompatActivity {
             option2EditText.setText(question.getOption2());
             option3EditText.setText(question.getOption3());
             option4EditText.setText(question.getOption4());
-            if(question.getOption1().equals(question.getCorrectOption())){
+            if (question.getOption1().equals(question.getCorrectOption())) {
                 option1radio.setChecked(true);
-            }
-            else if(question.getOption2().equals(question.getCorrectOption())){
+            } else if (question.getOption2().equals(question.getCorrectOption())) {
                 option2radio.setChecked(true);
-            }
-            else if(question.getOption3().equals(question.getCorrectOption())){
+            } else if (question.getOption3().equals(question.getCorrectOption())) {
                 option3radio.setChecked(true);
-            }
-            else {
+            } else {
                 option4radio.setChecked(true);
             }
 
         }
         progressDialog = new ProgressDialog(this);
         firestore = FirebaseFirestore.getInstance();
-        saveQuestion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateQuestion();
-            }
-        });
+        saveQuestion.setOnClickListener(v -> updateQuestion());
     }
 
-    private void updateQuestion(){
-        if(title.getText().length() == 0){
+    private void updateQuestion() {
+        if (title.getText().length() == 0) {
             title.requestFocus();
             title.setError("Can't be empty");
             return;
         }
-        if(option1EditText.getText().length() == 0){
+        if (option1EditText.getText().length() == 0) {
             option1EditText.requestFocus();
             inputLayout1.setError("Can't be empty");
             return;
         }
-        if(option2EditText.getText().length() == 0){
+        if (option2EditText.getText().length() == 0) {
             option2EditText.requestFocus();
             inputLayout2.setError("Can't be empty");
             return;
         }
-        if(option3EditText.getText().length() == 0){
+        if (option3EditText.getText().length() == 0) {
             option3EditText.requestFocus();
             inputLayout3.setError("Can't be empty");
             return;
         }
-        if(option4EditText.getText().length() == 0){
+        if (option4EditText.getText().length() == 0) {
             option4EditText.requestFocus();
             inputLayout4.setError("Can't be empty");
             return;
@@ -173,22 +163,30 @@ public class EditQuestion extends AppCompatActivity {
             return;
         }
 
-        progressDialog.setTitle("Save Question");
-        progressDialog.setMessage("Please wait while the question is added to the test...");
-        progressDialog.show();
+        KeyboardUtils.hideKeyboard(this);
+
+        progressDialog.setTitle("Update Question");
+        progressDialog.setMessage("Please wait while the question is updated...");
 
         Question questionObj = new Question(testId, questionId, question, option1, option2, option3, option4, correctAnswer);
-        firestore.collection(url)
-                .document(questionId)
-                .set(questionObj)
-                .addOnCompleteListener(res -> {
-                    if (res.isSuccessful()) {
-                        Toast.makeText(this, "Question updated successfully to the test.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Could not add the question to the test. Please try again.", Toast.LENGTH_SHORT).show();
-                    }
-                    progressDialog.dismiss();
-                });
+        if (!this.question.equals(questionObj)) {
+            progressDialog.show();
+            firestore.collection(url)
+                    .document(questionId)
+                    .set(questionObj)
+                    .addOnCompleteListener(res -> {
+                        if (res.isSuccessful()) {
+                            Toast.makeText(this, "Question updated successfully.", Toast.LENGTH_SHORT).show();
+                            this.onBackPressed();
+                        } else {
+                            Toast.makeText(this, "Could not update the question.. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                        progressDialog.dismiss();
+                    });
+        } else {
+            Toast.makeText(this, "Question updated successfully.", Toast.LENGTH_SHORT).show();
+            this.onBackPressed();
+        }
     }
 
     @Override

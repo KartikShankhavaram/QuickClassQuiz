@@ -21,6 +21,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.utils.KeyboardUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import butterknife.BindView;
@@ -119,7 +120,7 @@ public class UpdateTestActivity extends AppCompatActivity {
                 progressDialog.show();
                 test.setTestName(testName);
                 test.setTestDesc(testDesc);
-                hideKeyboard();
+                KeyboardUtils.hideKeyboard(UpdateTestActivity.this);
                 testsCollection.document(test.getTestId()).set(test).addOnCompleteListener(ref -> {
                     if (ref.isSuccessful()) {
                         Log.e("Test updated", String.format("Test with name -> %s and ref -> %s updated!", testName, test.getTestId()));
@@ -135,15 +136,5 @@ public class UpdateTestActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    private void hideKeyboard() {
-        Activity activity = this;
-        View view = activity.findViewById(android.R.id.content);
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null)
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 }

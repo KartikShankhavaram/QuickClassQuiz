@@ -3,6 +3,7 @@ package com.imad.quickclassquiz.recyclerview;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.StartTestActivity;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.StaticValues;
@@ -53,8 +55,11 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
         Button startTestButton = holder.getStartTestButton();
         TextView testAddDateTextView = holder.getTestAddTimeTextView();
 
-        testNameTextView.setText(testArrayList.get(position).getTestName());
-        testDesctextView.setText(testArrayList.get(position).getTestDesc());
+        String testName = testArrayList.get(position).getTestName();
+        String testDesc = testArrayList.get(position).getTestDesc();
+
+        testNameTextView.setText(testName);
+        testDesctextView.setText(testDesc);
         editTestButton.setOnClickListener(v -> {
             Intent editTest = new Intent(mContext, QuestionListActivity.class);
             editTest.putExtra("test", testArrayList.get(position));
@@ -62,7 +67,24 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
             mContext.startActivity(editTest);
         });
         startTestButton.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Start button clicked for " + testArrayList.get(position).getTestId(), Toast.LENGTH_SHORT).show();
+            Intent startTest = new Intent(mContext, StartTestActivity.class);
+            startTest.putExtra("test", testArrayList.get(position));
+            if(testArrayList.get(position).getAccessCode() != null && testArrayList.get(position).getMasterCode() != null) {
+                Toast.makeText(mContext, "This test has already been started!", Toast.LENGTH_SHORT).show();
+                mContext.startActivity(startTest);
+            } else {
+                new AlertDialog.Builder(mContext)
+                        .setCancelable(false)
+                        .setTitle("Start test")
+                        .setMessage(String.format("Are you sure you want to start the test '%s'?", testName))
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            mContext.startActivity(startTest);
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+
+                        })
+                        .show();
+            }
         });
         String timestamp = testArrayList.get(position).getCreatedAt();
         DateTime dt = new DateTime(timestamp);

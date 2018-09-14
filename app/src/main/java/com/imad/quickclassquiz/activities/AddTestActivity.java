@@ -22,6 +22,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.utils.KeyboardUtils;
 import com.imad.quickclassquiz.utils.TimestampUtils;
 
 import java.util.UUID;
@@ -99,7 +100,7 @@ public class AddTestActivity extends AppCompatActivity {
                 Test test = new Test(testId, testName, testDesc, timeStamp);
                 progressDialog.setMessage("Please wait while we create your test...");
                 progressDialog.show();
-                hideKeyboard();
+                KeyboardUtils.hideKeyboard(AddTestActivity.this);
                 testsCollection.document(testId).set(test).addOnCompleteListener(ref -> {
                     if (ref.isSuccessful()) {
                         Log.e("Test added", String.format("New Test with name -> %s and ref -> %s", testName, testId));
@@ -117,15 +118,5 @@ public class AddTestActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    private void hideKeyboard() {
-        Activity activity = this;
-        View view = activity.findViewById(android.R.id.content);
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null)
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 }

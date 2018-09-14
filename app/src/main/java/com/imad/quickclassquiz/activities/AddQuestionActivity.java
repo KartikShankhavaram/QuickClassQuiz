@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.utils.KeyboardUtils;
 
 import java.util.UUID;
 
@@ -158,7 +159,7 @@ public class AddQuestionActivity extends AppCompatActivity {
             return;
         }
 
-        hideKeyboard();
+        KeyboardUtils.hideKeyboard(this);
 
         progressDialog.setTitle("Save Question");
         progressDialog.setMessage("Please wait while the question is added to the test...");
@@ -205,15 +206,5 @@ public class AddQuestionActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void hideKeyboard() {
-        Activity activity = this;
-        View view = activity.findViewById(android.R.id.content);
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null)
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 }
