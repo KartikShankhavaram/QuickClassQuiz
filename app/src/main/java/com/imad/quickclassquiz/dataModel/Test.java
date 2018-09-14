@@ -10,15 +10,16 @@ public class Test implements Parcelable {
     private String testId;
     private String testName;
     private String testDesc;
-    private String testTimestamp;
+    private String createdAt;
     private String accessCode;
     private String masterCode;
+    private String startedAt;
 
-    public Test(String testId, String testName, String testDesc, String testTimestamp) {
+    public Test(String testId, String testName, String testDesc, String createdAt) {
         this.testId = testId;
         this.testName = testName;
         this.testDesc = testDesc;
-        this.testTimestamp = testTimestamp;
+        this.createdAt = createdAt;
     }
 
     public Test() {
@@ -29,9 +30,10 @@ public class Test implements Parcelable {
         this.testId = in.readString();
         this.testName = in.readString();
         this.testDesc = in.readString();
-        this.testTimestamp = in.readString();
+        this.createdAt = in.readString();
         this.accessCode = in.readString();
         this.masterCode = in.readString();
+        this.startedAt = in.readString();
     }
 
     @Override
@@ -44,9 +46,10 @@ public class Test implements Parcelable {
         dest.writeString(testId);
         dest.writeString(testName);
         dest.writeString(testDesc);
-        dest.writeString(testTimestamp);
+        dest.writeString(createdAt);
         dest.writeString(accessCode);
         dest.writeString(masterCode);
+        dest.writeString(startedAt);
     }
 
     public static final Parcelable.Creator<Test> CREATOR = new Parcelable.Creator<Test>() {
@@ -84,12 +87,12 @@ public class Test implements Parcelable {
         this.testDesc = testDesc;
     }
 
-    public String getTestTimestamp() {
-        return testTimestamp;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTestTimestamp(String testTimestamp) {
-        this.testTimestamp = testTimestamp;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getAccessCode() {
@@ -108,15 +111,24 @@ public class Test implements Parcelable {
         this.masterCode = masterCode;
     }
 
+    public String getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(String startedAt) {
+        this.startedAt = startedAt;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
                 "testId='" + testId + '\'' +
                 ", testName='" + testName + '\'' +
                 ", testDesc='" + testDesc + '\'' +
-                ", testTimestamp='" + testTimestamp + '\'' +
+                ", createdAt='" + createdAt + '\'' +
                 ", accessCode='" + accessCode + '\'' +
                 ", masterCode='" + masterCode + '\'' +
+                ", startedAt='" + startedAt + '\'' +
                 '}';
     }
 
@@ -128,9 +140,10 @@ public class Test implements Parcelable {
         return Objects.equals(testId, test.testId) &&
                 Objects.equals(testName, test.testName) &&
                 Objects.equals(testDesc, test.testDesc) &&
-                Objects.equals(testTimestamp, test.testTimestamp) &&
+                Objects.equals(createdAt, test.createdAt) &&
                 Objects.equals(accessCode, test.accessCode) &&
-                Objects.equals(masterCode, test.masterCode);
+                Objects.equals(masterCode, test.masterCode) &&
+                Objects.equals(startedAt, test.startedAt);
     }
 
     @Override

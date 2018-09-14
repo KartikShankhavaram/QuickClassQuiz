@@ -1,8 +1,11 @@
 package com.imad.quickclassquiz.dataModel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
-public class Question {
+public class Question implements Parcelable {
 
     private String testId;
     private String questionId;
@@ -26,6 +29,45 @@ public class Question {
 
     public Question() {
     }
+
+    private Question(Parcel in) {
+        this.testId = in.readString();
+        this.questionId = in.readString();
+        this.question = in.readString();
+        this.option1 = in.readString();
+        this.option2 = in.readString();
+        this.option3 = in.readString();
+        this.option4 = in.readString();
+        this.correctOption = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(testId);
+        dest.writeString(questionId);
+        dest.writeString(question);
+        dest.writeString(option1);
+        dest.writeString(option2);
+        dest.writeString(option3);
+        dest.writeString(option4);
+        dest.writeString(correctOption);
+    }
+
+    public static final Parcelable.Creator<Question> CREATOR = new Parcelable.Creator<Question>() {
+
+        public Question createFromParcel(Parcel in) {
+            return new Question(in);
+        }
+
+        public Question[] newArray(int size) {
+            return new Question[size];
+        }
+    };
 
     public String getTestId() {
         return testId;

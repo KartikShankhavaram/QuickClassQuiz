@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
-import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.StaticValues;
 
@@ -26,7 +24,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestViewHolder> {
@@ -67,7 +64,7 @@ public class TeacherTestListAdapter extends RecyclerView.Adapter<TeacherTestView
         startTestButton.setOnClickListener(v -> {
             Toast.makeText(mContext, "Start button clicked for " + testArrayList.get(position).getTestId(), Toast.LENGTH_SHORT).show();
         });
-        String timestamp = testArrayList.get(position).getTestTimestamp();
+        String timestamp = testArrayList.get(position).getCreatedAt();
         DateTime dt = new DateTime(timestamp);
         DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
         String time = format.print(dt);
