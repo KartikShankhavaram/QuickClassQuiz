@@ -13,7 +13,7 @@ public class StaticValues {
         StaticValues.currentTest = currentTest;
     }
 
-    public void clearTest() {
+    public static void clearTest() {
         currentTest = null;
     }
 }

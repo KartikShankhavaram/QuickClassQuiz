@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
     private LayoutInflater inflater;
     private ArrayList<Question> list = new ArrayList<>();
     private FirebaseFirestore firestore;
+    private View rootView;
 
     public QuestionListAdapter(Context mContext) {
         this.mContext = mContext;
@@ -37,8 +39,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = inflater.inflate(R.layout.question_list_item, parent, false);
-        return new MyViewHolder(itemView);
+        rootView = inflater.inflate(R.layout.question_list_item, parent, false);
+        return new MyViewHolder(rootView);
     }
 
     @Override
@@ -89,6 +91,11 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                     })
                     .show();
         });
+
+        holder.editButton.setOnClickListener(v -> {
+            // TODO Add code to edit a question
+            Snackbar.make(rootView, "Add code to edit this question", Snackbar.LENGTH_SHORT).show();
+        });
     }
 
     @Override
@@ -107,7 +114,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView question, option1, option2, option3, option4;
-        public ImageButton deleteButton;
+        public ImageButton deleteButton, editButton;
 
         public MyViewHolder(View view) {
             super(view);
@@ -117,6 +124,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             option3 = view.findViewById(R.id.option3);
             option4 = view.findViewById(R.id.option4);
             deleteButton = view.findViewById(R.id.deleteQuestionButton);
+            editButton = view.findViewById(R.id.editQuestionButton);
         }
     }
 }

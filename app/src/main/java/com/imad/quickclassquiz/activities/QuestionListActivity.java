@@ -187,4 +187,10 @@ public class QuestionListActivity extends AppCompatActivity {
                 return false;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        StaticValues.clearTest();
+    }
 }
