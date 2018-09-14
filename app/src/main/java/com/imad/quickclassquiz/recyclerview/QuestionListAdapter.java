@@ -2,6 +2,7 @@ package com.imad.quickclassquiz.recyclerview;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.activities.EditQuestion;
 import com.imad.quickclassquiz.dataModel.Question;
 
 import java.util.ArrayList;
@@ -93,7 +95,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
         holder.editButton.setOnClickListener(v -> {
             // TODO Add code to edit a question
-            Snackbar.make(rootView, "Add code to edit this question", Snackbar.LENGTH_SHORT).show();
+           // Snackbar.make(rootView, "Add code to edit this question", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(mContext, EditQuestion.class);
+            intent.putExtra("Question",list.get(position));
+            mContext.startActivity(intent);
         });
     }
 

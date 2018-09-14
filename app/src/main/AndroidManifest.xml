@@ -33,6 +33,7 @@
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activities.EditQuestion"></activity>
     </application>
 
 </manifest>
