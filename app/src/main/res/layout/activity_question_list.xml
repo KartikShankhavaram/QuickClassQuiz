@@ -47,6 +47,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="72dp"
+            android:scrollbars="none"
             tools:listitem="@layout/question_list_item" />
 
     </android.support.v4.widget.SwipeRefreshLayout>

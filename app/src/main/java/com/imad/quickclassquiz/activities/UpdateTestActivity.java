@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
@@ -55,6 +56,7 @@ public class UpdateTestActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Updating Test");

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.EditQuestionActivity;
 import com.imad.quickclassquiz.dataModel.Question;
@@ -35,6 +36,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         this.mContext = mContext;
         inflater = LayoutInflater.from(mContext);
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
     }
 
     @Override

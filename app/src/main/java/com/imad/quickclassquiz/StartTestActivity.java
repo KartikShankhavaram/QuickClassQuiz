@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.RandomCodeGenerator;
 import com.imad.quickclassquiz.utils.TimestampUtils;
@@ -49,6 +50,7 @@ public class StartTestActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         Intent intent = getIntent();
         if(intent != null && (test = intent.getParcelableExtra("test")) != null) {

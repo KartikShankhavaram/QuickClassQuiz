@@ -2,19 +2,21 @@ package com.imad.quickclassquiz.dataModel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import java.util.Objects;
 
+@Keep
 public class Question implements Parcelable {
 
-    private String testId;
-    private String questionId;
-    private String question;
-    private String option1;
-    private String option2;
-    private String option3;
-    private String option4;
-    private String correctOption;
+    public String testId;
+    public String questionId;
+    public String question;
+    public String option1;
+    public String option2;
+    public String option3;
+    public String option4;
+    public String correctOption;
 
     public Question(String testId, String questionId, String question, String option1, String option2, String option3, String option4, String correctOption) {
         this.testId = testId;
@@ -30,7 +32,7 @@ public class Question implements Parcelable {
     public Question() {
     }
 
-    private Question(Parcel in) {
+    public Question(Parcel in) {
         this.testId = in.readString();
         this.questionId = in.readString();
         this.question = in.readString();

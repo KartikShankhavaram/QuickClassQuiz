@@ -9,10 +9,6 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,9 +17,9 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/testNameInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/testNameInputLayout">
+            android:layout_height="match_parent">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/testNameEditText"
@@ -55,25 +51,31 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="8" />
+                android:layout_weight="10" />
 
             <Button
                 android:id="@+id/cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:layout_weight="4"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="Cancel" />
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:text="Cancel"
+                android:textColor="#333333" />
 
             <Button
                 android:id="@+id/submitTestInfoButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:layout_weight="4"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="Create" />
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:text="Create"
+                android:textColor="#333333" />
         </LinearLayout>
 
     </LinearLayout>

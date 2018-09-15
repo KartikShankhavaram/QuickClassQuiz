@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
@@ -64,6 +65,7 @@ public class TestListActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         refreshLayout.setOnRefreshListener(() -> fetchTests());
 

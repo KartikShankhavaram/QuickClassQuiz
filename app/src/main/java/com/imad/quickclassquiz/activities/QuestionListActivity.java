@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
@@ -61,6 +62,7 @@ public class QuestionListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         setSupportActionBar(toolbar);
 

@@ -16,6 +16,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.sign_in_button);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         progress = new ProgressDialog(this);
         progress.setMessage("Please wait while we sign you in...");

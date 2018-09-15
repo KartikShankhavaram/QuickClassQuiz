@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -54,16 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(account != null) {
+        if (account != null) {
             String role = "";
             if (intent != null && intent.getStringExtra("from").equals("login")) {
                 Log.e("intent", intent.getBooleanExtra("teacher", false) + "");
-                if(intent.getBooleanExtra("teacher", false))
+                if (intent.getBooleanExtra("teacher", false))
                     role = "teacher";
                 else
                     role = "student";
             }
-            ((TextView)findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
+            ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
 
 //        CollectionReference testsCollection = firestore.collection("tests");

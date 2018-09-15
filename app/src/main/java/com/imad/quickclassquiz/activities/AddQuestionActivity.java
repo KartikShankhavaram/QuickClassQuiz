@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
@@ -90,6 +91,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         setSupportActionBar(toolbar);
 

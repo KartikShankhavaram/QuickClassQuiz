@@ -20,9 +20,11 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
+import com.imad.quickclassquiz.utils.StaticValues;
 import com.imad.quickclassquiz.utils.TimestampUtils;
 
 import java.util.UUID;
@@ -60,6 +62,7 @@ public class AddTestActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Creating Test");
@@ -107,6 +110,7 @@ public class AddTestActivity extends AppCompatActivity {
                         Toast.makeText(this, "Test created successfully!", Toast.LENGTH_SHORT).show();
                         Intent toQuestionList = new Intent(AddTestActivity.this, QuestionListActivity.class);
                         toQuestionList.putExtra("test", test);
+                        StaticValues.setCurrentTest(test);
                         progressDialog.dismiss();
                         startActivity(toQuestionList);
                         finish();

@@ -2,18 +2,20 @@ package com.imad.quickclassquiz.dataModel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import java.util.Objects;
 
+@Keep
 public class Test implements Parcelable {
 
-    private String testId;
-    private String testName;
-    private String testDesc;
-    private String createdAt;
-    private String accessCode;
-    private String masterCode;
-    private String startedAt;
+    public String testId;
+    public String testName;
+    public String testDesc;
+    public String createdAt;
+    public String accessCode;
+    public String masterCode;
+    public String startedAt;
 
     public Test(String testId, String testName, String testDesc, String createdAt) {
         this.testId = testId;
@@ -26,7 +28,7 @@ public class Test implements Parcelable {
 
     }
 
-    private Test(Parcel in) {
+    public Test(Parcel in) {
         this.testId = in.readString();
         this.testName = in.readString();
         this.testDesc = in.readString();
