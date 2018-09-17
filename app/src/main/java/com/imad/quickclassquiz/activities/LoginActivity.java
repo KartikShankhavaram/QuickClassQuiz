@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e(TAG, "document email -> " + document.get("email"));
                             Log.e(TAG, "email comparison -> " + account.getEmail().equals(document.get("email")));
                             found = true;
-                            Toast.makeText(this, "Welcome back! You're signed in with " + account.getEmail() + ".", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                     .putExtra("teacher", true)
                                     .putExtra("from", "login"));
@@ -79,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     if(!found) {
                         progress.dismiss();
-                        Toast.makeText(this, "Welcome back! You're signed in with " + account.getEmail() + ".", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                 .putExtra("teacher", false)
                                 .putExtra("from", "login"));
@@ -139,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e(TAG, "email comparison -> " + email.equals(document.get("email")));
                             progress.dismiss();
                             found = true;
-                            Toast.makeText(this, "Welcome! You're signed in with " + account.getEmail() + ".", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                     .putExtra("teacher", true)
                                     .putExtra("from", "login"));
@@ -148,7 +145,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     if(!found) {
                         progress.dismiss();
-                        Toast.makeText(this, "Welcome! You're signed in with " + account.getEmail() + ".", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                 .putExtra("teacher", false)
                                 .putExtra("from", "login"));

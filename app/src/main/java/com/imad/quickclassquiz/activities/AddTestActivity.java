@@ -110,6 +110,7 @@ public class AddTestActivity extends AppCompatActivity {
                         Toast.makeText(this, "Test created successfully!", Toast.LENGTH_SHORT).show();
                         Intent toQuestionList = new Intent(AddTestActivity.this, QuestionListActivity.class);
                         toQuestionList.putExtra("test", test);
+                        toQuestionList.putExtra("started", false);
                         StaticValues.setCurrentTest(test);
                         progressDialog.dismiss();
                         startActivity(toQuestionList);

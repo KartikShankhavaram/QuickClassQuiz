@@ -34,7 +34,8 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activities.EditQuestionActivity" />
-        <activity android:name=".StartTestActivity"></activity>
+        <activity android:name=".activities.StartTestActivity" />
+        <activity android:name=".activities.StudentTestDisplayActivity"></activity>
     </application>
 
 </manifest>

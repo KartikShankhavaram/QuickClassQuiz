@@ -31,9 +31,11 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
     private ArrayList<Question> list = new ArrayList<>();
     private FirebaseFirestore firestore;
     private View rootView;
+    private Boolean editable;
 
-    public QuestionListAdapter(Context mContext) {
+    public QuestionListAdapter(Context mContext, Boolean editable) {
         this.mContext = mContext;
+        this.editable = editable;
         inflater = LayoutInflater.from(mContext);
         firestore = FirebaseFirestore.getInstance();
         firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
@@ -66,39 +68,44 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         holder.option3.setText(String.format("C. %s", obj.getOption3()));
         holder.option4.setText(String.format("D. %s", obj.getOption4()));
 
-        ProgressDialog progressDialog = new ProgressDialog(mContext);
-        progressDialog.setTitle("Deleting question");
-        progressDialog.setMessage("Please wait while we delete this question...");
+        if(editable) {
+            ProgressDialog progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle("Deleting question");
+            progressDialog.setMessage("Please wait while we delete this question...");
 
-        holder.deleteButton.setOnClickListener((View v) -> {
-            String url = String.format("tests/%s/questions/%s", obj.getTestId(), obj.getQuestionId());
-            new AlertDialog.Builder(mContext)
-                    .setCancelable(false)
-                    .setTitle("Delete question")
-                    .setMessage("Are you sure you want to delete this question?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        progressDialog.show();
-                        firestore.document(url).delete().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                this.list.remove(position);
-                                notifyItemRemoved(position);
-                            } else {
-                                Toast.makeText(mContext, "Couldn't delete question. Try again.", Toast.LENGTH_SHORT).show();
-                            }
-                            progressDialog.dismiss();
-                        });
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> {
+            holder.deleteButton.setOnClickListener((View v) -> {
+                String url = String.format("tests/%s/questions/%s", obj.getTestId(), obj.getQuestionId());
+                new AlertDialog.Builder(mContext)
+                        .setCancelable(false)
+                        .setTitle("Delete question")
+                        .setMessage("Are you sure you want to delete this question?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            progressDialog.show();
+                            firestore.document(url).delete().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    this.list.remove(position);
+                                    notifyItemRemoved(position);
+                                } else {
+                                    Toast.makeText(mContext, "Couldn't delete question. Try again.", Toast.LENGTH_SHORT).show();
+                                }
+                                progressDialog.dismiss();
+                            });
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
 
-                    })
-                    .show();
-        });
+                        })
+                        .show();
+            });
 
-        holder.editButton.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, EditQuestionActivity.class);
-            intent.putExtra("Question",list.get(position));
-            mContext.startActivity(intent);
-        });
+            holder.editButton.setOnClickListener(v -> {
+                Intent intent = new Intent(mContext, EditQuestionActivity.class);
+                intent.putExtra("Question",list.get(position));
+                mContext.startActivity(intent);
+            });
+        } else {
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.editButton.setVisibility(View.GONE);
+        }
     }
 
     @Override

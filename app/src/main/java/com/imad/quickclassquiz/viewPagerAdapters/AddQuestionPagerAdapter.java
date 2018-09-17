@@ -1,4 +1,4 @@
-package com.imad.quickclassquiz.addQuestionPager;
+package com.imad.quickclassquiz.viewPagerAdapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

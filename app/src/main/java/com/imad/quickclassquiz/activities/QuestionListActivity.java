@@ -66,22 +66,28 @@ public class QuestionListActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        adapter = new QuestionListAdapter(this);
+        Intent intent = getIntent();
+        if (intent != null) {
+            test = intent.getParcelableExtra("test");
+            if(intent.getBooleanExtra("started", true)) {
+                addQuestionButton.hide();
+                adapter = new QuestionListAdapter(this, false);
+            } else {
+                adapter = new QuestionListAdapter(this, true);
+                addQuestionButton.show();
+            }
+
+            if(test != null) {
+                testUrl = String.format("tests/%s/questions", test.getTestId());
+            }
+        }
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new LandingAnimator());
 
         noQuestionsTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            test = intent.getParcelableExtra("test");
-        }
-        if (test != null) {
-            testUrl = String.format("tests/%s/questions", test.getTestId());
-            Log.e("testUrl", testUrl);
-        }
 
         refreshLayout.setOnRefreshListener(() -> fetchQuestions());
 
@@ -139,8 +145,13 @@ public class QuestionListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.question_list_menu, menu);
-        return true;
+        Intent intent;
+        if((intent = getIntent()) != null && intent.getBooleanExtra("started", true)) {
+            return false;
+        } else {
+            inflater.inflate(R.menu.question_list_menu, menu);
+            return true;
+        }
     }
 
     @Override

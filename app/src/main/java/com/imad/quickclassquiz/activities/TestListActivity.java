@@ -3,30 +3,20 @@ package com.imad.quickclassquiz.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Test;
-import com.imad.quickclassquiz.recyclerview.TeacherTestListAdapter;
-
-import java.util.ArrayList;
+import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
+import com.imad.quickclassquiz.viewPagerAdapters.TestListPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 public class TestListActivity extends AppCompatActivity {
 
@@ -34,15 +24,13 @@ public class TestListActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.addTestFAB)
     FloatingActionButton addTestButton;
-    @BindView(R.id.testListRecyclerView)
-    RecyclerView recyclerView;
-    @BindView(R.id.testListSwipeRefresh)
-    SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.noTestsTextView)
-    TextView noTestsTextView;
+    @BindView(R.id.testListPager)
+    ViewPager testListViewPager;
+    @BindView(R.id.testListTabLayout)
+    TabLayout testListTabLayout;
 
     FirebaseFirestore firestore;
-    TeacherTestListAdapter adapter;
+    TeacherStartedTestListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,55 +41,41 @@ public class TestListActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Upcoming tests");
+        actionBar.setTitle("Tests");
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setItemAnimator(new LandingAnimator());
+        TestListPagerAdapter pagerAdapter = new TestListPagerAdapter(getSupportFragmentManager());
+        testListViewPager.setAdapter(pagerAdapter);
 
-        adapter = new TeacherTestListAdapter(this);
-        recyclerView.setAdapter(new AlphaInAnimationAdapter(adapter));
+        testListTabLayout.setupWithViewPager(testListViewPager);
 
-        noTestsTextView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        testListViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
-        firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
+            @Override
+            public void onPageSelected(int position) {
 
-        refreshLayout.setOnRefreshListener(() -> fetchTests());
+                switch (position) {
+                    case 0:
+                        addTestButton.show();
+                        break;
+
+                    default:
+                        addTestButton.hide();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         addTestButton.setOnClickListener(v -> {
             startActivity(new Intent(TestListActivity.this, AddTestActivity.class));
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        fetchTests();
-    }
-
-    private void fetchTests() {
-        refreshLayout.setRefreshing(true);
-        ArrayList<Test> teacherTestList = new ArrayList<>();
-        adapter.setListContent(teacherTestList);
-        CollectionReference testsCollection = firestore.collection("tests");
-        testsCollection.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                            teacherTestList.add(documentSnapshot.toObject(Test.class));
-                        }
-                        adapter.setListContent(teacherTestList);
-                        Log.e("Test list", teacherTestList.toString());
-                        if(teacherTestList.size() == 0) {
-                            noTestsTextView.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                        } else {
-                            noTestsTextView.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    refreshLayout.setRefreshing(false);
-                });
-    }
 }

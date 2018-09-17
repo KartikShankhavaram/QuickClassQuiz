@@ -11,9 +11,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.dataModel.Test;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,6 +72,38 @@ public class MainActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
 
+        DocumentReference upcoming = firestore.document("tests/upcoming-tests");
+        upcoming.collection("list").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                    String id;
+                    if ((id = snapshot.getId()) != null) {
+                        Test test = snapshot.toObject(Test.class);
+                        moveFirestoreDocument(firestore.document("tests/upcoming-tests/list/" + snapshot.getId()), firestore.document("tests/" + snapshot.getId()));
+                        Log.e(getPackageName(), snapshot.getId() + " -> list");
+                    }
+                }
+            } else {
+                Log.e(getPackageName(), "Could not get.");
+            }
+        });
+//
+        DocumentReference started = firestore.document("tests/started-tests");
+        started.collection("list").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                    String id;
+                    if ((id = snapshot.getId()) != null) {
+                        Test test = snapshot.toObject(Test.class);
+                        moveFirestoreDocument(firestore.document("tests/started-tests/list/" + snapshot.getId()), firestore.document("tests/" + snapshot.getId()));
+                        Log.e(getPackageName(), snapshot.getId() + " -> list");
+                    }
+                }
+            } else {
+                Log.e(getPackageName(), "Could not get.");
+            }
+        });
+
 //        CollectionReference testsCollection = firestore.collection("tests");
 //
 //        String uuid = UUID.randomUUID().toString();
@@ -98,4 +134,27 @@ public class MainActivity extends AppCompatActivity {
 //            });
 //        });
     }
+
+    public void moveFirestoreDocument(DocumentReference fromPath, final DocumentReference toPath) {
+        fromPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null) {
+                    toPath.set(document.getData())
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(getPackageName(), "DocumentSnapshot successfully written!");
+                                fromPath.delete()
+                                        .addOnSuccessListener(aVoid1 -> Log.d(getPackageName(), "DocumentSnapshot successfully deleted!"))
+                                        .addOnFailureListener(e -> Log.w(getPackageName(), "Error deleting document", e));
+                            })
+                            .addOnFailureListener(e -> Log.w(getPackageName(), "Error writing document", e));
+                } else {
+                    Log.d(getPackageName(), "No such document");
+                }
+            } else {
+                Log.d(getPackageName(), "get failed with ", task.getException());
+            }
+        });
+    }
+
 }
