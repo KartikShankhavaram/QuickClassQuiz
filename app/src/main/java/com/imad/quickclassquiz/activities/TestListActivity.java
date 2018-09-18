@@ -12,7 +12,10 @@ import android.support.v7.widget.Toolbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.fragments.StartedTestsTeacherFragment;
+import com.imad.quickclassquiz.fragments.UpcomingTestsTeacherFragment;
 import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
+import com.imad.quickclassquiz.utils.StaticValues;
 import com.imad.quickclassquiz.viewPagerAdapters.TestListPagerAdapter;
 
 import butterknife.BindView;
@@ -55,15 +58,25 @@ public class TestListActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-
+                TestListPagerAdapter adapter = (TestListPagerAdapter)testListViewPager.getAdapter();
                 switch (position) {
                     case 0:
                         addTestButton.show();
+                        if(StaticValues.getShouldRefresh()) {
+                            UpcomingTestsTeacherFragment fragment = (UpcomingTestsTeacherFragment) adapter.getItem(0);
+                            fragment.fetchTests();
+                            StaticValues.setShouldRefresh(false);
+                        }
                         break;
-
-                    default:
+                    case 1:
                         addTestButton.hide();
+                        if(StaticValues.getShouldRefresh()) {
+                            StartedTestsTeacherFragment fragment = (StartedTestsTeacherFragment) adapter.getItem(1);
+                            fragment.fetchTests();
+                            StaticValues.setShouldRefresh(false);
+                        }
                         break;
+                    default:
                 }
             }
 

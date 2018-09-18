@@ -21,6 +21,7 @@ import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
 import com.imad.quickclassquiz.recyclerview.TeacherUpcomingTestListAdapter;
 import com.imad.quickclassquiz.utils.FilterTests;
+import com.imad.quickclassquiz.utils.StaticValues;
 
 import java.util.ArrayList;
 
@@ -82,21 +83,23 @@ public class UpcomingTestsTeacherFragment extends Fragment {
         fetchTests();
     }
 
-    private void fetchTests() {
+    public void fetchTests() {
+        StaticValues.setShouldRefresh(true);
         refreshLayout.setRefreshing(true);
         ArrayList<Test> teacherTestList = new ArrayList<>();
         adapter.setListContent(teacherTestList);
         CollectionReference testsCollection = firestore.collection("tests");
-        testsCollection.get()
+        testsCollection.whereEqualTo("accessCode", null)
+                .whereEqualTo("masterCode", null)
+                .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
-                        ArrayList<Test> filteredList = FilterTests.getUpcomingTestList(teacherTestList);
-                        adapter.setListContent(filteredList);
-                        Log.e("Test list", filteredList.toString());
-                        if (filteredList.size() == 0) {
+                        adapter.setListContent(teacherTestList);
+                        Log.e("Test list", teacherTestList.toString());
+                        if (teacherTestList.size() == 0) {
                             noStartedTestsTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {

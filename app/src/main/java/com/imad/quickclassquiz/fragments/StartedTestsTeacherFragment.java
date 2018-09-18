@@ -20,6 +20,7 @@ import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
 import com.imad.quickclassquiz.utils.FilterTests;
+import com.imad.quickclassquiz.utils.StaticValues;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,8 @@ public class StartedTestsTeacherFragment extends Fragment {
 
     TeacherStartedTestListAdapter adapter;
     FirebaseFirestore firestore;
+
+    private boolean _hasLoadedOnce = false;
 
     public StartedTestsTeacherFragment() {
         // Required empty public constructor
@@ -80,24 +83,39 @@ public class StartedTestsTeacherFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        fetchTests();
+        if(_hasLoadedOnce)
+            fetchTests();
     }
 
-    private void fetchTests() {
+    @Override
+    public void setUserVisibleHint(boolean isFragmentVisible_) {
+        super.setUserVisibleHint(true);
+
+        if (this.isVisible()) {
+            // we check that the fragment is becoming visible
+            if (isFragmentVisible_ && !_hasLoadedOnce) {
+                fetchTests();
+                _hasLoadedOnce = true;
+            }
+        }
+    }
+
+    public void fetchTests() {
+        StaticValues.setShouldRefresh(true);
         refreshLayout.setRefreshing(true);
         ArrayList<Test> teacherTestList = new ArrayList<>();
         adapter.setListContent(teacherTestList);
         CollectionReference testsCollection = firestore.collection("tests");
-        testsCollection.get()
+        testsCollection.whereGreaterThan("accessCode", "")
+                .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
-                        ArrayList<Test> filteredList = FilterTests.getStartedTestList(teacherTestList);
-                        adapter.setListContent(filteredList);
-                        Log.e("Test list", filteredList.toString());
-                        if (filteredList.size() == 0) {
+                        adapter.setListContent(teacherTestList);
+                        Log.e("Test list", teacherTestList.toString());
+                        if (teacherTestList.size() == 0) {
                             noStartedTestsTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
