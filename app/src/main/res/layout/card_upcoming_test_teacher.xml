@@ -69,7 +69,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="2dp"
                 android:layout_marginStart="2dp"
-                android:layout_weight="10" />
+                android:layout_weight="3" />
+
+            <Button
+                android:id="@+id/testVisibilityToggleButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_weight="7"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="Make test public"
+                android:textAlignment="center" />
 
             <Button
                 android:id="@+id/testEditButton"
@@ -79,7 +90,8 @@
                 android:layout_marginStart="2dp"
                 android:layout_weight="3"
                 android:background="?android:attr/selectableItemBackground"
-                android:text="Edit" />
+                android:text="Edit"
+                android:textAlignment="center" />
 
             <Button
                 android:id="@+id/testStartButton"
@@ -88,7 +100,8 @@
                 android:layout_marginStart="2dp"
                 android:layout_weight="3"
                 android:background="?android:attr/selectableItemBackground"
-                android:text="Start" />
+                android:text="Start"
+                android:textAlignment="center" />
 
         </LinearLayout>
 

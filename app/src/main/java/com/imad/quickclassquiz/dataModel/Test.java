@@ -16,54 +16,19 @@ public class Test implements Parcelable {
     public String accessCode;
     public String masterCode;
     public String startedAt;
+    public boolean visible;
 
     public Test(String testId, String testName, String testDesc, String createdAt) {
         this.testId = testId;
         this.testName = testName;
         this.testDesc = testDesc;
         this.createdAt = createdAt;
+        this.visible = false;
     }
 
     public Test() {
 
     }
-
-    public Test(Parcel in) {
-        this.testId = in.readString();
-        this.testName = in.readString();
-        this.testDesc = in.readString();
-        this.createdAt = in.readString();
-        this.accessCode = in.readString();
-        this.masterCode = in.readString();
-        this.startedAt = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return hashCode();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(testId);
-        dest.writeString(testName);
-        dest.writeString(testDesc);
-        dest.writeString(createdAt);
-        dest.writeString(accessCode);
-        dest.writeString(masterCode);
-        dest.writeString(startedAt);
-    }
-
-    public static final Parcelable.Creator<Test> CREATOR = new Parcelable.Creator<Test>() {
-
-        public Test createFromParcel(Parcel in) {
-            return new Test(in);
-        }
-
-        public Test[] newArray(int size) {
-            return new Test[size];
-        }
-    };
 
     public String getTestId() {
         return testId;
@@ -121,6 +86,34 @@ public class Test implements Parcelable {
         this.startedAt = startedAt;
     }
 
+    public boolean getVisibility() {
+        return visible;
+    }
+
+    public void setVisibility(boolean visible) {
+        this.visible = visible;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Test test = (Test) o;
+        return visible == test.visible &&
+                Objects.equals(testId, test.testId) &&
+                Objects.equals(testName, test.testName) &&
+                Objects.equals(testDesc, test.testDesc) &&
+                Objects.equals(createdAt, test.createdAt) &&
+                Objects.equals(accessCode, test.accessCode) &&
+                Objects.equals(masterCode, test.masterCode) &&
+                Objects.equals(startedAt, test.startedAt);
+    }
+
     @Override
     public String toString() {
         return "Test{" +
@@ -131,26 +124,48 @@ public class Test implements Parcelable {
                 ", accessCode='" + accessCode + '\'' +
                 ", masterCode='" + masterCode + '\'' +
                 ", startedAt='" + startedAt + '\'' +
+                ", visible=" + visible +
                 '}';
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Test test = (Test) o;
-        return Objects.equals(testId, test.testId) &&
-                Objects.equals(testName, test.testName) &&
-                Objects.equals(testDesc, test.testDesc) &&
-                Objects.equals(createdAt, test.createdAt) &&
-                Objects.equals(accessCode, test.accessCode) &&
-                Objects.equals(masterCode, test.masterCode) &&
-                Objects.equals(startedAt, test.startedAt);
+    public int describeContents() {
+        return hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(testId);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.testId);
+        dest.writeString(this.testName);
+        dest.writeString(this.testDesc);
+        dest.writeString(this.createdAt);
+        dest.writeString(this.accessCode);
+        dest.writeString(this.masterCode);
+        dest.writeString(this.startedAt);
+        dest.writeByte(this.visible ? (byte) 1 : (byte) 0);
     }
 
+    protected Test(Parcel in) {
+        this.testId = in.readString();
+        this.testName = in.readString();
+        this.testDesc = in.readString();
+        this.createdAt = in.readString();
+        this.accessCode = in.readString();
+        this.masterCode = in.readString();
+        this.startedAt = in.readString();
+        this.visible = in.readByte() != 0;
+    }
+
+    public static final Creator<Test> CREATOR = new Creator<Test>() {
+        @Override
+        public Test createFromParcel(Parcel source) {
+            return new Test(source);
+        }
+
+        @Override
+        public Test[] newArray(int size) {
+            return new Test[size];
+        }
+    };
 }

@@ -72,6 +72,7 @@ public class StartedTestsTeacherFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_started_tests_teacher, container, false);
         ButterKnife.bind(this, rootView);
         refreshLayout.setOnRefreshListener(() -> {
+            StaticValues.setShouldRefresh(true);
             fetchTests();
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -101,7 +102,6 @@ public class StartedTestsTeacherFragment extends Fragment {
     }
 
     public void fetchTests() {
-        StaticValues.setShouldRefresh(true);
         refreshLayout.setRefreshing(true);
         ArrayList<Test> teacherTestList = new ArrayList<>();
         adapter.setListContent(teacherTestList);

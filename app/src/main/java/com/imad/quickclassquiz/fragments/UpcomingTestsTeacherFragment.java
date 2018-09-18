@@ -69,10 +69,15 @@ public class UpcomingTestsTeacherFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_upcoming_tests_teacher, container, false);
         ButterKnife.bind(this, rootView);
         refreshLayout.setOnRefreshListener(() -> {
+            StaticValues.setShouldRefresh(true);
             fetchTests();
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new LandingAnimator());
+        adapter.setOnTestVisibilityChangedListener(() -> {
+            StaticValues.setShouldRefresh(true);
+            fetchTests();
+        });
         recyclerView.setAdapter(new AlphaInAnimationAdapter(adapter));
         return rootView;
     }
@@ -84,7 +89,6 @@ public class UpcomingTestsTeacherFragment extends Fragment {
     }
 
     public void fetchTests() {
-        StaticValues.setShouldRefresh(true);
         refreshLayout.setRefreshing(true);
         ArrayList<Test> teacherTestList = new ArrayList<>();
         adapter.setListContent(teacherTestList);

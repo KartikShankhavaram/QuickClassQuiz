@@ -1,5 +1,6 @@
 package com.imad.quickclassquiz.recyclerview;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,8 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.StartTestActivity;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
@@ -25,17 +30,24 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<TeacherUpcomingTestListAdapter.TeacherUpcomingTestViewHolder> {
 
     private ArrayList<Test> testArrayList = new ArrayList<>();
     private Context mContext;
     private LayoutInflater inflater;
+    private FirebaseFirestore firestore;
+
+    private static OnTestVisibilityChangeListener onTestVisibilityChangeListener;
 
     public TeacherUpcomingTestListAdapter(Context context) {
         mContext = context;
         inflater = LayoutInflater.from(mContext);
+        firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
     }
 
     @NonNull
@@ -53,22 +65,35 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         Button editTestButton = holder.getEditTestButton();
         Button startTestButton = holder.getStartTestButton();
         TextView testAddDateTextView = holder.getTestAddTimeTextView();
+        Button testVisibilityToggleButton = holder.getTestVisibilityToggleButton();
 
-        String testName = testArrayList.get(position).getTestName();
-        String testDesc = testArrayList.get(position).getTestDesc();
+        ProgressDialog visibilityUpdateDialog = new ProgressDialog(mContext);
+        visibilityUpdateDialog.setTitle("Updating visibility");
+
+        Test test = testArrayList.get(position);
+
+        if(!test.getVisibility()) {
+            startTestButton.setEnabled(false);
+        } else {
+            testVisibilityToggleButton.setText("Make test private");
+            startTestButton.setEnabled(true);
+        }
+
+        String testName = test.getTestName();
+        String testDesc = test.getTestDesc();
 
         testNameTextView.setText(testName);
         testDesctextView.setText(testDesc);
         editTestButton.setOnClickListener(v -> {
             Intent editTest = new Intent(mContext, QuestionListActivity.class);
-            editTest.putExtra("test", testArrayList.get(position));
+            editTest.putExtra("test", test);
             editTest.putExtra("started", false);
-            StaticValues.setCurrentTest(testArrayList.get(position));
+            StaticValues.setCurrentTest(test);
             mContext.startActivity(editTest);
         });
         startTestButton.setOnClickListener(v -> {
             Intent startTest = new Intent(mContext, StartTestActivity.class);
-            startTest.putExtra("test", testArrayList.get(position));
+            startTest.putExtra("test", test);
             startTest.putExtra("generated", false);
             new AlertDialog.Builder(mContext)
                     .setCancelable(false)
@@ -82,7 +107,29 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
                     })
                     .show();
         });
-        String timestamp = testArrayList.get(position).getCreatedAt();
+        testVisibilityToggleButton.setOnClickListener(v -> {
+            Map<String, Object> visibility = new HashMap<>();
+            if(test.getVisibility()) {
+                visibility.put("visible", false);
+                visibilityUpdateDialog.setMessage("Please wait while visibility is set to private...");
+            } else {
+                visibility.put("visible", true);
+                visibilityUpdateDialog.setMessage("Please wait while visibility is set to public...");
+            }
+            visibilityUpdateDialog.show();
+            firestore.document("tests/" + test.getTestId())
+                    .update(visibility)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            Toast.makeText(mContext, "Updated successfully!", Toast.LENGTH_SHORT).show();
+                            onTestVisibilityChangeListener.onTestVisibilityChanged();
+                        } else {
+                            Toast.makeText(mContext, "Error in updating visibility.", Toast.LENGTH_SHORT).show();
+                        }
+                        visibilityUpdateDialog.dismiss();
+                    });
+        });
+        String timestamp = test.getCreatedAt();
         DateTime dt = new DateTime(timestamp);
         DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
         String time = format.print(dt);
@@ -104,6 +151,14 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         return testArrayList.size();
     }
 
+    public interface OnTestVisibilityChangeListener {
+        void onTestVisibilityChanged();
+    }
+
+    public void setOnTestVisibilityChangedListener(OnTestVisibilityChangeListener listener) {
+        onTestVisibilityChangeListener = listener;
+    }
+
     public class TeacherUpcomingTestViewHolder extends RecyclerView.ViewHolder {
 
         private TextView testNameTextView;
@@ -111,6 +166,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         private Button editTestButton;
         private Button startTestButton;
         private TextView testAddTimeTextView;
+        private Button testVisibilityToggleButton;
 
         public TeacherUpcomingTestViewHolder(View itemView) {
             super(itemView);
@@ -119,6 +175,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
             editTestButton = itemView.findViewById(R.id.testEditButton);
             startTestButton = itemView.findViewById(R.id.testStartButton);
             testAddTimeTextView = itemView.findViewById(R.id.testAddDateTextView);
+            testVisibilityToggleButton = itemView.findViewById(R.id.testVisibilityToggleButton);
         }
 
         public TextView getTestNameTextView() {
@@ -141,5 +198,8 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
             return testAddTimeTextView;
         }
 
+        public Button getTestVisibilityToggleButton() {
+            return testVisibilityToggleButton;
+        }
     }
 }
