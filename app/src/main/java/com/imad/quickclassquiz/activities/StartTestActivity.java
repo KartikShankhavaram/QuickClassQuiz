@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.RandomCodeGenerator;
 import com.imad.quickclassquiz.utils.TimestampUtils;
 
@@ -94,23 +95,34 @@ public class StartTestActivity extends AppCompatActivity {
             DateTimeFormatter format = DateTimeFormat.forPattern("'Started on 'MMM d' at 'h:mm a");
             time = format.print(dt);
 
-            firestore.document(url)
-                    .set(test)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(this, "Codes generated successfully!", Toast.LENGTH_SHORT).show();
-                            accessCodeTextView.setText(accessCode);
-                            masterCodeTextView.setText(masterCode);
-                            startedAtTextView.setText(time);
-                            progressDialog.dismiss();
-                        } else {
-                            Toast.makeText(this, "Error in generating codes.", Toast.LENGTH_SHORT).show();
-                            accessCodeTextView.setText("Error!");
-                            masterCodeTextView.setText("Error!");
-                            startedAtTextView.setText("Could not start test");
-                            progressDialog.dismiss();
-                        }
-                    });
+            new NetworkUtils(internet -> {
+                if(internet) {
+                    firestore.document(url)
+                            .set(test)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(this, "Codes generated successfully!", Toast.LENGTH_SHORT).show();
+                                    accessCodeTextView.setText(accessCode);
+                                    masterCodeTextView.setText(masterCode);
+                                    startedAtTextView.setText(time);
+                                    progressDialog.dismiss();
+                                } else {
+                                    Toast.makeText(this, "Error in generating codes.", Toast.LENGTH_SHORT).show();
+                                    accessCodeTextView.setText("Error!");
+                                    masterCodeTextView.setText("Error!");
+                                    startedAtTextView.setText("Could not start test");
+                                    progressDialog.dismiss();
+                                }
+                            });
+                } else {
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                    accessCodeTextView.setText("Error!");
+                    masterCodeTextView.setText("Error!");
+                    startedAtTextView.setText("Could not start test");
+                    progressDialog.dismiss();
+                }
+            });
+
         }
     }
 }

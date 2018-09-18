@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 import com.imad.quickclassquiz.utils.TimestampUtils;
 
@@ -98,29 +99,36 @@ public class AddTestActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(testName))
                 testNameInputLayout.setError("This field is mandatory.");
             else {
-                String timeStamp = TimestampUtils.getISO8601StringForCurrentDate();
-                String testId = UUID.randomUUID().toString();
-                Test test = new Test(testId, testName, testDesc, timeStamp);
-                progressDialog.setMessage("Please wait while we create your test...");
-                progressDialog.show();
-                KeyboardUtils.hideKeyboard(AddTestActivity.this);
-                testsCollection.document(testId).set(test).addOnCompleteListener(ref -> {
-                    if (ref.isSuccessful()) {
-                        Log.e("Test added", String.format("New Test with name -> %s and ref -> %s", testName, testId));
-                        Toast.makeText(this, "Test created successfully!", Toast.LENGTH_SHORT).show();
-                        Intent toQuestionList = new Intent(AddTestActivity.this, QuestionListActivity.class);
-                        toQuestionList.putExtra("test", test);
-                        toQuestionList.putExtra("started", false);
-                        StaticValues.setCurrentTest(test);
-                        progressDialog.dismiss();
-                        startActivity(toQuestionList);
-                        finish();
+                new NetworkUtils(internet -> {
+                    if(internet) {
+                        String timeStamp = TimestampUtils.getISO8601StringForCurrentDate();
+                        String testId = UUID.randomUUID().toString();
+                        Test test = new Test(testId, testName, testDesc, timeStamp);
+                        progressDialog.setMessage("Please wait while we create your test...");
+                        progressDialog.show();
+                        KeyboardUtils.hideKeyboard(AddTestActivity.this);
+                        testsCollection.document(testId).set(test).addOnCompleteListener(ref -> {
+                            if (ref.isSuccessful()) {
+                                Log.e("Test added", String.format("New Test with name -> %s and ref -> %s", testName, testId));
+                                Toast.makeText(this, "Test created successfully!", Toast.LENGTH_SHORT).show();
+                                Intent toQuestionList = new Intent(AddTestActivity.this, QuestionListActivity.class);
+                                toQuestionList.putExtra("test", test);
+                                toQuestionList.putExtra("started", false);
+                                StaticValues.setCurrentTest(test);
+                                progressDialog.dismiss();
+                                startActivity(toQuestionList);
+                                finish();
+                            } else {
+                                Log.e("Test add failed", "FAILED with error -> " + ref.getException().getMessage());
+                                Toast.makeText(this, "Test creation failed. Please try again.", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            }
+                        });
                     } else {
-                        Log.e("Test add failed", "FAILED with error -> " + ref.getException().getMessage());
-                        Toast.makeText(this, "Test creation failed. Please try again.", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
+                        Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
         });
     }

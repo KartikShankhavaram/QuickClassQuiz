@@ -25,6 +25,7 @@ import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.recyclerview.QuestionListAdapter;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class QuestionListActivity extends AppCompatActivity {
             if(intent.getBooleanExtra("started", true)) {
                 addQuestionButton.hide();
                 adapter = new QuestionListAdapter(this, false);
+                noQuestionsTextView.setText("This test does not contain any questions.");
             } else {
                 adapter = new QuestionListAdapter(this, true);
                 addQuestionButton.show();
@@ -89,7 +91,17 @@ public class QuestionListActivity extends AppCompatActivity {
         noQuestionsTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
-        refreshLayout.setOnRefreshListener(() -> fetchQuestions());
+        refreshLayout.setOnRefreshListener(() -> {
+            new NetworkUtils(internet -> {
+                if(internet) {
+                    fetchQuestions();
+                } else {
+                    refreshLayout.setRefreshing(false);
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        });
 
         addQuestionButton.setOnClickListener(v -> {
             Intent addQuestion = new Intent(QuestionListActivity.this, AddQuestionActivity.class);
@@ -102,7 +114,13 @@ public class QuestionListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        fetchQuestions();
+        new NetworkUtils(internet -> {
+            if(internet) {
+                fetchQuestions();
+            } else {
+                Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -170,29 +188,36 @@ public class QuestionListActivity extends AppCompatActivity {
                     if (currentQuestionList.size() != 0)
                         Toast.makeText(this, "You must first delete all the questions before deleting a test.", Toast.LENGTH_SHORT).show();
                     else {
-                        String testUrl = String.format("tests/%s", test.getTestId());
-                        new AlertDialog.Builder(this)
-                                .setCancelable(false)
-                                .setTitle("Delete test")
-                                .setMessage("Are you sure you want to delete this test?")
-                                .setPositiveButton("Yes", (dialog, which) -> {
-                                    progressDialog.show();
-                                    firestore.document(testUrl).delete().addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(this, "Deleted successfully!", Toast.LENGTH_SHORT).show();
-                                            progressDialog.dismiss();
-                                            startActivity(new Intent(this, TestListActivity.class));
-                                            finish();
-                                        } else {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(this, "Failed to delete.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                })
-                                .setNegativeButton("Cancel", (dialog, which) -> {
+                        new NetworkUtils(internet -> {
+                            if(internet) {
+                                String testUrl = String.format("tests/%s", test.getTestId());
+                                new AlertDialog.Builder(this)
+                                        .setCancelable(false)
+                                        .setTitle("Delete test")
+                                        .setMessage("Are you sure you want to delete this test?")
+                                        .setPositiveButton("Yes", (dialog, which) -> {
+                                            progressDialog.show();
+                                            firestore.document(testUrl).delete().addOnCompleteListener(task -> {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(this, "Deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
+                                                    startActivity(new Intent(this, TestListActivity.class));
+                                                    finish();
+                                                } else {
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(this, "Failed to delete.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        })
+                                        .setNegativeButton("Cancel", (dialog, which) -> {
 
-                                })
-                                .show();
+                                        })
+                                        .show();
+                            } else {
+                                Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                     }
                 }
                 return true;

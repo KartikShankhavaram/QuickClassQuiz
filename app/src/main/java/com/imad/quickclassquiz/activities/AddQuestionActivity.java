@@ -24,6 +24,7 @@ import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import java.util.UUID;
 
@@ -110,7 +111,15 @@ public class AddQuestionActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
 
-        saveQuestion.setOnClickListener(v -> saveToDatabase());
+        saveQuestion.setOnClickListener(v -> {
+            new NetworkUtils(internet -> {
+                if(internet) {
+                    saveToDatabase();
+                } else {
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     private void saveToDatabase() {

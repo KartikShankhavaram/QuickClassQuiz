@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.EditQuestionActivity;
 import com.imad.quickclassquiz.dataModel.Question;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,27 +75,33 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             progressDialog.setMessage("Please wait while we delete this question...");
 
             holder.deleteButton.setOnClickListener((View v) -> {
-                String url = String.format("tests/%s/questions/%s", obj.getTestId(), obj.getQuestionId());
-                new AlertDialog.Builder(mContext)
-                        .setCancelable(false)
-                        .setTitle("Delete question")
-                        .setMessage("Are you sure you want to delete this question?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            progressDialog.show();
-                            firestore.document(url).delete().addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    this.list.remove(position);
-                                    notifyItemRemoved(position);
-                                } else {
-                                    Toast.makeText(mContext, "Couldn't delete question. Try again.", Toast.LENGTH_SHORT).show();
-                                }
-                                progressDialog.dismiss();
-                            });
-                        })
-                        .setNegativeButton("Cancel", (dialog, which) -> {
+                new NetworkUtils(internet -> {
+                    if(internet) {
+                        String url = String.format("tests/%s/questions/%s", obj.getTestId(), obj.getQuestionId());
+                        new AlertDialog.Builder(mContext)
+                                .setCancelable(false)
+                                .setTitle("Delete question")
+                                .setMessage("Are you sure you want to delete this question?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    progressDialog.show();
+                                    firestore.document(url).delete().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            this.list.remove(position);
+                                            notifyItemRemoved(position);
+                                        } else {
+                                            Toast.makeText(mContext, "Couldn't delete question. Try again.", Toast.LENGTH_SHORT).show();
+                                        }
+                                        progressDialog.dismiss();
+                                    });
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> {
 
-                        })
-                        .show();
+                                })
+                                .show();
+                    } else {
+                        Toast.makeText(mContext, "No internet available.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
 
             holder.editButton.setOnClickListener(v -> {

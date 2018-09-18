@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import butterknife.BindView;
@@ -113,30 +114,37 @@ public class UpdateTestActivity extends AppCompatActivity {
         });
 
         updateTestInfoButton.setOnClickListener(v -> {
-            String testName = testNameEditText.getText().toString().trim();
-            String testDesc = testDescEditText.getText().toString().trim();
-            if (TextUtils.isEmpty(testName))
-                testNameEditText.setError("This field is mandatory.");
-            else {
-                progressDialog.setMessage("Please wait while we update the details...");
-                progressDialog.show();
-                test.setTestName(testName);
-                test.setTestDesc(testDesc);
-                KeyboardUtils.hideKeyboard(UpdateTestActivity.this);
-                testsCollection.document(test.getTestId()).set(test).addOnCompleteListener(ref -> {
-                    if (ref.isSuccessful()) {
-                        Log.e("Test updated", String.format("Test with name -> %s and ref -> %s updated!", testName, test.getTestId()));
-                        Toast.makeText(this, "Test updated successfully!", Toast.LENGTH_SHORT).show();
-                        StaticValues.setCurrentTest(test);
-                        progressDialog.dismiss();
-                        finish();
-                    } else {
-                        Log.e("Test update failed", "FAILED with error -> " + ref.getException().getMessage());
-                        Toast.makeText(this, "Test updation failed. Please try again.", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
+            new NetworkUtils(internet -> {
+                if(internet) {
+                    String testName = testNameEditText.getText().toString().trim();
+                    String testDesc = testDescEditText.getText().toString().trim();
+                    if (TextUtils.isEmpty(testName))
+                        testNameEditText.setError("This field is mandatory.");
+                    else {
+                        progressDialog.setMessage("Please wait while we update the details...");
+                        progressDialog.show();
+                        test.setTestName(testName);
+                        test.setTestDesc(testDesc);
+                        KeyboardUtils.hideKeyboard(UpdateTestActivity.this);
+                        testsCollection.document(test.getTestId()).set(test).addOnCompleteListener(ref -> {
+                            if (ref.isSuccessful()) {
+                                Log.e("Test updated", String.format("Test with name -> %s and ref -> %s updated!", testName, test.getTestId()));
+                                Toast.makeText(this, "Test updated successfully!", Toast.LENGTH_SHORT).show();
+                                StaticValues.setCurrentTest(test);
+                                progressDialog.dismiss();
+                                finish();
+                            } else {
+                                Log.e("Test update failed", "FAILED with error -> " + ref.getException().getMessage());
+                                Toast.makeText(this, "Test updation failed. Please try again.", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            }
+                        });
                     }
-                });
-            }
+                } else {
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         });
     }
 }

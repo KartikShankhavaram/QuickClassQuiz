@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,7 +117,15 @@ public class EditQuestionActivity extends AppCompatActivity {
         }
         progressDialog = new ProgressDialog(this);
 
-        saveQuestion.setOnClickListener(v -> updateQuestion());
+        saveQuestion.setOnClickListener(v -> {
+            new NetworkUtils(internet -> {
+                if(internet) {
+                    updateQuestion();
+                } else {
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     private void updateQuestion() {

@@ -72,38 +72,6 @@ public class MainActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
         }
 
-        DocumentReference upcoming = firestore.document("tests/upcoming-tests");
-        upcoming.collection("list").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                    String id;
-                    if ((id = snapshot.getId()) != null) {
-                        Test test = snapshot.toObject(Test.class);
-                        moveFirestoreDocument(firestore.document("tests/upcoming-tests/list/" + snapshot.getId()), firestore.document("tests/" + snapshot.getId()));
-                        Log.e(getPackageName(), snapshot.getId() + " -> list");
-                    }
-                }
-            } else {
-                Log.e(getPackageName(), "Could not get.");
-            }
-        });
-//
-        DocumentReference started = firestore.document("tests/started-tests");
-        started.collection("list").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                    String id;
-                    if ((id = snapshot.getId()) != null) {
-                        Test test = snapshot.toObject(Test.class);
-                        moveFirestoreDocument(firestore.document("tests/started-tests/list/" + snapshot.getId()), firestore.document("tests/" + snapshot.getId()));
-                        Log.e(getPackageName(), snapshot.getId() + " -> list");
-                    }
-                }
-            } else {
-                Log.e(getPackageName(), "Could not get.");
-            }
-        });
-
 //        CollectionReference testsCollection = firestore.collection("tests");
 //
 //        String uuid = UUID.randomUUID().toString();

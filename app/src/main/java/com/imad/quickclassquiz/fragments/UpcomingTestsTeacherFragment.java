@@ -12,15 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Test;
-import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
 import com.imad.quickclassquiz.recyclerview.TeacherUpcomingTestListAdapter;
-import com.imad.quickclassquiz.utils.FilterTests;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class UpcomingTestsTeacherFragment extends Fragment {
     @BindView(R.id.upcomingTestListRecyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.noUpcomingTestsTextView)
-    TextView noStartedTestsTextView;
+    TextView noUpcomingTestsTextView;
 
     TeacherUpcomingTestListAdapter adapter;
     FirebaseFirestore firestore;
@@ -69,8 +69,15 @@ public class UpcomingTestsTeacherFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_upcoming_tests_teacher, container, false);
         ButterKnife.bind(this, rootView);
         refreshLayout.setOnRefreshListener(() -> {
-            StaticValues.setShouldRefresh(true);
-            fetchTests();
+            new NetworkUtils(internet -> {
+                if (internet) {
+                    StaticValues.setShouldRefresh(true);
+                    fetchTests();
+                } else {
+                    Toast.makeText(getContext(), "No internet available.", Toast.LENGTH_SHORT).show();
+                    refreshLayout.setRefreshing(false);
+                }
+            });
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new LandingAnimator());
@@ -79,13 +86,24 @@ public class UpcomingTestsTeacherFragment extends Fragment {
             fetchTests();
         });
         recyclerView.setAdapter(new AlphaInAnimationAdapter(adapter));
+        noUpcomingTestsTextView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        fetchTests();
+
+        new NetworkUtils(internet -> {
+            if (internet) {
+                fetchTests();
+            } else {
+                Toast.makeText(getContext(), "No internet available.", Toast.LENGTH_SHORT).show();
+                refreshLayout.setRefreshing(false);
+            }
+        });
+
     }
 
     public void fetchTests() {
@@ -104,10 +122,10 @@ public class UpcomingTestsTeacherFragment extends Fragment {
                         adapter.setListContent(teacherTestList);
                         Log.e("Test list", teacherTestList.toString());
                         if (teacherTestList.size() == 0) {
-                            noStartedTestsTextView.setVisibility(View.VISIBLE);
+                            noUpcomingTestsTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
-                            noStartedTestsTextView.setVisibility(View.GONE);
+                            noUpcomingTestsTextView.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
                     }
