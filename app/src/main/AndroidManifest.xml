@@ -23,7 +23,7 @@
         <activity
             android:name=".activities.AddQuestionActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activities.TestListActivity" />
+        <activity android:name=".activities.TeacherTestListActivity" />
         <activity android:name=".activities.QuestionListActivity" />
         <activity
             android:name=".activities.AddTestActivity"

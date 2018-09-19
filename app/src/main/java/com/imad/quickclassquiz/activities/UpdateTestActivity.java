@@ -1,8 +1,6 @@
 package com.imad.quickclassquiz.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -11,9 +9,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,7 +17,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;

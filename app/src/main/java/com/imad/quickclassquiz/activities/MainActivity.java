@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -55,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.showTestsButton).setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, TestListActivity.class));
+            startActivity(new Intent(MainActivity.this, TeacherTestListActivity.class));
         });
 
         Intent intent = getIntent();

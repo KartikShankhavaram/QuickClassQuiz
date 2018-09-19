@@ -1,11 +1,10 @@
-package com.imad.quickclassquiz.viewPagerAdapters;
+package com.imad.quickclassquiz.viewpageradapters;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.SparseArray;
 
 import com.imad.quickclassquiz.fragments.StartedTestsTeacherFragment;
 import com.imad.quickclassquiz.fragments.UpcomingTestsTeacherFragment;

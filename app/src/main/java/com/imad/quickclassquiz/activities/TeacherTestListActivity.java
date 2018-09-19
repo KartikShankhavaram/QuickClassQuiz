@@ -10,18 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.fragments.StartedTestsTeacherFragment;
 import com.imad.quickclassquiz.fragments.UpcomingTestsTeacherFragment;
 import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
 import com.imad.quickclassquiz.utils.StaticValues;
-import com.imad.quickclassquiz.viewPagerAdapters.TestListPagerAdapter;
+import com.imad.quickclassquiz.viewpageradapters.TestListPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TestListActivity extends AppCompatActivity {
+public class TeacherTestListActivity extends AppCompatActivity {
 
     @BindView(R.id.testListToolbar)
     Toolbar toolbar;
@@ -38,7 +37,7 @@ public class TestListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_list);
+        setContentView(R.layout.activity_teacher_test_list);
 
         ButterKnife.bind(this);
 
@@ -87,7 +86,7 @@ public class TestListActivity extends AppCompatActivity {
         });
 
         addTestButton.setOnClickListener(v -> {
-            startActivity(new Intent(TestListActivity.this, AddTestActivity.class));
+            startActivity(new Intent(TeacherTestListActivity.this, AddTestActivity.class));
         });
     }
 

@@ -1,4 +1,4 @@
-package com.imad.quickclassquiz.customComponents;
+package com.imad.quickclassquiz.customcomponents;
 
 import android.content.Context;
 import android.os.Build;

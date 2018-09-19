@@ -3,7 +3,7 @@ package com.imad.quickclassquiz.recyclerview;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 
 import java.util.List;
 

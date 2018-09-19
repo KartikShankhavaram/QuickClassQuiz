@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,7 +12,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.RandomCodeGenerator;
 import com.imad.quickclassquiz.utils.TimestampUtils;

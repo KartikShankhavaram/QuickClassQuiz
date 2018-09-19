@@ -22,8 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Question;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Question;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.recyclerview.QuestionListAdapter;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
@@ -201,7 +201,7 @@ public class QuestionListActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     Toast.makeText(this, "Deleted successfully!", Toast.LENGTH_SHORT).show();
                                                     progressDialog.dismiss();
-                                                    startActivity(new Intent(this, TestListActivity.class));
+                                                    startActivity(new Intent(this, TeacherTestListActivity.class));
                                                     finish();
                                                 } else {
                                                     progressDialog.dismiss();

@@ -1,21 +1,10 @@
 package com.imad.quickclassquiz.activities;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Question;
-import com.imad.quickclassquiz.dataModel.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class TestActivity extends AppCompatActivity {
 

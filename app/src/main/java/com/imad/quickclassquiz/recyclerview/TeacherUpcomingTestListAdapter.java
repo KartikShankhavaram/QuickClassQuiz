@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
 import com.imad.quickclassquiz.activities.StartTestActivity;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
@@ -185,7 +184,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
 
         public TeacherUpcomingTestViewHolder(View itemView) {
             super(itemView);
-            testNameTextView = itemView.findViewById(R.id.testNameEditText);
+            testNameTextView = itemView.findViewById(R.id.testNameTextView);
             testDescTextView = itemView.findViewById(R.id.testDescTextView);
             editTestButton = itemView.findViewById(R.id.testEditButton);
             startTestButton = itemView.findViewById(R.id.testStartButton);

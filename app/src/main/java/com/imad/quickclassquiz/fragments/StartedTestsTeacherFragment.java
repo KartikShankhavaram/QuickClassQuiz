@@ -18,9 +18,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.recyclerview.TeacherStartedTestListAdapter;
-import com.imad.quickclassquiz.utils.FilterTests;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 

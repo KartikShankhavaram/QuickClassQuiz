@@ -20,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.EditQuestionActivity;
-import com.imad.quickclassquiz.dataModel.Question;
+import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import java.util.ArrayList;

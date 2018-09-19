@@ -1,8 +1,6 @@
 package com.imad.quickclassquiz.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -22,8 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.WriteBatch;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Question;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Question;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 

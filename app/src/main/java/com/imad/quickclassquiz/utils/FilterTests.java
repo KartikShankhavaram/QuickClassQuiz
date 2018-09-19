@@ -1,6 +1,6 @@
 package com.imad.quickclassquiz.utils;
 
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 
 import java.util.ArrayList;
 

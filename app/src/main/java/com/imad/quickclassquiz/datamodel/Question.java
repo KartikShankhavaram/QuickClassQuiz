@@ -1,4 +1,4 @@
-package com.imad.quickclassquiz.dataModel;
+package com.imad.quickclassquiz.datamodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

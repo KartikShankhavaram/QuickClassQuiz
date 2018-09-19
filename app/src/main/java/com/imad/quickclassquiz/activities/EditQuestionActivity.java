@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Question;
+import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.utils.KeyboardUtils;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.StartTestActivity;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
-import com.imad.quickclassquiz.dataModel.Test;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -105,7 +105,7 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
 
         public TeacherStartedTestViewHolder(View itemView) {
             super(itemView);
-            testNameTextView = itemView.findViewById(R.id.testNameEditText);
+            testNameTextView = itemView.findViewById(R.id.testNameTextView);
             testDescTextView = itemView.findViewById(R.id.testDescTextView);
             viewQuestionsButton = itemView.findViewById(R.id.viewQuestionsButton);
             viewCodesButton = itemView.findViewById(R.id.viewCodesButton);
