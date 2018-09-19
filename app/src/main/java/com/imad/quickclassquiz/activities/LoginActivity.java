@@ -60,6 +60,9 @@ public class LoginActivity extends AppCompatActivity {
 
         if (account != null) {
             progress.show();
+            String email = account.getEmail();
+            String[] parts = email.split("@");
+            String username = parts[0];
             CollectionReference teachers = firestore.collection("teachers");
             teachers.get().addOnCompleteListener(task -> {
                 boolean found = false;
@@ -72,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                             found = true;
                             startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                     .putExtra("teacher", true)
+                                    .putExtra("rollNumber", "")
                                     .putExtra("from", "login"));
                             finish();
                         }
@@ -80,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                         progress.dismiss();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                 .putExtra("teacher", false)
+                                .putExtra("rollNumber", username)
                                 .putExtra("from", "login"));
                         finish();
                     }
@@ -126,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.e(TAG, "email -> " + email);
             Log.e(TAG, "name -> " + account.getDisplayName());
             Log.e(TAG, "Roll number -> " + username);
-            Log.e(TAG, "username matched -> " + username.matches("[1|2]\\du[c|e|m][s|c|m|e]\\d\\d\\d"));
+            Log.e(TAG, "email matched -> ");
             CollectionReference teachers = firestore.collection("teachers");
             teachers.get().addOnCompleteListener(task -> {
                 boolean found = false;
@@ -139,16 +144,23 @@ public class LoginActivity extends AppCompatActivity {
                             found = true;
                             startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                     .putExtra("teacher", true)
+                                    .putExtra("rollNumber", "")
                                     .putExtra("from", "login"));
                             finish();
                         }
                     }
                     if(!found) {
                         progress.dismiss();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class)
-                                .putExtra("teacher", false)
-                                .putExtra("from", "login"));
-                        finish();
+                        if(!email.matches("[1|2]\\du[c|e|m][s|c|m|e]\\d\\d\\d.lnmiit.ac.in")) {
+                            Toast.makeText(this, "Please enter your email in the format \"16ucs088@lnmiit.ac.in\".", Toast.LENGTH_SHORT).show();
+                            mGoogleSignInClient.signOut();
+                        } else {
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class)
+                                    .putExtra("teacher", false)
+                                    .putExtra("rollNumber", username)
+                                    .putExtra("from", "login"));
+                            finish();
+                        }
                     }
                 }
             });

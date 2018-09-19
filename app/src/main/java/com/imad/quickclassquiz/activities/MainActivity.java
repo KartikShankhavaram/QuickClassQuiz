@@ -3,6 +3,7 @@ package com.imad.quickclassquiz.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,9 +16,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.dataModel.Test;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,14 +61,20 @@ public class MainActivity extends AppCompatActivity {
 
         if (account != null) {
             String role = "";
+            String rollNo = "";
             if (intent != null && intent.getStringExtra("from").equals("login")) {
+                rollNo = intent.getStringExtra("rollNumber");
                 Log.e("intent", intent.getBooleanExtra("teacher", false) + "");
                 if (intent.getBooleanExtra("teacher", false))
                     role = "teacher";
                 else
                     role = "student";
             }
-            ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
+            if (TextUtils.isEmpty(rollNo))
+                ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
+            else
+                ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!\nYour roll number is %s!", account.getDisplayName(), role, rollNo));
+
         }
 
 //        CollectionReference testsCollection = firestore.collection("tests");
