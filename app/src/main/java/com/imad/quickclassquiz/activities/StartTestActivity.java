@@ -4,9 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
@@ -39,6 +42,9 @@ public class StartTestActivity extends AppCompatActivity {
     @BindView(R.id.startedAtTextView)
     TextView startedAtTextView;
 
+    @BindView(R.id.deleteCodesButton)
+    Button deleteCodesButton;
+
     FirebaseFirestore firestore;
     Test test;
     String url;
@@ -66,6 +72,34 @@ public class StartTestActivity extends AppCompatActivity {
             url = String.format("tests/%s", test.getTestId());
             generated = intent.getBooleanExtra("generated", false);
         }
+
+        deleteCodesButton.setOnClickListener(v -> {
+            new NetworkUtils(internet -> {
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setTitle("Delete codes");
+                dialog.setMessage("Please wait while the codes are deleted...");
+                if (internet) {
+                    dialog.show();
+                    DocumentReference testRef = firestore.document("tests/" + test.getTestId());
+                    firestore.runTransaction(transaction -> {
+                        transaction.update(testRef, "accessCode", null);
+                        transaction.update(testRef, "masterCode", null);
+                        transaction.update(testRef, "startedAt", null);
+                        return null;
+                    }).addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            this.onBackPressed();
+                            Toast.makeText(this, "Codes successfully deleted.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Could not delete codes.", Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.dismiss();
+                    });
+                } else {
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
         if (generated) {
             accessCodeTextView.setText(test.getAccessCode());
@@ -96,7 +130,7 @@ public class StartTestActivity extends AppCompatActivity {
             time = format.print(dt);
 
             new NetworkUtils(internet -> {
-                if(internet) {
+                if (internet) {
                     firestore.document(url)
                             .set(test)
                             .addOnCompleteListener(task -> {
