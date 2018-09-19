@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,13 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
 
         testNameTextView.setText(testName);
         testDesctextView.setText(testDesc);
+
+        String timestamp = test.getCreatedAt();
+        DateTime dt = new DateTime(timestamp);
+        DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
+        String time = format.print(dt);
+        testAddDateTextView.setText(time);
+
         editTestButton.setOnClickListener(v -> {
             Intent editTest = new Intent(mContext, QuestionListActivity.class);
             editTest.putExtra("test", test);
@@ -137,11 +145,6 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
                                 }
                                 visibilityUpdateDialog.dismiss();
                             });
-                    String timestamp = test.getCreatedAt();
-                    DateTime dt = new DateTime(timestamp);
-                    DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
-                    String time = format.print(dt);
-                    testAddDateTextView.setText(time);
                 } else {
                     Toast.makeText(mContext, "No internet available.", Toast.LENGTH_SHORT).show();
                 }

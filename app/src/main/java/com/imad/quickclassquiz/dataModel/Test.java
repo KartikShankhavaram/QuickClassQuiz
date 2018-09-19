@@ -17,6 +17,7 @@ public class Test implements Parcelable {
     public String masterCode;
     public String startedAt;
     public boolean visible;
+    public int questionCount;
 
     public Test(String testId, String testName, String testDesc, String createdAt) {
         this.testId = testId;
@@ -24,11 +25,54 @@ public class Test implements Parcelable {
         this.testDesc = testDesc;
         this.createdAt = createdAt;
         this.visible = false;
+        this.questionCount = 0;
     }
 
     public Test() {
 
     }
+
+    protected Test(Parcel in) {
+        testId = in.readString();
+        testName = in.readString();
+        testDesc = in.readString();
+        createdAt = in.readString();
+        accessCode = in.readString();
+        masterCode = in.readString();
+        startedAt = in.readString();
+        visible = in.readByte() != 0;
+        questionCount = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(testId);
+        dest.writeString(testName);
+        dest.writeString(testDesc);
+        dest.writeString(createdAt);
+        dest.writeString(accessCode);
+        dest.writeString(masterCode);
+        dest.writeString(startedAt);
+        dest.writeByte((byte) (visible ? 1 : 0));
+        dest.writeInt(questionCount);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Test> CREATOR = new Creator<Test>() {
+        @Override
+        public Test createFromParcel(Parcel in) {
+            return new Test(in);
+        }
+
+        @Override
+        public Test[] newArray(int size) {
+            return new Test[size];
+        }
+    };
 
     public String getTestId() {
         return testId;
@@ -94,6 +138,14 @@ public class Test implements Parcelable {
         this.visible = visible;
     }
 
+    public int getQuestionCount() {
+        return questionCount;
+    }
+
+    public void setQuestionCount(int questionCount) {
+        this.questionCount = questionCount;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(testId);
@@ -105,6 +157,7 @@ public class Test implements Parcelable {
         if (o == null || getClass() != o.getClass()) return false;
         Test test = (Test) o;
         return visible == test.visible &&
+                questionCount == test.questionCount &&
                 Objects.equals(testId, test.testId) &&
                 Objects.equals(testName, test.testName) &&
                 Objects.equals(testDesc, test.testDesc) &&
@@ -125,47 +178,8 @@ public class Test implements Parcelable {
                 ", masterCode='" + masterCode + '\'' +
                 ", startedAt='" + startedAt + '\'' +
                 ", visible=" + visible +
+                ", questionCount=" + questionCount +
                 '}';
     }
 
-
-    @Override
-    public int describeContents() {
-        return hashCode();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.testId);
-        dest.writeString(this.testName);
-        dest.writeString(this.testDesc);
-        dest.writeString(this.createdAt);
-        dest.writeString(this.accessCode);
-        dest.writeString(this.masterCode);
-        dest.writeString(this.startedAt);
-        dest.writeByte(this.visible ? (byte) 1 : (byte) 0);
-    }
-
-    protected Test(Parcel in) {
-        this.testId = in.readString();
-        this.testName = in.readString();
-        this.testDesc = in.readString();
-        this.createdAt = in.readString();
-        this.accessCode = in.readString();
-        this.masterCode = in.readString();
-        this.startedAt = in.readString();
-        this.visible = in.readByte() != 0;
-    }
-
-    public static final Creator<Test> CREATOR = new Creator<Test>() {
-        @Override
-        public Test createFromParcel(Parcel source) {
-            return new Test(source);
-        }
-
-        @Override
-        public Test[] newArray(int size) {
-            return new Test[size];
-        }
-    };
 }

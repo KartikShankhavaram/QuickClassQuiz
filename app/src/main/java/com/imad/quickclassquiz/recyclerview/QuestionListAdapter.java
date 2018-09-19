@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
@@ -69,22 +70,30 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         holder.option3.setText(String.format("C. %s", obj.getOption3()));
         holder.option4.setText(String.format("D. %s", obj.getOption4()));
 
-        if(editable) {
+        if (editable) {
             ProgressDialog progressDialog = new ProgressDialog(mContext);
             progressDialog.setTitle("Deleting question");
             progressDialog.setMessage("Please wait while we delete this question...");
 
             holder.deleteButton.setOnClickListener((View v) -> {
                 new NetworkUtils(internet -> {
-                    if(internet) {
+                    if (internet) {
                         String url = String.format("tests/%s/questions/%s", obj.getTestId(), obj.getQuestionId());
+                        String testUrl = String.format("tests/%s", obj.getTestId());
                         new AlertDialog.Builder(mContext)
                                 .setCancelable(false)
                                 .setTitle("Delete question")
                                 .setMessage("Are you sure you want to delete this question?")
                                 .setPositiveButton("Yes", (dialog, which) -> {
                                     progressDialog.show();
-                                    firestore.document(url).delete().addOnCompleteListener(task -> {
+                                    firestore.runTransaction(transaction -> {
+                                        DocumentSnapshot test = transaction.get(firestore.document(testUrl));
+                                        int questionCount = (int) Math.round(test.getDouble("questionCount"));
+                                        transaction.delete(firestore.document(url));
+                                        transaction.update(firestore.document(testUrl), "questionCount", questionCount - 1);
+
+                                        return null;
+                                    }).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
                                             this.list.remove(position);
                                             notifyItemRemoved(position);
@@ -93,6 +102,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                                         }
                                         progressDialog.dismiss();
                                     });
+
                                 })
                                 .setNegativeButton("Cancel", (dialog, which) -> {
 
@@ -106,7 +116,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
             holder.editButton.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, EditQuestionActivity.class);
-                intent.putExtra("Question",list.get(position));
+                intent.putExtra("Question", list.get(position));
                 mContext.startActivity(intent);
             });
         } else {

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.WriteBatch;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.dataModel.Question;
 import com.imad.quickclassquiz.dataModel.Test;
@@ -82,7 +83,9 @@ public class AddQuestionActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     FirebaseFirestore firestore;
     String url = "";
+    String testUrl= "";
     String testId = "";
+    Test test;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,9 +106,10 @@ public class AddQuestionActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        Test test;
+
         if (intent != null && (test = intent.getParcelableExtra("test")) != null) {
             url = String.format("tests/%s/questions", test.getTestId());
+            testUrl = String.format("tests/%s", test.getTestId());
             testId = test.getTestId();
         }
 
@@ -177,19 +181,25 @@ public class AddQuestionActivity extends AppCompatActivity {
         progressDialog.show();
 
         Question questionObj = new Question(testId, UUID.randomUUID().toString(), question, option1, option2, option3, option4, correctAnswer);
-        firestore.collection(url)
-                .document(questionObj.getQuestionId())
-                .set(questionObj)
-                .addOnCompleteListener(res -> {
-                    if (res.isSuccessful()) {
-                        Toast.makeText(this, "Question added successfully to the test.", Toast.LENGTH_SHORT).show();
-                        clearInput();
-                    } else {
-                        Toast.makeText(this, "Could not add the question to the test. Please try again.", Toast.LENGTH_SHORT).show();
-                    }
-                    progressDialog.dismiss();
-                });
+
+        WriteBatch batch = firestore.batch();
+
+        batch.set(firestore.collection(url).document(questionObj.getQuestionId()), questionObj);
+        batch.update(firestore.document(testUrl), "questionCount", test.getQuestionCount() + 1);
+
+        batch.commit().addOnCompleteListener(task -> {
+           if(task.isSuccessful()) {
+               Toast.makeText(this, "Question added successfully.", Toast.LENGTH_SHORT).show();
+               clearInput();
+               test.setQuestionCount(test.getQuestionCount() + 1);
+           } else {
+               Toast.makeText(this, "Could not add question.", Toast.LENGTH_SHORT).show();
+           }
+           progressDialog.dismiss();
+        });
     }
+
+
 
     private void clearInput() {
         title.setText("");
