@@ -3,6 +3,7 @@ package com.imad.quickclassquiz.recyclerview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -43,7 +44,7 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
         TextView testNameTextView = holder.testNameTextView;
         TextView testDescTextView = holder.testDescTextView;
         TextView questionCountTextView = holder.questionCountTextView;
-        Button testStartButton = holder.testStartButton;
+        CardView studentTestCardView = holder.studentTestCardView;
 
         Test test = list.get(position);
         testNameTextView.setText(test.getTestName());
@@ -60,7 +61,7 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
             questionCountTextView.setText(str);
         }
 
-        testStartButton.setOnClickListener(v -> {
+        studentTestCardView.setOnClickListener(v -> {
             Toast.makeText(mContext, "Implement start test logic.", Toast.LENGTH_SHORT).show();
         });
     }
@@ -82,14 +83,14 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
     public class StudentTestListViewHolder extends RecyclerView.ViewHolder {
 
         TextView testNameTextView, testDescTextView, questionCountTextView;
-        Button testStartButton;
+        CardView studentTestCardView;
 
         public StudentTestListViewHolder(View itemView) {
             super(itemView);
             testNameTextView = itemView.findViewById(R.id.testNameTextView);
             testDescTextView = itemView.findViewById(R.id.testDescTextView);
             questionCountTextView = itemView.findViewById(R.id.questionCountTextView);
-            testStartButton = itemView.findViewById(R.id.testStartButton);
+            studentTestCardView = itemView.findViewById(R.id.studentTestCardView);
         }
     }
 }
