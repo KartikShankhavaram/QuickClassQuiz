@@ -130,11 +130,11 @@ public class Test implements Parcelable {
         this.startedAt = startedAt;
     }
 
-    public boolean getVisibility() {
+    public boolean getVisible() {
         return visible;
     }
 
-    public void setVisibility(boolean visible) {
+    public void setVisible(boolean visible) {
         this.visible = visible;
     }
 

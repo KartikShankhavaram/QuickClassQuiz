@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +119,6 @@ public class UpcomingTestsTeacherFragment extends Fragment {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
                         adapter.setListContent(teacherTestList);
-                        Log.e("Test list", teacherTestList.toString());
                         if (teacherTestList.size() == 0) {
                             noUpcomingTestsTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
@@ -128,6 +126,8 @@ public class UpcomingTestsTeacherFragment extends Fragment {
                             noUpcomingTestsTextView.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        Toast.makeText(getContext(), "Failed to fetch tests.", Toast.LENGTH_SHORT).show();
                     }
                     refreshLayout.setRefreshing(false);
                 });

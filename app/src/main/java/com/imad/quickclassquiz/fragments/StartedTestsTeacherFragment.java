@@ -138,7 +138,6 @@ public class StartedTestsTeacherFragment extends Fragment {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
                         adapter.setListContent(teacherTestList);
-                        Log.e("Test list", teacherTestList.toString());
                         if (teacherTestList.size() == 0) {
                             noStartedTestsTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);

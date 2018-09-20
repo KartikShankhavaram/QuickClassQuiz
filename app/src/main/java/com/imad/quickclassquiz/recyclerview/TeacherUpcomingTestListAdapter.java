@@ -71,7 +71,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
 
         Test test = testArrayList.get(position);
 
-        if (!test.getVisibility()) {
+        if (!test.getVisible()) {
             startTestButton.setEnabled(false);
             testVisibilityToggleButton.setText("Make test public");
         } else {
@@ -125,7 +125,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
             new NetworkUtils(internet -> {
                 if (internet) {
                     Map<String, Object> visibility = new HashMap<>();
-                    if (test.getVisibility()) {
+                    if (test.getVisible()) {
                         visibility.put("visible", false);
                         visibilityUpdateDialog.setMessage("Please wait while visibility is set to private...");
                     } else {

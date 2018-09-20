@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,11 +52,9 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        findViewById(R.id.showTestsButton).setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, TeacherTestListActivity.class));
-        });
-
         Intent intent = getIntent();
+
+        Button showTestsButton = findViewById(R.id.showTestsButton);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
@@ -63,18 +62,27 @@ public class MainActivity extends AppCompatActivity {
             String role = "";
             String rollNo = "";
             if (intent != null && intent.getStringExtra("from").equals("login")) {
+                final boolean isTeacher = intent.getBooleanExtra("teacher", false);
                 rollNo = intent.getStringExtra("rollNumber");
                 Log.e("intent", intent.getBooleanExtra("teacher", false) + "");
-                if (intent.getBooleanExtra("teacher", false))
+                if (isTeacher)
                     role = "teacher";
                 else
                     role = "student";
+                showTestsButton.setOnClickListener(v -> {
+                    if(isTeacher)
+                        startActivity(new Intent(this, TeacherTestListActivity.class));
+                    else
+                        startActivity(new Intent(this, StudentTestListActivity.class));
+
+                });
             }
             if (TextUtils.isEmpty(rollNo))
                 ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!", account.getDisplayName(), role));
             else
                 ((TextView) findViewById(R.id.nameTextView)).setText(String.format("Hello %s!\nYou're a %s!\nYour roll number is %s!", account.getDisplayName(), role, rollNo));
-
+        } else {
+            showTestsButton.setEnabled(false);
         }
 
 //        CollectionReference testsCollection = firestore.collection("tests");

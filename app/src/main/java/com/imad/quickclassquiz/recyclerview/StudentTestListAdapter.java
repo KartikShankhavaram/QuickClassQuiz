@@ -4,11 +4,14 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.datamodel.Test;
@@ -37,7 +40,29 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
 
     @Override
     public void onBindViewHolder(@NonNull StudentTestListViewHolder holder, int position) {
+        TextView testNameTextView = holder.testNameTextView;
+        TextView testDescTextView = holder.testDescTextView;
+        TextView questionCountTextView = holder.questionCountTextView;
+        Button testStartButton = holder.testStartButton;
 
+        Test test = list.get(position);
+        testNameTextView.setText(test.getTestName());
+        testDescTextView.setText(test.getTestDesc());
+
+        String questionText = test.getQuestionCount() <= 1 ? " question" : " questions";
+        String questionCount = Integer.toString(test.getQuestionCount());
+
+        if (questionCount.equals("0"))
+            questionCountTextView.setText("No questions");
+        else {
+            SpannableStringBuilder str = new SpannableStringBuilder(test.getQuestionCount() + questionText);
+            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, questionCount.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            questionCountTextView.setText(str);
+        }
+
+        testStartButton.setOnClickListener(v -> {
+            Toast.makeText(mContext, "Implement start test logic.", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
