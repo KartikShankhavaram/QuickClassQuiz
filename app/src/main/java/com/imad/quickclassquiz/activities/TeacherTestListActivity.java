@@ -32,12 +32,11 @@ public class TeacherTestListActivity extends AppCompatActivity {
     TabLayout testListTabLayout;
 
     FirebaseFirestore firestore;
-    TeacherStartedTestListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.student_question);
+        setContentView(R.layout.activity_teacher_test_list);
 
         ButterKnife.bind(this);
 
