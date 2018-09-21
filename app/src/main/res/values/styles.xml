@@ -40,4 +40,8 @@
         <!--<item name="android:textStyle">italic</item>-->
     <!--</style>-->
 
+    <style name="BlueButton" parent="AppTheme">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 </resources>

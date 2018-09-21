@@ -1,6 +1,7 @@
 package com.imad.quickclassquiz.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.CardView;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.StudentStartTestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
 
 import java.util.ArrayList;
@@ -62,7 +64,9 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
         }
 
         studentTestCardView.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Implement start test logic.", Toast.LENGTH_SHORT).show();
+            Intent toStartTest = new Intent(mContext, StudentStartTestActivity.class);
+            toStartTest.putExtra("test", test);
+            mContext.startActivity(toStartTest);
         });
     }
 

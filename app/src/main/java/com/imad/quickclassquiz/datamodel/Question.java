@@ -1,21 +1,47 @@
 package com.imad.quickclassquiz.datamodel;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
 
 import java.util.Objects;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
 @Keep
+@Entity(tableName = "questions", foreignKeys = @ForeignKey(onDelete = CASCADE, entity = Test.class, parentColumns = "test_id", childColumns = "test_id"))
 public class Question implements Parcelable {
 
-    public String testId;
+    public static final Parcelable.Creator<Question> CREATOR = new Parcelable.Creator<Question>() {
+
+        public Question createFromParcel(Parcel in) {
+            return new Question(in);
+        }
+
+        public Question[] newArray(int size) {
+            return new Question[size];
+        }
+    };
+    @PrimaryKey
+    @ColumnInfo(name = "question_id")
     public String questionId;
+    @ColumnInfo(name = "test_id")
+    public String testId;
+    @ColumnInfo(name = "question")
     public String question;
+    @ColumnInfo(name = "option_1")
     public String option1;
+    @ColumnInfo(name = "option_2")
     public String option2;
+    @ColumnInfo(name = "option_3")
     public String option3;
+    @ColumnInfo(name = "option_4")
     public String option4;
+    @ColumnInfo(name = "correct_option")
     public String correctOption;
 
     public Question(String testId, String questionId, String question, String option1, String option2, String option3, String option4, String correctOption) {
@@ -59,17 +85,6 @@ public class Question implements Parcelable {
         dest.writeString(option4);
         dest.writeString(correctOption);
     }
-
-    public static final Parcelable.Creator<Question> CREATOR = new Parcelable.Creator<Question>() {
-
-        public Question createFromParcel(Parcel in) {
-            return new Question(in);
-        }
-
-        public Question[] newArray(int size) {
-            return new Question[size];
-        }
-    };
 
     public String getTestId() {
         return testId;
@@ -153,5 +168,19 @@ public class Question implements Parcelable {
     @Override
     public int hashCode() {
         return Objects.hash(testId, questionId);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "questionId='" + questionId + '\'' +
+                ", testId='" + testId + '\'' +
+                ", question='" + question + '\'' +
+                ", option1='" + option1 + '\'' +
+                ", option2='" + option2 + '\'' +
+                ", option3='" + option3 + '\'' +
+                ", option4='" + option4 + '\'' +
+                ", correctOption='" + correctOption + '\'' +
+                '}';
     }
 }

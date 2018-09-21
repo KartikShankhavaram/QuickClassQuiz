@@ -99,55 +99,58 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
             mContext.startActivity(editTest);
         });
         startTestButton.setOnClickListener(v -> {
-            new NetworkUtils(internet -> {
-                if (internet) {
-                    Intent startTest = new Intent(mContext, StartTestActivity.class);
-                    startTest.putExtra("test", test);
-                    startTest.putExtra("generated", false);
-                    new AlertDialog.Builder(mContext)
-                            .setCancelable(false)
-                            .setTitle("Start test")
-                            .setMessage(String.format("Are you sure you want to start the test '%s'?", testName))
-                            .setPositiveButton("Yes", (dialog, which) -> {
-                                mContext.startActivity(startTest);
-                            })
-                            .setNegativeButton("Cancel", (dialog, which) -> {
+                new NetworkUtils(internet -> {
+                    if (internet) {
+                        Intent startTest = new Intent(mContext, StartTestActivity.class);
+                        startTest.putExtra("test", test);
+                        startTest.putExtra("generated", false);
+                        new AlertDialog.Builder(mContext)
+                                .setCancelable(false)
+                                .setTitle("Start test")
+                                .setMessage(String.format("Are you sure you want to start the test '%s'?", testName))
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    mContext.startActivity(startTest);
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> {
 
-                            })
-                            .show();
-                } else {
-                    Toast.makeText(mContext, "No internet available.", Toast.LENGTH_SHORT).show();
-                }
-            });
-
+                                })
+                                .show();
+                    } else {
+                        Toast.makeText(mContext, "No internet available.", Toast.LENGTH_SHORT).show();
+                    }
+                });
         });
         testVisibilityToggleButton.setOnClickListener(v -> {
-            new NetworkUtils(internet -> {
-                if (internet) {
-                    Map<String, Object> visibility = new HashMap<>();
-                    if (test.getVisible()) {
-                        visibility.put("visible", false);
-                        visibilityUpdateDialog.setMessage("Please wait while visibility is set to private...");
+            if(!test.getVisible() && test.getQuestionCount() == 0) {
+                Toast.makeText(mContext, "There are no questions in this test. Add a question to make this test public.", Toast.LENGTH_SHORT).show();
+            }  else {
+                new NetworkUtils(internet -> {
+                    if (internet) {
+                        Map<String, Object> visibility = new HashMap<>();
+                        if (test.getVisible()) {
+                            visibility.put("visible", false);
+                            visibilityUpdateDialog.setMessage("Please wait while visibility is set to private...");
+                        } else {
+                            visibility.put("visible", true);
+                            visibilityUpdateDialog.setMessage("Please wait while visibility is set to public...");
+                        }
+                        visibilityUpdateDialog.show();
+                        firestore.document("tests/" + test.getTestId())
+                                .update(visibility)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(mContext, "Updated successfully!", Toast.LENGTH_SHORT).show();
+                                        onTestVisibilityChangeListener.onTestVisibilityChanged();
+                                    } else {
+                                        Toast.makeText(mContext, "Error in updating visibility.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    visibilityUpdateDialog.dismiss();
+                                });
                     } else {
-                        visibility.put("visible", true);
-                        visibilityUpdateDialog.setMessage("Please wait while visibility is set to public...");
+                        Toast.makeText(mContext, "No internet available.", Toast.LENGTH_SHORT).show();
                     }
-                    visibilityUpdateDialog.show();
-                    firestore.document("tests/" + test.getTestId())
-                            .update(visibility)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(mContext, "Updated successfully!", Toast.LENGTH_SHORT).show();
-                                    onTestVisibilityChangeListener.onTestVisibilityChanged();
-                                } else {
-                                    Toast.makeText(mContext, "Error in updating visibility.", Toast.LENGTH_SHORT).show();
-                                }
-                                visibilityUpdateDialog.dismiss();
-                            });
-                } else {
-                    Toast.makeText(mContext, "No internet available.", Toast.LENGTH_SHORT).show();
-                }
-            });
+                });
+            }
         });
     }
 

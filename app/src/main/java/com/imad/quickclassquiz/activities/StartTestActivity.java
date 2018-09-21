@@ -57,7 +57,7 @@ public class StartTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_test);
+        setContentView(R.layout.activity_teacher_start_test);
 
         ButterKnife.bind(this);
 
