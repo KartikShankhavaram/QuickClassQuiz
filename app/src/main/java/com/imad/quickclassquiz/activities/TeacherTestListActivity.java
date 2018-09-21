@@ -37,7 +37,7 @@ public class TeacherTestListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher_test_list);
+        setContentView(R.layout.student_question);
 
         ButterKnife.bind(this);
 
