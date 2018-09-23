@@ -1,4 +1,4 @@
-package com.imad.quickclassquiz;
+package com.imad.quickclassquiz.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,8 +18,10 @@ import android.widget.Toast;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.datamodel.Test;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import net.frakbot.jumpingbeans.JumpingBeans;
 
@@ -40,20 +42,24 @@ public class StudentStartTestActivity extends AppCompatActivity {
     Button beginTestButton;
 
     FirebaseFirestore firestore;
-
     boolean airplaneModeEnabled = false;
     boolean questionsFetched = false;
-
     ArrayList<Question> questions = new ArrayList<>();
-
     Test test;
-
     JumpingBeans jumpingBeans;
+    String tick;
+    String cross;
+
+    IntentFilter intentFilter;
+    BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_start_test);
+
+        tick = getResources().getString(R.string.tick);
+        cross = getResources().getString(R.string.cross);
 
         ButterKnife.bind(this);
         firestore = FirebaseFirestore.getInstance();
@@ -67,7 +73,10 @@ public class StudentStartTestActivity extends AppCompatActivity {
         }
 
         beginTestButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Implement begin test function.", Toast.LENGTH_SHORT).show();
+            Intent toTest = new Intent(this, TestActivity.class);
+            toTest.putExtra("questions", questions);
+            toTest.putExtra("test", test);
+            startActivity(toTest);
         });
 
         String rules[] = getResources().getStringArray(R.array.rules);
@@ -75,7 +84,8 @@ public class StudentStartTestActivity extends AppCompatActivity {
         rulesListView.setAdapter(adapter);
 
         questionsFetchedStatusTextView.setOnClickListener(v -> {
-            fetchTestQuestions();
+            if (!questionsFetched)
+                fetchTestQuestions();
         });
     }
 
@@ -94,27 +104,33 @@ public class StudentStartTestActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.unregisterReceiver(receiver);
+    }
+
     public void handleAirplaneModeStatus() {
         if ((airplaneModeEnabled = isAirplaneModeOn(this))) {
-            airplaneModeEnabledTextView.setText("Airplane Mode Enabled.");
+            airplaneModeEnabledTextView.setText(tick + " Airplane Mode Enabled.");
             airplaneModeEnabledTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));
         } else {
-            airplaneModeEnabledTextView.setText("Airplane Mode Disabled. Enable it to continue to the test.");
+            airplaneModeEnabledTextView.setText(cross + " Airplane Mode Disabled. Enable it to continue to the test.");
             airplaneModeEnabledTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
         }
 
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.AIRPLANE_MODE");
+        intentFilter = new IntentFilter("android.intent.action.AIRPLANE_MODE");
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 boolean isAirplaneModeOn = intent.getBooleanExtra("state", false);
                 airplaneModeEnabled = isAirplaneModeOn;
                 if (isAirplaneModeOn) {
-                    airplaneModeEnabledTextView.setText("Airplane Mode Enabled.");
+                    airplaneModeEnabledTextView.setText(tick + " Airplane Mode Enabled.");
                     airplaneModeEnabledTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));
                 } else {
-                    airplaneModeEnabledTextView.setText("Airplane Mode Disabled. Enable it to continue to the test.");
+                    airplaneModeEnabledTextView.setText(cross + " Airplane Mode Disabled. Enable it to continue to the test.");
                     airplaneModeEnabledTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
                 }
                 checkForCompletion();
@@ -129,37 +145,47 @@ public class StudentStartTestActivity extends AppCompatActivity {
     }
 
     public void fetchTestQuestions() {
-        if (test != null) {
-            String url = String.format("tests/%s/questions", test.getTestId());
-            questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskExecuting));
-            questionsFetchedStatusTextView.setText("Fetching questions");
-            jumpingBeans = JumpingBeans.with(questionsFetchedStatusTextView).appendJumpingDots().build();
-            firestore.collection(url)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                Question question = snapshot.toObject(Question.class);
-                                questions.add(question);
-                            }
-                            Log.e("questions", questions.toString());
-                            questionsFetched = true;
-                            questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));
-                            questionsFetchedStatusTextView.setText("Questions fetched!");
-                        } else {
-                            questionsFetched = false;
-                            questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
-                            questionsFetchedStatusTextView.setText("Could not fetch questions. Click here to try again.");
-                        }
-                        checkForCompletion();
-                        jumpingBeans.stopJumping();
-                    });
-        } else {
-            questionsFetched = false;
-            checkForCompletion();
-            questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
-            questionsFetchedStatusTextView.setText("Could not fetch questions. Click here to try again.");
-        }
+        new NetworkUtils(internet -> {
+            if (internet) {
+                if (test != null) {
+                    String url = String.format("tests/%s/questions", test.getTestId());
+                    questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskExecuting));
+                    questionsFetchedStatusTextView.setText("Fetching questions");
+                    jumpingBeans = JumpingBeans.with(questionsFetchedStatusTextView).appendJumpingDots().build();
+                    firestore.collection(url)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                        Question question = snapshot.toObject(Question.class);
+                                        questions.add(question);
+                                    }
+                                    Log.e("questions", questions.toString());
+                                    questionsFetched = true;
+                                    questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));
+                                    questionsFetchedStatusTextView.setText(tick + " Questions fetched!");
+                                } else {
+                                    questionsFetched = false;
+                                    questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
+                                    questionsFetchedStatusTextView.setText(cross + " Could not fetch questions. Click here to try again.");
+                                }
+                                checkForCompletion();
+                                jumpingBeans.stopJumping();
+                            });
+                } else {
+                    questionsFetched = false;
+                    checkForCompletion();
+                    questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
+                    questionsFetchedStatusTextView.setText(cross + " Could not fetch questions. Click here to try again.");
+                }
+            } else {
+                questionsFetched = false;
+                checkForCompletion();
+                questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
+                questionsFetchedStatusTextView.setText(cross + " No internet connection. Enable it and then click here to try again.");
+            }
+        });
+
     }
 
     private void checkForCompletion() {

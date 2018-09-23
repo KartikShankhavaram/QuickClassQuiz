@@ -15,4 +15,10 @@
         <item>Once you start a test, you cannot retake it under any circumstances.</item>
     </string-array>
 
+    <string name="tick">\u2713</string>
+    <string name="cross">\u2717</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

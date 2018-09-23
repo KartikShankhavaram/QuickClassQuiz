@@ -24,7 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StartTestActivity extends AppCompatActivity {
+public class TeacherStartTestActivity extends AppCompatActivity {
 
     @BindView(R.id.testNameTextView)
     TextView testNameTextView;

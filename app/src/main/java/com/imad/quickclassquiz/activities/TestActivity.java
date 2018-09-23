@@ -1,100 +1,111 @@
 package com.imad.quickclassquiz.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.datamodel.Question;
+import com.imad.quickclassquiz.datamodel.Test;
+import com.imad.quickclassquiz.fragments.CodeEntryFragment;
+import com.imad.quickclassquiz.fragments.TestFragment;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class TestActivity extends AppCompatActivity {
 
-    FirebaseFirestore firestore;
-    private static String TAG;
+    public final static int ACCESS_CODE_ENTRY_FRAGMENT = 1337;
+    public final static int TEST_FRAGMENT = 1338;
+    @BindView(R.id.testFragmentHolder)
+    FrameLayout testFragmentHolder;
+    ArrayList<Question> questions = new ArrayList<>();
+    Test test;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Toast.makeText(this, String.format("Window %s focus!", (hasFocus ? "has" : "lost")), Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-//        TAG = getPackageName();
-//        firestore = FirebaseFirestore.getInstance();
-//
-//        // Create a new user with a first and last name
-//        Map<String, Object> user = new HashMap<>();
-//        user.put("first", "Ada");
-//        user.put("last", "Lovelace");
-//        user.put("born", 1815);
-//
-//        Log.i(TAG, "Adding document");
-//
-////        String uuid = UUID.randomUUID().toString();
-////        String timestamp = Long.toString(System.currentTimeMillis() / 1000);
-////        Test test = new Test(uuid, "IMAD test", "Test on intents", timestamp);
-////
-////        Question question = new Question(1, "AAA", "fdfsd", "fff", "ffdd", "qqq", "fdfsd");
-////        // Add a new document with a generated ID
-////        CollectionReference testsCollection = firestore.collection("tests");
-//////        testsCollection.add(test).addOnSuccessListener(documentReference -> {
-//////            documentReference.collection("questions").add(question).addOnSuccessListener(d -> {
-//////                Log.i(TAG, "Added with ref " + d.getId());
-//////            });
-//////        });
-//
-//        ArrayList<Test> testList = new ArrayList<>();
-//
-//        testsCollection.get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-//                            testList.add(documentSnapshot.toObject(Test.class));
-////                            Map<String, Object> accessCode = new HashMap<>();
-////                            accessCode.put("accessCode", "66543hu8");
-////                            testsCollection.document(documentSnapshot.getId()).update(accessCode).addOnSuccessListener(d -> {
-////                                Log.e(TAG, "Added access code to "  +documentSnapshot.getId());
-////                            });
-//                        }
-//                    }
-//                });
-//
-//        CountDownTimer timer = new CountDownTimer(6000, 1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                testsCollection.document("Cbq5o4vsLqi6SGZdohsd").get().addOnCompleteListener(snapshot -> {
-//                    if (snapshot.isSuccessful()) {
-//                        Test a = snapshot.getResult().toObject(Test.class);
-//                        if (a != null) {
-//                            if (a.getAccessCode() != null) {
-//                                Log.e(TAG, "Access code is " + a.getAccessCode());
-//                            } else {
-//                                Log.e(TAG, "Access code is null.");
-//                            }
-//                        }
-//                    }
-//                });
-//
-//            }
-//        }.start();
-//
-////        firestore.collection("users")
-////                .get()
-////                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-////                    @Override
-////                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-////                        if (task.isSuccessful()) {
-////                            for (QueryDocumentSnapshot document : task.getResult()) {
-////                                Log.d(TAG, document.getId() + " => " + document.getData());
-////                            }
-////                        } else {
-////                            Log.w(TAG, "Error getting documents.", task.getException());
-////                        }
-////                    }
-////                });
-//
+        ButterKnife.bind(this);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            questions = intent.getParcelableArrayListExtra("questions");
+            test = intent.getParcelableExtra("test");
+        }
+
+        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Code below is to handle presses of Volume up or Volume down.
+        // Without this, after pressing volume buttons, the navigation bar will
+        // show up and won't hide
+        final View decorView = getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener(visibility -> {
+            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                decorView.setSystemUiVisibility(flags);
+            }
+        });
+
+        switchFragment(ACCESS_CODE_ENTRY_FRAGMENT);
+
+    }
+
+    public boolean switchFragment(int fragmentType) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction;
+        Fragment fragment;
+        switch (fragmentType) {
+            case ACCESS_CODE_ENTRY_FRAGMENT:
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                fragment = CodeEntryFragment.newInstance(test);
+                transaction.replace(R.id.testFragmentHolder, fragment);
+                transaction.commit();
+                return true;
+            case TEST_FRAGMENT:
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                fragment = TestFragment.newInstance(questions);
+                transaction.replace(R.id.testFragmentHolder, fragment);
+                transaction.commit();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME || keyCode == KeyEvent.KEYCODE_MENU) {
+            Toast.makeText(this, "Navigation button pressed.", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 }

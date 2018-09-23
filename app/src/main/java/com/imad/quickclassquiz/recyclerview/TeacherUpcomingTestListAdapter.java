@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
-import com.imad.quickclassquiz.activities.StartTestActivity;
+import com.imad.quickclassquiz.activities.TeacherStartTestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
@@ -65,6 +67,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         Button startTestButton = holder.getStartTestButton();
         TextView testAddDateTextView = holder.getTestAddTimeTextView();
         Button testVisibilityToggleButton = holder.getTestVisibilityToggleButton();
+        TextView questionCountTextView = holder.getQuestionCountTextView();
 
         ProgressDialog visibilityUpdateDialog = new ProgressDialog(mContext);
         visibilityUpdateDialog.setTitle("Updating visibility");
@@ -85,6 +88,17 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         testNameTextView.setText(testName);
         testDesctextView.setText(testDesc);
 
+        String questionText = test.getQuestionCount() <= 1 ? " question" : " questions";
+        String questionCount = Integer.toString(test.getQuestionCount());
+
+        if (questionCount.equals("0"))
+            questionCountTextView.setText("No questions");
+        else {
+            SpannableStringBuilder str = new SpannableStringBuilder(test.getQuestionCount() + questionText);
+            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, questionCount.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            questionCountTextView.setText(str);
+        }
+
         String timestamp = test.getCreatedAt();
         DateTime dt = new DateTime(timestamp);
         DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
@@ -101,7 +115,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         startTestButton.setOnClickListener(v -> {
                 new NetworkUtils(internet -> {
                     if (internet) {
-                        Intent startTest = new Intent(mContext, StartTestActivity.class);
+                        Intent startTest = new Intent(mContext, TeacherStartTestActivity.class);
                         startTest.putExtra("test", test);
                         startTest.putExtra("generated", false);
                         new AlertDialog.Builder(mContext)
@@ -184,6 +198,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         private Button startTestButton;
         private TextView testAddTimeTextView;
         private Button testVisibilityToggleButton;
+        private TextView questionCountTextView;
 
         public TeacherUpcomingTestViewHolder(View itemView) {
             super(itemView);
@@ -193,6 +208,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
             startTestButton = itemView.findViewById(R.id.testStartButton);
             testAddTimeTextView = itemView.findViewById(R.id.testAddDateTextView);
             testVisibilityToggleButton = itemView.findViewById(R.id.testVisibilityToggleButton);
+            questionCountTextView = itemView.findViewById(R.id.questionCountTextView);
         }
 
         public TextView getTestNameTextView() {
@@ -217,6 +233,10 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
 
         public Button getTestVisibilityToggleButton() {
             return testVisibilityToggleButton;
+        }
+
+        public TextView getQuestionCountTextView() {
+            return questionCountTextView;
         }
     }
 }

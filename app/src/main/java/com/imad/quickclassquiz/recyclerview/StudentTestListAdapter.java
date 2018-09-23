@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.StudentStartTestActivity;
+import com.imad.quickclassquiz.activities.StudentStartTestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
 
 import java.util.ArrayList;

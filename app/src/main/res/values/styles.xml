@@ -42,6 +42,7 @@
 
     <style name="BlueButton" parent="AppTheme">
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
 </resources>
