@@ -1,7 +1,5 @@
 package com.imad.quickclassquiz.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +10,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage;
 import com.imad.quickclassquiz.datamodel.Question;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +43,8 @@ public class StudentQuestionFragment extends Fragment {
 
     private Question question;
     private int questionNo;
+
+    private boolean firstCheckDone = false;
 
     public StudentQuestionFragment() {
         // Required empty public constructor
@@ -89,6 +92,54 @@ public class StudentQuestionFragment extends Fragment {
             clearChoices();
         });
 
+        option1RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !firstCheckDone) {
+                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
+                firstCheckDone = true;
+            }
+            if (isChecked) {
+                option2RadioButton.setChecked(false);
+                option3RadioButton.setChecked(false);
+                option4RadioButton.setChecked(false);
+            }
+        });
+
+        option2RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !firstCheckDone) {
+                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
+                firstCheckDone = true;
+            }
+            if (isChecked) {
+                option1RadioButton.setChecked(false);
+                option3RadioButton.setChecked(false);
+                option4RadioButton.setChecked(false);
+            }
+        });
+
+        option3RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !firstCheckDone) {
+                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
+                firstCheckDone = true;
+            }
+            if (isChecked) {
+                option1RadioButton.setChecked(false);
+                option2RadioButton.setChecked(false);
+                option4RadioButton.setChecked(false);
+            }
+        });
+
+        option4RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !firstCheckDone) {
+                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
+                firstCheckDone = true;
+            }
+            if (isChecked) {
+                option1RadioButton.setChecked(false);
+                option2RadioButton.setChecked(false);
+                option3RadioButton.setChecked(false);
+            }
+        });
+
         return view;
     }
 
@@ -97,5 +148,9 @@ public class StudentQuestionFragment extends Fragment {
         option2RadioButton.setChecked(false);
         option3RadioButton.setChecked(false);
         option4RadioButton.setChecked(false);
+        EventBus.getDefault().post(new AttemptedQuestionsMessage(false));
+        firstCheckDone = false;
     }
+
+
 }

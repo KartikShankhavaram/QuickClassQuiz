@@ -92,7 +92,7 @@ public class CodeEntryFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                accessCodeButton.setEnabled(!TextUtils.isEmpty(s));
+                accessCodeButton.setEnabled(s.length() == 6);
                 accessCodeInputLayout.setError(null);
             }
         });

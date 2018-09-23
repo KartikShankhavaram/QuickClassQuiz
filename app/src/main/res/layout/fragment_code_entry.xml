@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Access Code"
                     android:maxLength="6"
-                    android:inputType="textNoSuggestions"/>
+                    android:inputType="textPassword"/>
             </android.support.design.widget.TextInputLayout>
 
             <Button

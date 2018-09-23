@@ -68,6 +68,9 @@ dependencies {
 //  Loading dot animation
     implementation 'net.frakbot:jumpingbeans:1.3.0'
 
+//  For communication between fragments
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
 //  Testing libraries
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

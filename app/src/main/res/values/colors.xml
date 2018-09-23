@@ -9,4 +9,6 @@
     <color name="colorTaskCompleted">@android:color/holo_green_light</color>
     <color name="colorTaskIncomplete">@android:color/holo_red_light</color>
     <color name="colorTaskExecuting">@android:color/black</color>
+    <color name="colorNormalRemainingTime">#00AA00</color>
+    <color name="colorLessRemainingTime">#FF0000</color>
 </resources>
