@@ -73,10 +73,16 @@ public class StudentStartTestActivity extends AppCompatActivity {
         }
 
         beginTestButton.setOnClickListener(v -> {
-            Intent toTest = new Intent(this, TestActivity.class);
-            toTest.putExtra("questions", questions);
-            toTest.putExtra("test", test);
-            startActivity(toTest);
+            new NetworkUtils(internet -> {
+                Intent toTest = new Intent(this, TestActivity.class);
+                toTest.putExtra("questions", questions);
+                toTest.putExtra("test", test);
+                if(internet) {
+                    startActivity(toTest);
+                } else {
+                    Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         String rules[] = getResources().getStringArray(R.array.rules);

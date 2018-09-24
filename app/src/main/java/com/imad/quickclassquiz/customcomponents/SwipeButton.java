@@ -9,10 +9,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
@@ -27,7 +27,7 @@ public class SwipeButton extends RelativeLayout {
     private boolean active;
     private int initialButtonWidth;
     private TextView centerText;
-
+    private float startedFrom;
     private Drawable disabledDrawable;
     private Drawable enabledDrawable;
 
@@ -55,6 +55,7 @@ public class SwipeButton extends RelativeLayout {
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    @SuppressWarnings("unused")
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         RelativeLayout background = new RelativeLayout(context);
 
@@ -76,7 +77,7 @@ public class SwipeButton extends RelativeLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        centerText.setText("SUBMIT"); //add any text you need
+        centerText.setText(R.string.test_submit_button_text); //add any text you need
         centerText.setTextColor(Color.WHITE);
         centerText.setPadding(35, 35, 35, 35);
         background.addView(centerText, layoutParams);
@@ -104,62 +105,70 @@ public class SwipeButton extends RelativeLayout {
     }
 
     private OnTouchListener getButtonTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        if (initialX == 0) {
-                            initialX = slidingButton.getX();
-                        }
-                        if (event.getX() > initialX + slidingButton.getWidth() / 2 &&
-                                event.getX() + slidingButton.getWidth() / 2 < getWidth()) {
-                            slidingButton.setX(event.getX() - slidingButton.getWidth() / 2);
-                            centerText.setAlpha(1 - 1.3f * (slidingButton.getX() + slidingButton.getWidth()) / getWidth());
-                        }
+        return (v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    startedFrom = event.getX();
+                    return event.getX() < slidingButton.getX() + slidingButton.getWidth();
+                case MotionEvent.ACTION_MOVE:
+                    if (initialX == 0) {
+                        initialX = slidingButton.getX();
+                    }
+                    if (startedFrom > slidingButton.getX() + slidingButton.getWidth())
+                        return false;
+                    if (event.getX() > initialX + slidingButton.getWidth() / 2 &&
+                            event.getX() + slidingButton.getWidth() / 2 < getWidth()) {
+                        slidingButton.setX(event.getX() - slidingButton.getWidth() / 2);
+                        centerText.setAlpha(1 - 1.3f * (slidingButton.getX() + slidingButton.getWidth()) / getWidth());
+                    }
 
-                        if  (event.getX() + slidingButton.getWidth() / 2 > getWidth() &&
-                                slidingButton.getX() + slidingButton.getWidth() / 2 < getWidth()) {
-                            slidingButton.setX(getWidth() - slidingButton.getWidth());
-                        }
+                    if (event.getX() + slidingButton.getWidth() / 2 > getWidth() &&
+                            slidingButton.getX() + slidingButton.getWidth() / 2 < getWidth()) {
+                        slidingButton.setX(getWidth() - slidingButton.getWidth());
+                    }
 
-                        if  (event.getX() < slidingButton.getWidth() / 2 &&
-                                slidingButton.getX() > 0) {
-                            slidingButton.setX(0);
-                        }
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        if (active) {
-                            collapseButton();
+                    if (event.getX() < slidingButton.getWidth() / 2 &&
+                            slidingButton.getX() > 0) {
+                        slidingButton.setX(0);
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (active) {
+                        collapseButton();
+                    } else {
+                        initialButtonWidth = slidingButton.getWidth();
+
+                        if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.85) {
+                            expandButton();
+                            v.performClick();
+                            new CountDownTimer(1000, 1000) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    collapseButton();
+                                }
+                            }.start();
                         } else {
-                            initialButtonWidth = slidingButton.getWidth();
-
-                            if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.85) {
-                                expandButton();
-                                 v.performClick();
-                            } else {
-                                moveButtonBack();
-                            }
+                            moveButtonBack();
                         }
-                        return true;
-                }
-
-                return false;
+                    }
+                    return true;
             }
+
+            return false;
         };
     }
 
     private void expandButton() {
         final ValueAnimator positionAnimator =
                 ValueAnimator.ofFloat(slidingButton.getX(), 0);
-        positionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float x = (Float) positionAnimator.getAnimatedValue();
-                slidingButton.setX(x);
-            }
+        positionAnimator.addUpdateListener(animation -> {
+            float x = (Float) positionAnimator.getAnimatedValue();
+            slidingButton.setX(x);
         });
 
 
@@ -167,13 +176,10 @@ public class SwipeButton extends RelativeLayout {
                 slidingButton.getWidth(),
                 getWidth());
 
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                ViewGroup.LayoutParams params = slidingButton.getLayoutParams();
-                params.width = (Integer) widthAnimator.getAnimatedValue();
-                slidingButton.setLayoutParams(params);
-            }
+        widthAnimator.addUpdateListener(animation -> {
+            ViewGroup.LayoutParams params = slidingButton.getLayoutParams();
+            params.width = (Integer) widthAnimator.getAnimatedValue();
+            slidingButton.setLayoutParams(params);
         });
 
 
@@ -197,13 +203,10 @@ public class SwipeButton extends RelativeLayout {
                 slidingButton.getWidth(),
                 initialButtonWidth);
 
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                ViewGroup.LayoutParams params =  slidingButton.getLayoutParams();
-                params.width = (Integer) widthAnimator.getAnimatedValue();
-                slidingButton.setLayoutParams(params);
-            }
+        widthAnimator.addUpdateListener(animation -> {
+            ViewGroup.LayoutParams params = slidingButton.getLayoutParams();
+            params.width = (Integer) widthAnimator.getAnimatedValue();
+            slidingButton.setLayoutParams(params);
         });
 
         widthAnimator.addListener(new AnimatorListenerAdapter() {
@@ -228,12 +231,9 @@ public class SwipeButton extends RelativeLayout {
         final ValueAnimator positionAnimator =
                 ValueAnimator.ofFloat(slidingButton.getX(), 0);
         positionAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        positionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float x = (Float) positionAnimator.getAnimatedValue();
-                slidingButton.setX(x);
-            }
+        positionAnimator.addUpdateListener(animation -> {
+            float x = (Float) positionAnimator.getAnimatedValue();
+            slidingButton.setX(x);
         });
 
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(

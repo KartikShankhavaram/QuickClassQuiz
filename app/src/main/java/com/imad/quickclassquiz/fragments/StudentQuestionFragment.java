@@ -92,6 +92,8 @@ public class StudentQuestionFragment extends Fragment {
             clearChoices();
         });
 
+        clearChoiceButton.setEnabled(false);
+
         option1RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked && !firstCheckDone) {
                 EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
@@ -101,6 +103,7 @@ public class StudentQuestionFragment extends Fragment {
                 option2RadioButton.setChecked(false);
                 option3RadioButton.setChecked(false);
                 option4RadioButton.setChecked(false);
+                clearChoiceButton.setEnabled(true);
             }
         });
 
@@ -113,6 +116,7 @@ public class StudentQuestionFragment extends Fragment {
                 option1RadioButton.setChecked(false);
                 option3RadioButton.setChecked(false);
                 option4RadioButton.setChecked(false);
+                clearChoiceButton.setEnabled(true);
             }
         });
 
@@ -125,6 +129,7 @@ public class StudentQuestionFragment extends Fragment {
                 option1RadioButton.setChecked(false);
                 option2RadioButton.setChecked(false);
                 option4RadioButton.setChecked(false);
+                clearChoiceButton.setEnabled(true);
             }
         });
 
@@ -137,6 +142,7 @@ public class StudentQuestionFragment extends Fragment {
                 option1RadioButton.setChecked(false);
                 option2RadioButton.setChecked(false);
                 option3RadioButton.setChecked(false);
+                clearChoiceButton.setEnabled(true);
             }
         });
 
@@ -150,6 +156,7 @@ public class StudentQuestionFragment extends Fragment {
         option4RadioButton.setChecked(false);
         EventBus.getDefault().post(new AttemptedQuestionsMessage(false));
         firstCheckDone = false;
+        clearChoiceButton.setEnabled(false);
     }
 
 

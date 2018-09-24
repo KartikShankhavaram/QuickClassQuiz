@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.imad.quickclassquiz">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -10,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.TestActivity" />
         <activity android:name=".activities.LoginActivity">
@@ -38,7 +41,7 @@
         <activity android:name=".activities.EditQuestionActivity" />
         <activity android:name=".activities.TeacherStartTestActivity" />
         <activity android:name=".activities.StudentTestListActivity" />
-        <activity android:name=".activities.StudentStartTestActivity"></activity>
+        <activity android:name=".activities.StudentStartTestActivity" />
     </application>
 
 </manifest>

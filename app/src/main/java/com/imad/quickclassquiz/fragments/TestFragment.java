@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,10 +84,10 @@ public class TestFragment extends Fragment {
                 DateTime timeLeft = new DateTime(millisUntilFinished);
                 DateTimeFormatter a = DateTimeFormat.forPattern("m:ss");
                 timerTextView.setText(a.print(timeLeft));
-                if(millisUntilFinished > 30000) {
+                if (millisUntilFinished > 30000) {
                     timerTextView.setTextColor(getResources().getColor(R.color.colorNormalRemainingTime));
                 } else {
-                    if(timerColor == 0) {
+                    if (timerColor == 0) {
                         timerColor = 1;
                         timerTextView.setTextColor(getResources().getColor(R.color.colorLessRemainingTime));
                     } else {
@@ -100,7 +99,7 @@ public class TestFragment extends Fragment {
 
             @Override
             public void onFinish() {
-
+                timerTextView.setText("0:00");
             }
         }.start();
 
@@ -155,7 +154,7 @@ public class TestFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAttempt(AttemptedQuestionsMessage message) {
-        if(message.wasQuestionAttempted()) {
+        if (message.wasQuestionAttempted()) {
             numberOfAttemptedQuestions++;
         } else {
             numberOfAttemptedQuestions--;
@@ -167,7 +166,7 @@ public class TestFragment extends Fragment {
     public void setAttemptedText(String s) {
         int start = s.length() + 1;
         String total = s + "\nattempted";
-        SpannableString ss=  new SpannableString(total);
+        SpannableString ss = new SpannableString(total);
         ss.setSpan(new RelativeSizeSpan(0.5f), start, total.length(), SPAN_INCLUSIVE_INCLUSIVE);
         attemptedQuestionCountTextView.setText(ss);
     }
