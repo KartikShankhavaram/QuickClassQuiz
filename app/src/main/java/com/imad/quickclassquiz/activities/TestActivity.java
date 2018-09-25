@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -69,10 +70,10 @@ public class TestActivity extends AppCompatActivity {
             if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
                 decorView.setSystemUiVisibility(flags);
             }
+            Log.e("System visibility", visibility + "");
         });
 
         switchFragment(ACCESS_CODE_ENTRY_FRAGMENT);
-
     }
 
     public boolean switchFragment(int fragmentType) {

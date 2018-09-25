@@ -6,12 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.customcomponents.SwipeButton;
 import com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage;
@@ -26,12 +29,16 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_ADDED;
+import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_REPLACED;
 
 public class TestFragment extends Fragment {
 
@@ -49,6 +56,8 @@ public class TestFragment extends Fragment {
     int numberOfAttemptedQuestions = 0;
 
     ArrayList<Question> questions = new ArrayList<>();
+
+    HashMap<String, String> attemptedAnswersMap = new HashMap<>();
 
     public TestFragment() {
         // Required empty public constructor
@@ -126,6 +135,10 @@ public class TestFragment extends Fragment {
 
         submitButton.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Implement submit functionality.", Toast.LENGTH_SHORT).show();
+            Log.e("Answers", attemptedAnswersMap.toString());
+            for (Map.Entry<String, String> entry : attemptedAnswersMap.entrySet()) {
+                Log.e("attempt", entry.getKey() + " -> " + checkAnswer(entry.getKey(), entry.getValue()));
+            }
         });
 
         return view;
@@ -154,10 +167,15 @@ public class TestFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAttempt(AttemptedQuestionsMessage message) {
-        if (message.wasQuestionAttempted()) {
+        int attemptCode = message.getAttemptCode();
+        if (attemptCode == ATTEMPT_ADDED) {
             numberOfAttemptedQuestions++;
+            attemptedAnswersMap.put(message.getQuestionId(), message.getAttemptedAnswer());
+        } else if (attemptCode == ATTEMPT_REPLACED) {
+            attemptedAnswersMap.put(message.getQuestionId(), message.getAttemptedAnswer());
         } else {
             numberOfAttemptedQuestions--;
+            attemptedAnswersMap.remove(message.getQuestionId());
         }
         int totalQuestions = questions.size();
         setAttemptedText(String.format(Locale.ENGLISH, "%d / %d", numberOfAttemptedQuestions, totalQuestions));
@@ -169,6 +187,15 @@ public class TestFragment extends Fragment {
         SpannableString ss = new SpannableString(total);
         ss.setSpan(new RelativeSizeSpan(0.5f), start, total.length(), SPAN_INCLUSIVE_INCLUSIVE);
         attemptedQuestionCountTextView.setText(ss);
+    }
+
+    private boolean checkAnswer(String questionId, String attemptedAnswer) {
+        Optional<Question> questionOptional = FluentIterable.from(questions).firstMatch(question -> questionId.equals(question.getQuestionId()));
+        if (questionOptional.isPresent()) {
+            return questionOptional.get().getCorrectOption().equals(attemptedAnswer);
+        } else {
+            return false;
+        }
     }
 
 }

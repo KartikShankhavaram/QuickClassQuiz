@@ -18,6 +18,10 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_ADDED;
+import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_REMOVED;
+import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_REPLACED;
+
 public class StudentQuestionFragment extends Fragment {
 
     @BindView(R.id.question)
@@ -95,11 +99,13 @@ public class StudentQuestionFragment extends Fragment {
         clearChoiceButton.setEnabled(false);
 
         option1RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && !firstCheckDone) {
-                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
-                firstCheckDone = true;
-            }
             if (isChecked) {
+                if (!firstCheckDone) {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_ADDED, question.getQuestionId(), question.getOption1()));
+                    firstCheckDone = true;
+                } else {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_REPLACED, question.getQuestionId(), question.getOption1()));
+                }
                 option2RadioButton.setChecked(false);
                 option3RadioButton.setChecked(false);
                 option4RadioButton.setChecked(false);
@@ -108,11 +114,13 @@ public class StudentQuestionFragment extends Fragment {
         });
 
         option2RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && !firstCheckDone) {
-                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
-                firstCheckDone = true;
-            }
             if (isChecked) {
+                if (!firstCheckDone) {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_ADDED, question.getQuestionId(), question.getOption2()));
+                    firstCheckDone = true;
+                } else {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_REPLACED, question.getQuestionId(), question.getOption2()));
+                }
                 option1RadioButton.setChecked(false);
                 option3RadioButton.setChecked(false);
                 option4RadioButton.setChecked(false);
@@ -121,11 +129,13 @@ public class StudentQuestionFragment extends Fragment {
         });
 
         option3RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && !firstCheckDone) {
-                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
-                firstCheckDone = true;
-            }
             if (isChecked) {
+                if (!firstCheckDone) {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_ADDED, question.getQuestionId(), question.getOption3()));
+                    firstCheckDone = true;
+                } else {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_REPLACED, question.getQuestionId(), question.getOption3()));
+                }
                 option1RadioButton.setChecked(false);
                 option2RadioButton.setChecked(false);
                 option4RadioButton.setChecked(false);
@@ -134,11 +144,13 @@ public class StudentQuestionFragment extends Fragment {
         });
 
         option4RadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && !firstCheckDone) {
-                EventBus.getDefault().post(new AttemptedQuestionsMessage(true));
-                firstCheckDone = true;
-            }
             if (isChecked) {
+                if (!firstCheckDone) {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_ADDED, question.getQuestionId(), question.getOption4()));
+                    firstCheckDone = true;
+                } else {
+                    EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_REPLACED, question.getQuestionId(), question.getOption4()));
+                }
                 option1RadioButton.setChecked(false);
                 option2RadioButton.setChecked(false);
                 option3RadioButton.setChecked(false);
@@ -154,7 +166,7 @@ public class StudentQuestionFragment extends Fragment {
         option2RadioButton.setChecked(false);
         option3RadioButton.setChecked(false);
         option4RadioButton.setChecked(false);
-        EventBus.getDefault().post(new AttemptedQuestionsMessage(false));
+        EventBus.getDefault().post(new AttemptedQuestionsMessage(ATTEMPT_REMOVED, question.getQuestionId()));
         firstCheckDone = false;
         clearChoiceButton.setEnabled(false);
     }
