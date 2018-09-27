@@ -1,7 +1,7 @@
 package com.imad.quickclassquiz.recyclerview;
 
-import android.support.annotation.Nullable;
-import android.support.v7.util.DiffUtil;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.imad.quickclassquiz.datamodel.Question;
 
