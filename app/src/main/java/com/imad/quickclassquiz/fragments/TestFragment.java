@@ -1,9 +1,8 @@
 package com.imad.quickclassquiz.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
@@ -33,6 +32,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -190,12 +191,16 @@ public class TestFragment extends Fragment {
     }
 
     private boolean checkAnswer(String questionId, String attemptedAnswer) {
-        Optional<Question> questionOptional = FluentIterable.from(questions).firstMatch(question -> questionId.equals(question.getQuestionId()));
-        if (questionOptional.isPresent()) {
-            return questionOptional.get().getCorrectOption().equals(attemptedAnswer);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            java.util.Optional<Question> questionOptional = questions.stream().filter(question -> questionId.equals(question.getQuestionId())).findFirst();
+            return questionOptional.map(question -> question.getCorrectOption().equals(attemptedAnswer)).orElse(false);
         } else {
-            return false;
+            Optional<Question> questionOptional = FluentIterable.from(questions).firstMatch(question -> questionId.equals(question.getQuestionId()));
+            if (questionOptional.isPresent()) {
+                return questionOptional.get().getCorrectOption().equals(attemptedAnswer);
+            } else {
+                return false;
+            }
         }
     }
-
 }
