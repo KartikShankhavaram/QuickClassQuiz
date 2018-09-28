@@ -1,5 +1,6 @@
 package com.imad.quickclassquiz.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -16,9 +17,12 @@ import android.widget.Toast;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.activities.Evalution_Activity;
+import com.imad.quickclassquiz.activities.StudentStartTestActivity;
 import com.imad.quickclassquiz.customcomponents.SwipeButton;
 import com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage;
 import com.imad.quickclassquiz.datamodel.Question;
+import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.viewpageradapters.TestQuestionPagerAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,6 +58,7 @@ public class TestFragment extends Fragment {
     TextView timerTextView;
     int timerColor = 0;
     int numberOfAttemptedQuestions = 0;
+    Test test;
 
     ArrayList<Question> questions = new ArrayList<>();
 
@@ -63,10 +68,11 @@ public class TestFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static TestFragment newInstance(ArrayList<Question> list) {
+    public static TestFragment newInstance(ArrayList<Question> list, Test test) {
         TestFragment fragment = new TestFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList("questions", list);
+        args.putParcelable("Test",test);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,6 +82,7 @@ public class TestFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             questions = getArguments().getParcelableArrayList("questions");
+            test = getArguments().getParcelable("Test");
         }
     }
 
@@ -85,7 +92,6 @@ public class TestFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_test, container, false);
         ButterKnife.bind(this, view);
-
         setAttemptedText(String.format(Locale.ENGLISH, "%d / %d", numberOfAttemptedQuestions, questions.size()));
         new CountDownTimer(50000, 1000) {
             @Override
@@ -109,6 +115,9 @@ public class TestFragment extends Fragment {
             @Override
             public void onFinish() {
                 timerTextView.setText("0:00");
+                Intent intent = new Intent(getActivity(),Evalution_Activity.class);
+                intent.putExtra("HashMap",attemptedAnswersMap);
+                startActivity(intent);
             }
         }.start();
 
@@ -134,11 +143,15 @@ public class TestFragment extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Implement submit functionality.", Toast.LENGTH_SHORT).show();
             Log.e("Answers", attemptedAnswersMap.toString());
             for (Map.Entry<String, String> entry : attemptedAnswersMap.entrySet()) {
                 Log.e("attempt", entry.getKey() + " -> " + checkAnswer(entry.getKey(), entry.getValue()));
             }
+            Intent intent = new Intent(getActivity(),Evalution_Activity.class);
+            intent.putExtra("HashMap",attemptedAnswersMap);
+            intent.putExtra("Question",questions);
+            intent.putExtra("Test",test);
+            startActivity(intent);
         });
 
         return view;
@@ -175,7 +188,7 @@ public class TestFragment extends Fragment {
             attemptedAnswersMap.put(message.getQuestionId(), message.getAttemptedAnswer());
         } else {
             numberOfAttemptedQuestions--;
-            attemptedAnswersMap.remove(message.getQuestionId());
+                attemptedAnswersMap.remove(message.getQuestionId());
         }
         int totalQuestions = questions.size();
         setAttemptedText(String.format(Locale.ENGLISH, "%d / %d", numberOfAttemptedQuestions, totalQuestions));

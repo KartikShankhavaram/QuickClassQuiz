@@ -91,7 +91,7 @@ public class TestActivity extends AppCompatActivity {
             case TEST_FRAGMENT:
                 transaction = manager.beginTransaction();
                 transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                fragment = TestFragment.newInstance(questions);
+                fragment = TestFragment.newInstance(questions,test);
                 transaction.replace(R.id.testFragmentHolder, fragment);
                 transaction.commit();
                 return true;
