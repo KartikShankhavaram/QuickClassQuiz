@@ -117,6 +117,8 @@ public class TestFragment extends Fragment {
                 timerTextView.setText("0:00");
                 Intent intent = new Intent(getActivity(),Evalution_Activity.class);
                 intent.putExtra("HashMap",attemptedAnswersMap);
+                intent.putExtra("Question",questions);
+                intent.putExtra("Test",test);
                 startActivity(intent);
             }
         }.start();

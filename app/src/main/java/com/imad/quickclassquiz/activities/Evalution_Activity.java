@@ -41,6 +41,7 @@ public class Evalution_Activity extends AppCompatActivity {
     private Button retry;
     private TextView textView;
     FirebaseFirestore firestore;
+    GoogleSignInAccount account;
     Toolbar toolbar;
     Test test;
     private String url = "";
@@ -61,7 +62,7 @@ public class Evalution_Activity extends AppCompatActivity {
         }
         retry.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        account = GoogleSignIn.getLastSignedInAccount(this);
         assert account != null;
         String email =account.getEmail();
         assert email != null;
@@ -110,7 +111,7 @@ public class Evalution_Activity extends AppCompatActivity {
 
         WriteBatch batch = firestore.batch();
 
-        batch.set(firestore.collection(url).document( UUID.randomUUID().toString()), scoreModel);
+        batch.set(firestore.collection(url).document( account.getId().toString()), scoreModel);
         batch.commit().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 Toast.makeText(this, "Successfully submitted", Toast.LENGTH_SHORT).show();
@@ -131,5 +132,11 @@ public class Evalution_Activity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Evalution_Activity.this,StudentTestListActivity.class));
     }
 }
