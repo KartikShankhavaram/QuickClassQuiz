@@ -92,8 +92,8 @@ public class StartedTestsTeacherFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         if(_hasLoadedOnce)
             new NetworkUtils(internet -> {
                 if(internet) {
