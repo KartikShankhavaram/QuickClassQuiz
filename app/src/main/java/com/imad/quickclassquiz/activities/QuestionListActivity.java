@@ -86,7 +86,6 @@ public class QuestionListActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new LandingAnimator());
 
         noQuestionsTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);

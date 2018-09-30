@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.TeacherStartTestActivity;
 import com.imad.quickclassquiz.activities.QuestionListActivity;
+import com.imad.quickclassquiz.activities.TeacherTestListActivity;
 import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.StaticValues;
 
@@ -55,6 +56,7 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
         Button viewCodesButton = holder.getViewCodesButton();
         TextView testStartDateTextView = holder.getTestStartDateTextView();
         TextView questionCountTextView = holder.getQuestionCountTextView();
+        Button downloadReportButton = holder.getDownloadReportButton();
 
         Test test = testArrayList.get(position);
 
@@ -93,6 +95,15 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
         DateTimeFormatter format = DateTimeFormat.forPattern("'Started on 'MMM d' at 'h:mm a");
         String time = format.print(dt);
         testStartDateTextView.setText(time);
+
+        DateTime today = new DateTime();
+        if(today.minusMinutes(30).isBefore(dt)) {
+            downloadReportButton.setEnabled(false);
+        }
+
+        downloadReportButton.setOnClickListener(v -> {
+            ((TeacherTestListActivity)mContext).downloadTestReport(test);
+        });
     }
 
     public void setListContent(List<Test> testArrayList) {
@@ -117,6 +128,7 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
         private Button viewCodesButton;
         private TextView testStartDateTextView;
         private TextView questionCountTextView;
+        private Button downloadReportButton;
 
         public TeacherStartedTestViewHolder(View itemView) {
             super(itemView);
@@ -126,6 +138,7 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
             viewCodesButton = itemView.findViewById(R.id.viewCodesButton);
             testStartDateTextView = itemView.findViewById(R.id.testStartDateTextView);
             questionCountTextView = itemView.findViewById(R.id.questionCountTextView);
+            downloadReportButton = itemView.findViewById(R.id.downloadReportButton);
         }
 
         public TextView getTestNameTextView() {
@@ -151,5 +164,10 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
         public TextView getQuestionCountTextView() {
             return questionCountTextView;
         }
+
+        public Button getDownloadReportButton() {
+            return downloadReportButton;
+        }
     }
+
 }
