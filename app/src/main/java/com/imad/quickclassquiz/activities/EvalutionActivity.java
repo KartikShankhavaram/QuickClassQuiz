@@ -47,7 +47,7 @@ public class EvalutionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evalution_);
+        setContentView(R.layout.activity_evalution);
         progressBar = findViewById(R.id.progressBar);
         retry = findViewById(R.id.retry);
         textView = findViewById(R.id.textView);
