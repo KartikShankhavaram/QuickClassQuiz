@@ -2,7 +2,7 @@ package com.imad.quickclassquiz.datamodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 import java.util.Objects;
 

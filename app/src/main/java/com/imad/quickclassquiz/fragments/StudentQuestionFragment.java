@@ -1,7 +1,7 @@
 package com.imad.quickclassquiz.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +61,6 @@ public class StudentQuestionFragment extends Fragment {
      * @param question Question to display in fragment.
      * @return A new instance of fragment StudentQuestionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static StudentQuestionFragment newInstance(Question question, int questionNo) {
         StudentQuestionFragment fragment = new StudentQuestionFragment();
         Bundle args = new Bundle();

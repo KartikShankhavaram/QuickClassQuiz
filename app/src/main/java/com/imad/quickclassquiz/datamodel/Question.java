@@ -1,16 +1,16 @@
 package com.imad.quickclassquiz.datamodel;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 import java.util.Objects;
 
-import static android.arch.persistence.room.ForeignKey.CASCADE;
+import static androidx.room.ForeignKey.CASCADE;
 
 @Keep
 @Entity(tableName = "questions", foreignKeys = @ForeignKey(onDelete = CASCADE, entity = Test.class, parentColumns = "test_id", childColumns = "test_id"))

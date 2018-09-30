@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/addQuestionToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:orientation="vertical"
             android:paddingBottom="72dp">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="0dp"
@@ -49,14 +49,14 @@
                         android:text="Enter a question"
                         android:textSize="16sp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="10dp">
 
-                        <android.support.design.widget.TextInputEditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/questionEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -65,11 +65,11 @@
                             android:maxLines="5"
                             android:scrollbars="vertical"
                             android:singleLine="false" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -100,13 +100,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/option1InputLayout"
                             android:layout_margin="10dp">
 
-                            <android.support.design.widget.TextInputEditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/option1EditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:scrollHorizontally="true" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
@@ -133,13 +133,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/option2InputLayout"
                             android:layout_margin="10dp">
 
-                            <android.support.design.widget.TextInputEditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/option2EditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:scrollHorizontally="true" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
 
                     </LinearLayout>
@@ -167,13 +167,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/option3InputLayout"
                             android:layout_margin="10dp">
 
-                            <android.support.design.widget.TextInputEditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/option3EditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:scrollHorizontally="true" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
@@ -200,13 +200,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/option4InputLayout"
                             android:layout_margin="10dp">
 
-                            <android.support.design.widget.TextInputEditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/option4EditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -214,19 +214,19 @@
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:scrollHorizontally="true" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
                 </com.imad.quickclassquiz.customcomponents.RecursiveRadioGroup>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/saveQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -237,4 +237,4 @@
         app:layout_anchor="@+id/scrollView2"
         app:layout_anchorGravity="right|bottom" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
