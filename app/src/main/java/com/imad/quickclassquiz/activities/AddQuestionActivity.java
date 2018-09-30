@@ -110,6 +110,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         }
 
         progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
 
         saveQuestion.setOnClickListener(v -> {
             new NetworkUtils(internet -> {

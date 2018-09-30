@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         progress = new ProgressDialog(this);
+        progress.setCanceledOnTouchOutside(false);
         progress.setMessage("Please wait while we sign you in...");
         progress.setTitle("Sign in");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);

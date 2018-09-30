@@ -70,6 +70,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         TextView questionCountTextView = holder.getQuestionCountTextView();
 
         ProgressDialog visibilityUpdateDialog = new ProgressDialog(mContext);
+        visibilityUpdateDialog.setCanceledOnTouchOutside(false);
         visibilityUpdateDialog.setTitle("Updating visibility");
 
         Test test = testArrayList.get(position);

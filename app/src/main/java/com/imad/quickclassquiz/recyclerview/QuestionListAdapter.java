@@ -72,6 +72,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
         if (editable) {
             ProgressDialog progressDialog = new ProgressDialog(mContext);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setTitle("Deleting question");
             progressDialog.setMessage("Please wait while we delete this question...");
 

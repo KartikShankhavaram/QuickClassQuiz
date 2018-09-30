@@ -174,6 +174,7 @@ public class QuestionListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setTitle("Deleting test");
         progressDialog.setMessage("Please wait while this test is deleted...");
         switch (item.getItemId()) {

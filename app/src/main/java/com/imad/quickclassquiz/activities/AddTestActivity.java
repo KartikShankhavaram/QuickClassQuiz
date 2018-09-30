@@ -62,6 +62,7 @@ public class AddTestActivity extends AppCompatActivity {
         firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setTitle("Creating Test");
 
         CollectionReference testsCollection = firestore.collection("tests");
