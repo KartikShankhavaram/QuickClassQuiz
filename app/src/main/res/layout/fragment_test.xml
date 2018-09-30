@@ -25,10 +25,10 @@
                 android:id="@+id/attemptedQuestionCountTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="6"
                 android:padding="4dp"
                 android:paddingStart="8dp"
+                android:text="aaa"
                 android:textColor="#333333"
                 android:textSize="24sp" />
 
@@ -48,12 +48,12 @@
                 android:id="@+id/timerTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="6"
                 android:padding="4dp"
                 android:paddingEnd="8dp"
                 android:textAlignment="textEnd"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:text="aaa" />
         </LinearLayout>
 
         <androidx.viewpager.widget.ViewPager
