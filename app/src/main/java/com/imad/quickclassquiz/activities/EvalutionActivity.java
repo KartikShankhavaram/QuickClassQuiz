@@ -1,16 +1,15 @@
 package com.imad.quickclassquiz.activities;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -29,9 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
-public class Evalution_Activity extends AppCompatActivity {
+public class EvalutionActivity extends AppCompatActivity {
 
     HashMap<String, String> attemptedAnswersMap = new HashMap<>();
     ArrayList<Question> questions = new ArrayList<>();
@@ -137,6 +135,6 @@ public class Evalution_Activity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(Evalution_Activity.this,StudentTestListActivity.class));
+        startActivity(new Intent(EvalutionActivity.this,StudentTestListActivity.class));
     }
 }

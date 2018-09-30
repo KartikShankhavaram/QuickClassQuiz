@@ -44,7 +44,7 @@
         <activity android:name=".activities.TeacherStartTestActivity" />
         <activity android:name=".activities.StudentTestListActivity" />
         <activity android:name=".activities.StudentStartTestActivity" />
-        <activity android:name=".activities.Evalution_Activity"></activity>
+        <activity android:name=".activities.EvalutionActivity"></activity>
     </application>
 
 </manifest>

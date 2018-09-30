@@ -11,13 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.activities.Evalution_Activity;
-import com.imad.quickclassquiz.activities.StudentStartTestActivity;
+import com.imad.quickclassquiz.activities.EvalutionActivity;
 import com.imad.quickclassquiz.customcomponents.SwipeButton;
 import com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage;
 import com.imad.quickclassquiz.datamodel.Question;
@@ -116,7 +114,7 @@ public class TestFragment extends Fragment {
             @Override
             public void onFinish() {
                 timerTextView.setText("0:00");
-                Intent intent = new Intent(getActivity(),Evalution_Activity.class);
+                Intent intent = new Intent(getActivity(),EvalutionActivity.class);
                 intent.putExtra("HashMap",attemptedAnswersMap);
                 intent.putExtra("Question",questions);
                 intent.putExtra("Test",test);
@@ -150,7 +148,7 @@ public class TestFragment extends Fragment {
             for (Map.Entry<String, String> entry : attemptedAnswersMap.entrySet()) {
                 Log.e("attempt", entry.getKey() + " -> " + checkAnswer(entry.getKey(), entry.getValue()));
             }
-            Intent intent = new Intent(getActivity(),Evalution_Activity.class);
+            Intent intent = new Intent(getActivity(),EvalutionActivity.class);
             intent.putExtra("HashMap",attemptedAnswersMap);
             intent.putExtra("Question",questions);
             intent.putExtra("Test",test);
