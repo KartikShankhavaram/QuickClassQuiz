@@ -204,7 +204,7 @@ public class TeacherStartTestActivity extends AppCompatActivity {
 
     private void showNumberOfSubmissions() {
         CollectionReference ref = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/scores", test.getTestId()));
-        noOfSubmissionsTextView.setText("Fetching number of submissions");
+        noOfSubmissionsTextView.setText("Fetching number of submissions ");
         jumpingBeans = JumpingBeans.with(noOfSubmissionsTextView).appendJumpingDots().build();
         fetchingData = true;
         ref.get().addOnCompleteListener(task -> {

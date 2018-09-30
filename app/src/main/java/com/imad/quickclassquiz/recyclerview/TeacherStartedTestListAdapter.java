@@ -99,6 +99,8 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
         DateTime today = new DateTime();
         if(today.minusMinutes(30).isBefore(dt)) {
             downloadReportButton.setEnabled(false);
+        } else {
+            downloadReportButton.setEnabled(true);
         }
 
         downloadReportButton.setOnClickListener(v -> {
