@@ -15,7 +15,6 @@
     "firebase-functions": "^2.0.3",
     "fs-extra": "^7.0.0",
     "json2csv": "^4.2.1",
-    "nodemailer": "^4.6.8",
     "os": "^0.1.1",
     "path": "^0.12.7"
   },

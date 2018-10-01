@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class EvalutionActivity extends AppCompatActivity {
+public class EvaluationActivity extends AppCompatActivity {
 
     HashMap<String, String> attemptedAnswersMap = new HashMap<>();
     ArrayList<Question> questions = new ArrayList<>();
@@ -47,7 +47,7 @@ public class EvalutionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evalution);
+        setContentView(R.layout.activity_evaluation);
         progressBar = findViewById(R.id.progressBar);
         retry = findViewById(R.id.retry);
         textView = findViewById(R.id.textView);
@@ -135,6 +135,6 @@ public class EvalutionActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(EvalutionActivity.this,StudentTestListActivity.class));
+        startActivity(new Intent(EvaluationActivity.this,StudentTestListActivity.class));
     }
 }

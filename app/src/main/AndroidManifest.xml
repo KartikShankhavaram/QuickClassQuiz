@@ -29,7 +29,9 @@
             android:name=".activities.AddQuestionActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activities.TeacherTestListActivity" />
-        <activity android:name=".activities.QuestionListActivity" />
+        <activity
+            android:name=".activities.QuestionListActivity"
+            android:parentActivityName=".activities.TeacherTestListActivity" />
         <activity
             android:name=".activities.AddTestActivity"
             android:excludeFromRecents="true"
@@ -44,7 +46,7 @@
         <activity android:name=".activities.TeacherStartTestActivity" />
         <activity android:name=".activities.StudentTestListActivity" />
         <activity android:name=".activities.StudentStartTestActivity" />
-        <activity android:name=".activities.EvalutionActivity"></activity>
+        <activity android:name=".activities.EvaluationActivity" />
     </application>
 
 </manifest>
