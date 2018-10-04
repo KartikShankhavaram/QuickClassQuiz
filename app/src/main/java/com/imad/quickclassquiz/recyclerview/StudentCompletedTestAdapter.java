@@ -1,6 +1,7 @@
 package com.imad.quickclassquiz.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
@@ -10,7 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.activities.QuestionListActivity;
 import com.imad.quickclassquiz.datamodel.Test;
+import com.imad.quickclassquiz.utils.StaticValues;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -68,7 +71,11 @@ public class StudentCompletedTestAdapter extends RecyclerView.Adapter<StudentCom
 
         viewQuestionsButton.setOnClickListener(v -> {
 
-
+            Intent viewQuestions = new Intent(mContext, QuestionListActivity.class);
+            viewQuestions.putExtra("test", test);
+            viewQuestions.putExtra("started", true);
+            StaticValues.setCurrentTest(test);
+            mContext.startActivity(viewQuestions);
         });
 
     }
