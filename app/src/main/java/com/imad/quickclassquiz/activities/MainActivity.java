@@ -2,7 +2,6 @@ package com.imad.quickclassquiz.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
@@ -18,6 +17,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         Button showTestsButton = findViewById(R.id.showTestsButton);
+        Button completedTest = findViewById(R.id.completedTest);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
@@ -65,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 final boolean isTeacher = intent.getBooleanExtra("teacher", false);
                 rollNo = intent.getStringExtra("rollNumber");
                 Log.e("intent", intent.getBooleanExtra("teacher", false) + "");
-                if (isTeacher)
+                if (isTeacher) {
                     role = "teacher";
+                    completedTest.setEnabled(false);
+                }
                 else
                     role = "student";
                 showTestsButton.setOnClickListener(v -> {
@@ -75,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                     else
                         startActivity(new Intent(this, StudentTestListActivity.class));
 
+                });
+                completedTest.setOnClickListener(v ->{
+                    startActivity(new Intent(MainActivity.this,StudentCompletedTest.class));
                 });
             }
             if (TextUtils.isEmpty(rollNo))
