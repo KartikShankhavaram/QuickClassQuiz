@@ -47,6 +47,14 @@
           }
         },
         {
+          "client_id": "613229284420-2dun29f1gcsn0aplcm3591vp0k91141p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imad.quickclassquiz",
+            "certificate_hash": "e797dc879ade10ad750431bb5be62177ffdfa3f0"
+          }
+        },
+        {
           "client_id": "613229284420-5ps8btoakv7pg01hvqa5ube3qi9jn3n7.apps.googleusercontent.com",
           "client_type": 3
         }
