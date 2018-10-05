@@ -61,9 +61,6 @@ dependencies {
 //  To generate access and master codes
     implementation 'org.apache.commons:commons-text:1.4'
 
-//  For custom fonts
-    implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
-
 //  For Room (sqlite abstraction)
     implementation 'androidx.room:room-runtime:2.0.0-rc01'
     annotationProcessor 'androidx.room:room-compiler:2.0.0-rc01'

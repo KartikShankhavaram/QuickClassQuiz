@@ -155,7 +155,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(mContext, "Updated successfully!", Toast.LENGTH_SHORT).show();
-                                        onTestVisibilityChangeListener.onTestVisibilityChanged();
+                                        onTestVisibilityChangeListener.onTestVisibilityChanged(test);
                                     } else {
                                         Toast.makeText(mContext, "Error in updating visibility.", Toast.LENGTH_SHORT).show();
                                     }
@@ -188,7 +188,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
     }
 
     public interface OnTestVisibilityChangeListener {
-        void onTestVisibilityChanged();
+        void onTestVisibilityChanged(Test test);
     }
 
     public class TeacherUpcomingTestViewHolder extends RecyclerView.ViewHolder {

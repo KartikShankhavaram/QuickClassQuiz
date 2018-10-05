@@ -24,7 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
-public class StudentCompletedTest extends AppCompatActivity {
+public class StudentCompletedTestActivity extends AppCompatActivity {
 
     SwipeRefreshLayout refreshLayout;
     RecyclerView recyclerView;
@@ -47,7 +47,7 @@ public class StudentCompletedTest extends AppCompatActivity {
                 if(internet) {
                     fetchTests();
                 } else {
-                    Toast.makeText(StudentCompletedTest.this, "No internet available.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StudentCompletedTestActivity.this, "No internet available.", Toast.LENGTH_SHORT).show();
                     refreshLayout.setRefreshing(false);
                 }
             });
@@ -75,11 +75,11 @@ public class StudentCompletedTest extends AppCompatActivity {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             Test test = documentSnapshot.toObject(Test.class);
                             DateTime dt = new DateTime(test.getStartedAt());
-                            if(!today.minusMinutes(30).isBefore(dt)) {
+                            if(today.minusMinutes(30).isAfter(dt)) {
                                 teacherTestList.add(test);
                             }
                         }
-                        Toast.makeText(StudentCompletedTest.this, String.valueOf(teacherTestList.size()), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentCompletedTestActivity.this, String.valueOf(teacherTestList.size()), Toast.LENGTH_SHORT).show();
                         adapter.setListContent(teacherTestList);
                         if (teacherTestList.size() == 0) {
                             noStartedTestsTextView.setVisibility(View.VISIBLE);

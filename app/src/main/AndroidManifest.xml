@@ -47,7 +47,7 @@
         <activity android:name=".activities.StudentTestListActivity" />
         <activity android:name=".activities.StudentStartTestActivity" />
         <activity android:name=".activities.EvaluationActivity" />
-        <activity android:name=".activities.StudentCompletedTest" />
+        <activity android:name=".activities.StudentCompletedTestActivity" />
         <activity android:name=".recyclerview.StudentCompletedTestAdapter"></activity>
     </application>
 

@@ -28,7 +28,7 @@
                 android:clipToPadding="false"
                 android:paddingBottom="72dp"
                 android:scrollbars="none"
-                tools:listitem="@layout/card_started_test_teacher" />
+                tools:listitem="@layout/activity_student_completed_test_adapter" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView

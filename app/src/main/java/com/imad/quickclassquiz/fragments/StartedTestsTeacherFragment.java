@@ -127,7 +127,7 @@ public class StartedTestsTeacherFragment extends Fragment {
     public void fetchTests() {
         refreshLayout.setRefreshing(true);
         ArrayList<Test> teacherTestList = new ArrayList<>();
-        adapter.setListContent(teacherTestList);
+//        adapter.setListContent(teacherTestList);
         CollectionReference testsCollection = firestore.collection("tests");
         testsCollection.whereGreaterThan("accessCode", "")
                 .get()

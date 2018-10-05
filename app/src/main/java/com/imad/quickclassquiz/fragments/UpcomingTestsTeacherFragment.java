@@ -45,6 +45,8 @@ public class UpcomingTestsTeacherFragment extends Fragment {
 
     TeacherUpcomingTestListAdapter adapter;
     FirebaseFirestore firestore;
+    ArrayList<Test> testList = new ArrayList<>();
+    LinearLayoutManager layoutManager;
 
     public UpcomingTestsTeacherFragment() {
         // Required empty public constructor
@@ -78,11 +80,12 @@ public class UpcomingTestsTeacherFragment extends Fragment {
                 }
             });
         });
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new LandingAnimator());
-        adapter.setOnTestVisibilityChangedListener(() -> {
+        adapter.setOnTestVisibilityChangedListener(test -> {
             StaticValues.setShouldRefresh(true);
-            fetchTests();
+            fetchTests(test);
         });
         recyclerView.setAdapter(new AlphaInAnimationAdapter(adapter));
         noUpcomingTestsTextView.setVisibility(View.GONE);
@@ -118,6 +121,39 @@ public class UpcomingTestsTeacherFragment extends Fragment {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             teacherTestList.add(documentSnapshot.toObject(Test.class));
                         }
+                        layoutManager.scrollToPositionWithOffset(0, 0);
+                        this.testList = teacherTestList;
+                        adapter.setListContent(teacherTestList);
+                        if (teacherTestList.size() == 0) {
+                            noUpcomingTestsTextView.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            noUpcomingTestsTextView.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Failed to fetch tests.", Toast.LENGTH_SHORT).show();
+                    }
+                    refreshLayout.setRefreshing(false);
+                });
+    }
+
+    public void fetchTests(Test removedTest) {
+        refreshLayout.setRefreshing(true);
+        testList.remove(removedTest);
+        adapter.setListContent(testList);
+        ArrayList<Test> teacherTestList = new ArrayList<>();
+        CollectionReference testsCollection = firestore.collection("tests");
+        testsCollection.whereEqualTo("accessCode", null)
+                .whereEqualTo("masterCode", null)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            teacherTestList.add(documentSnapshot.toObject(Test.class));
+                        }
+                        layoutManager.scrollToPositionWithOffset(0, 0);
+                        this.testList = teacherTestList;
                         adapter.setListContent(teacherTestList);
                         if (teacherTestList.size() == 0) {
                             noUpcomingTestsTextView.setVisibility(View.VISIBLE);

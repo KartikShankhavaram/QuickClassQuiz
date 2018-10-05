@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
                 });
                 completedTest.setOnClickListener(v ->{
-                    startActivity(new Intent(MainActivity.this,StudentCompletedTest.class));
+                    startActivity(new Intent(MainActivity.this,StudentCompletedTestActivity.class));
                 });
             }
             if (TextUtils.isEmpty(rollNo))
