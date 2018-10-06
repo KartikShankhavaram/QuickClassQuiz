@@ -144,15 +144,12 @@ public class TestFragment extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            Log.e("Answers", attemptedAnswersMap.toString());
-            for (Map.Entry<String, String> entry : attemptedAnswersMap.entrySet()) {
-                Log.e("attempt", entry.getKey() + " -> " + checkAnswer(entry.getKey(), entry.getValue()));
-            }
             Intent intent = new Intent(getActivity(),EvaluationActivity.class);
             intent.putExtra("HashMap",attemptedAnswersMap);
             intent.putExtra("Question",questions);
             intent.putExtra("Test",test);
             startActivity(intent);
+            getActivity().finish();
         });
 
         return view;
@@ -201,19 +198,5 @@ public class TestFragment extends Fragment {
         SpannableString ss = new SpannableString(total);
         ss.setSpan(new RelativeSizeSpan(0.5f), start, total.length(), SPAN_INCLUSIVE_INCLUSIVE);
         attemptedQuestionCountTextView.setText(ss);
-    }
-
-    private boolean checkAnswer(String questionId, String attemptedAnswer) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            java.util.Optional<Question> questionOptional = questions.stream().filter(question -> questionId.equals(question.getQuestionId())).findFirst();
-            return questionOptional.map(question -> question.getCorrectOption().equals(attemptedAnswer)).orElse(false);
-        } else {
-            Optional<Question> questionOptional = FluentIterable.from(questions).firstMatch(question -> questionId.equals(question.getQuestionId()));
-            if (questionOptional.isPresent()) {
-                return questionOptional.get().getCorrectOption().equals(attemptedAnswer);
-            } else {
-                return false;
-            }
-        }
     }
 }

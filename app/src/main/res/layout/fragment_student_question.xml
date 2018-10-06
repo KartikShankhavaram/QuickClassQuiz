@@ -179,12 +179,13 @@
 
             </ScrollView>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/clearChoiceButton"
-                style="@style/Widget.AppCompat.Button.Colored"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_margin="8dp"
                 android:text="Clear choices"
                 android:textColor="#FFFFFF"
                 android:theme="@style/BlueButton" />

@@ -175,7 +175,7 @@ public class TeacherTestListActivity extends AppCompatActivity {
         Uri downloadUri = Uri.parse("https://us-central1-quick-class-quiz.cloudfunctions.net/getTestReport");
         DownloadManager.Request request = new DownloadManager.Request(downloadUri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setAllowedOverRoaming(false);
+        request.setAllowedOverRoaming(true);
         String filename = constructFilename(toDownload);
         request.setTitle(filename);
         request.setDescription("Downloading report for " + toDownload.getTestName());

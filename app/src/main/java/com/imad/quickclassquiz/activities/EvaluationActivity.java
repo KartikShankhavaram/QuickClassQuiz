@@ -3,7 +3,10 @@ package com.imad.quickclassquiz.activities;
 import android.content.Intent;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -23,6 +26,7 @@ import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.datamodel.ScoreModel;
 import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.utils.NetworkUtils;
+import com.imad.quickclassquiz.utils.TimestampUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,8 +106,8 @@ public class EvaluationActivity extends AppCompatActivity {
     }
 
     private void sendToDatabase() {
-
-        ScoreModel scoreModel = new ScoreModel(name,roll,String.valueOf(score));
+        String currentTime = TimestampUtils.getISO8601StringForCurrentDate();
+        ScoreModel scoreModel = new ScoreModel(name,roll,String.valueOf(score), currentTime);
         firestore = FirebaseFirestore.getInstance();
         firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
@@ -124,11 +128,16 @@ public class EvaluationActivity extends AppCompatActivity {
     }
 
     private boolean checkAnswer(String questionId, String attemptedAnswer) {
-        Optional<Question> questionOptional = FluentIterable.from(questions).firstMatch(question -> questionId.equals(question.getQuestionId()));
-        if (questionOptional.isPresent()) {
-            return questionOptional.get().getCorrectOption().equals(attemptedAnswer);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            java.util.Optional<Question> questionOptional = questions.stream().filter(question -> questionId.equals(question.getQuestionId())).findFirst();
+            return questionOptional.map(question -> question.getCorrectOption().equals(attemptedAnswer)).orElse(false);
         } else {
-            return false;
+            Optional<Question> questionOptional = FluentIterable.from(questions).firstMatch(question -> questionId.equals(question.getQuestionId()));
+            if (questionOptional.isPresent()) {
+                return questionOptional.get().getCorrectOption().equals(attemptedAnswer);
+            } else {
+                return false;
+            }
         }
     }
 
@@ -136,5 +145,15 @@ public class EvaluationActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(EvaluationActivity.this,StudentTestListActivity.class));
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
     }
 }

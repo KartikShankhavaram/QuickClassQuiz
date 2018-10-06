@@ -13,10 +13,12 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         style="@style/Base_ToolbarStyle"/>
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button"
+        android:theme="@style/BlueButton"
         android:layout_centerInParent="true"
         android:text="Retry"
         android:layout_centerHorizontal="true"/>

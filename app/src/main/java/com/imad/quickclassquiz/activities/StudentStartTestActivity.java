@@ -23,19 +23,22 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.datamodel.Test;
+import com.imad.quickclassquiz.recyclerview.RulesListAdapter;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import net.frakbot.jumpingbeans.JumpingBeans;
 
 import java.util.ArrayList;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StudentStartTestActivity extends AppCompatActivity {
 
-    @BindView(R.id.rulesListView)
-    ListView rulesListView;
+    @BindView(R.id.rulesRecyclerView)
+    RecyclerView rulesRecyclerView;
     @BindView(R.id.airplaneModeEnabledTextView)
     TextView airplaneModeEnabledTextView;
     @BindView(R.id.questionsFetchedStatusTextView)
@@ -108,8 +111,9 @@ public class StudentStartTestActivity extends AppCompatActivity {
         });
 
         String rules[] = getResources().getStringArray(R.array.rules);
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, rules);
-        rulesListView.setAdapter(adapter);
+        rulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RulesListAdapter adapter = new RulesListAdapter(this, rules);
+        rulesRecyclerView.setAdapter(adapter);
 
         questionsFetchedStatusTextView.setOnClickListener(v -> {
             if (!questionsFetched)

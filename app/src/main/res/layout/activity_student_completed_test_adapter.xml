@@ -56,10 +56,12 @@
 
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/showQuestions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
+            android:theme="@style/BlueButton"
             android:layout_marginEnd="2dp"
             android:layout_marginStart="2dp"
             android:textColor="#ff0000"

@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -12,7 +12,7 @@
     </style>
 
     <style name="Base_ToolbarStyle">
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="android:background">?colorPrimary</item>
         <item name="android:theme">@style/Base_ToolbarTheme</item>
         <!--<item name="titleTextAppearance">@style/CustomTitleTextAppearance</item>-->
@@ -26,14 +26,14 @@
         <item name="android:textColorSecondary">@color/primary_text</item>
     </style>
 
-    <!--<style name="CustomTitleTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">-->
+    <!--<style name="CustomTitleTextAppearance" parent="TextAppearance.Widget.MaterialComponents.Toolbar.Title">-->
         <!--<item name="android:fontFamily">@string/ff_roboto_condensed</item>-->
         <!--<item name="android:textSize">16sp</item>-->
         <!--<item name="android:textColor">@color/amber_500_primary</item>-->
         <!--<item name="android:textStyle">bold</item>-->
     <!--</style>-->
 
-    <!--<style name="CustomSubTitleTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">-->
+    <!--<style name="CustomSubTitleTextAppearance" parent="TextAppearance.Widget.MaterialComponents.Toolbar.Subtitle">-->
         <!--<item name="android:fontFamily">@string/ff_roboto_condensed</item>-->
         <!--<item name="android:textSize">14sp</item>-->
         <!--<item name="android:textColor">@color/pink_500_primary</item>-->

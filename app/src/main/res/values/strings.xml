@@ -8,8 +8,8 @@
 
     <string-array name="rules">
         <item>You cannot quit the test window during the test. Doing so will result in immediate disqualification without warning. (Even opening the navigation drawer will disqualify you.)</item>
-        <item>Enable airplane mode before proceeding. This will prevent calls from causing accidentally disqualification/</item>
-        <item>Re-enable WiFi after enabling airplane mode, as enabling airplane mode will disable Wifi.</item>
+        <item>Enable airplane mode before proceeding. This will prevent calls from causing accidentally disqualification.</item>
+        <item>Re-enable WiFi after enabling airplane mode, as enabling airplane mode will disable WiFi.</item>
         <item>You can swipe through the questions. A timer in the upper corner will inform you about the time left. When the time is up, the test will get automatically submitted.</item>
         <item>To submit the test, select the "Submit" option in the top corner and select "Yes" in the confirmation dialog to submit.</item>
         <item>Once you start a test, you cannot retake it under any circumstances.</item>
