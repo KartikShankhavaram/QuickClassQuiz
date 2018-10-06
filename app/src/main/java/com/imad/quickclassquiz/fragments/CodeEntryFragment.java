@@ -65,7 +65,7 @@ public class CodeEntryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_code_entry, container, false);
         ButterKnife.bind(this, view);
 
-        accessCodeButton.setEnabled(true);
+        accessCodeButton.setEnabled(false);
         progressBar.setVisibility(View.GONE);
 
         accessCodeInputLayout.setErrorEnabled(true);

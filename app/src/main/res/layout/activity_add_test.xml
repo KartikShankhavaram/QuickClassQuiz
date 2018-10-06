@@ -64,7 +64,6 @@
                 android:layout_weight="6"
                 android:background="@android:color/transparent"
                 android:text="Cancel"
-                android:textColor="#FFFFFF"
                 android:theme="@style/BlueButton" />
 
             <com.google.android.material.button.MaterialButton
@@ -78,7 +77,6 @@
                 android:layout_weight="6"
                 android:background="@android:color/transparent"
                 android:text="Create"
-                android:textColor="#FFFFFF"
                 android:theme="@style/BlueButton" />
         </LinearLayout>
 

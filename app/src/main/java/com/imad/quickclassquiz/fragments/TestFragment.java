@@ -58,6 +58,7 @@ public class TestFragment extends Fragment {
     int timerColor = 0;
     int numberOfAttemptedQuestions = 0;
     Test test;
+    CountDownTimer countDownTimer;
 
     ArrayList<Question> questions = new ArrayList<>();
 
@@ -92,7 +93,7 @@ public class TestFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_test, container, false);
         ButterKnife.bind(this, view);
         setAttemptedText(String.format(Locale.ENGLISH, "%d / %d", numberOfAttemptedQuestions, questions.size()));
-        new CountDownTimer(50000, 1000) {
+        countDownTimer = new CountDownTimer(50000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 DateTime timeLeft = new DateTime(millisUntilFinished);
@@ -120,7 +121,9 @@ public class TestFragment extends Fragment {
                 intent.putExtra("Test",test);
                 startActivity(intent);
             }
-        }.start();
+        };
+
+        countDownTimer.start();
 
         TestQuestionPagerAdapter adapter = new TestQuestionPagerAdapter(getChildFragmentManager());
         adapter.setFragmentList(getFragmentList());
@@ -165,6 +168,12 @@ public class TestFragment extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        countDownTimer.cancel();
     }
 
     private ArrayList<StudentQuestionFragment> getFragmentList() {

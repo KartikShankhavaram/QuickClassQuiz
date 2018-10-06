@@ -60,19 +60,24 @@ public class TeacherStartTestActivity extends AppCompatActivity {
     @BindView(R.id.noOfSubmissionsTextView)
     TextView noOfSubmissionsTextView;
 
+    @BindView(R.id.noOfAttemptStartedTextView)
+    TextView noOfAttemptStartedTextView;
+
     FirebaseFirestore firestore;
     Test test;
     String url;
-    String finalUrl;
     Boolean generated = false;
     String accessCode;
     String masterCode;
     String time;
     ProgressDialog progressDialog;
-    JumpingBeans jumpingBeans;
-    boolean fetchingData = false;
+    JumpingBeans jumpingBeans[] = new JumpingBeans[2];
+    boolean fetchingSubmissionData = false;
+    boolean fetchingAttemptData = false;
     int submissionCount = 0;
+    int attemptCount = 0;
     ArrayList<String> scoresReference = new ArrayList<>();
+    ArrayList<String> attemptsReference = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,14 +98,16 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         }
 
         deleteCodesButton.setOnClickListener(v -> {
-            if (submissionCount != 0) {
-                String count = Integer.toString(submissionCount);
-                String message = String.format("%s student%s already submitted. Do you want to delete the codes and clear all the submissions?", count, submissionCount == 1 ? " has" : "s have");
+            if (submissionCount != 0 || attemptCount != 0) {
+                String sCount = Integer.toString(submissionCount);
+                String aCount = Integer.toString(attemptCount);
+                String message = String.format("%s student%s already submitted and %s student%s started the test. Do you want to delete the codes and clear all the submissions?", sCount, submissionCount == 1 ? " has" : "s have", aCount, attemptCount == 1 ? " has" : "s have");
                 SpannableStringBuilder ss = new SpannableStringBuilder(message);
-                ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, count.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, sCount.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), message.indexOf("and") + 4, message.indexOf("and") + 4 + aCount.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 new AlertDialog.Builder(this)
                         .setTitle("Delete Codes")
-                        .setMessage(message)
+                        .setMessage(ss)
                         .setPositiveButton("Delete", (dialogInterface, i) -> {
                             deleteCodes(true);
                         })
@@ -113,10 +120,21 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         });
 
         noOfSubmissionsTextView.setOnClickListener(v -> {
-            if (!fetchingData)
+            if (!fetchingSubmissionData)
                 new NetworkUtils(internet -> {
                     if (internet) {
                         showNumberOfSubmissions();
+                    } else {
+                        noOfSubmissionsTextView.setText("No internet available. Click here to try again.");
+                    }
+                });
+        });
+
+        noOfAttemptStartedTextView.setOnClickListener(v -> {
+            if (!fetchingAttemptData)
+                new NetworkUtils(internet -> {
+                    if (internet) {
+                        showNoOfAttempts();
                     } else {
                         noOfSubmissionsTextView.setText("No internet available. Click here to try again.");
                     }
@@ -189,8 +207,10 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         new NetworkUtils(internet -> {
             if (internet) {
                 showNumberOfSubmissions();
+                showNoOfAttempts();
             } else {
                 noOfSubmissionsTextView.setText("No internet available. Click here to try again.");
+                noOfAttemptStartedTextView.setText("No internet available. Click here to try again.");
             }
         });
     }
@@ -198,15 +218,18 @@ public class TeacherStartTestActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (jumpingBeans != null)
-            jumpingBeans.stopJumping();
+        for (JumpingBeans beans : jumpingBeans) {
+            if (beans != null) {
+                beans.stopJumping();
+            }
+        }
     }
 
     private void showNumberOfSubmissions() {
         CollectionReference ref = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/scores", test.getTestId()));
         noOfSubmissionsTextView.setText("Fetching number of submissions ");
-        jumpingBeans = JumpingBeans.with(noOfSubmissionsTextView).appendJumpingDots().build();
-        fetchingData = true;
+        jumpingBeans[0] = JumpingBeans.with(noOfSubmissionsTextView).appendJumpingDots().build();
+        fetchingSubmissionData = true;
         ref.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 scoresReference = new ArrayList<>();
@@ -215,7 +238,7 @@ public class TeacherStartTestActivity extends AppCompatActivity {
                 }
                 submissionCount = task.getResult().size();
                 String count = Integer.toString(submissionCount);
-                String countString = count + " submissions till now.";
+                String countString = count + " submission" + (submissionCount == 1 ? "" : "s") + " till now.";
                 SpannableStringBuilder ss = new SpannableStringBuilder(countString);
                 ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, count.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 ss.setSpan(new RelativeSizeSpan(1.5f), 0, count.length(), SPAN_INCLUSIVE_INCLUSIVE);
@@ -223,8 +246,35 @@ public class TeacherStartTestActivity extends AppCompatActivity {
             } else {
                 noOfSubmissionsTextView.setText("Could not fetch number of submissions. Click here to try again.");
             }
-            fetchingData = false;
-            jumpingBeans.stopJumping();
+            fetchingSubmissionData = false;
+            jumpingBeans[0].stopJumping();
+        });
+    }
+
+    private void showNoOfAttempts() {
+        CollectionReference ref = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/attempts", test.getTestId()));
+        noOfAttemptStartedTextView.setText("Fetching number of students who have started test ");
+        jumpingBeans[1] = JumpingBeans.with(noOfAttemptStartedTextView).appendJumpingDots().build();
+        fetchingAttemptData = true;
+        ref.whereEqualTo("started", true)
+                .get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                attemptsReference = new ArrayList<>();
+                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                    attemptsReference.add(snapshot.getId());
+                }
+                attemptCount = task.getResult().size();
+                String count = Integer.toString(attemptCount);
+                String countString = String.format(Locale.ENGLISH, "%s student%s started the test.", attemptCount, attemptCount == 1 ? " has" : "s have");
+                SpannableStringBuilder ss = new SpannableStringBuilder(countString);
+                ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, count.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                ss.setSpan(new RelativeSizeSpan(1.5f), 0, count.length(), SPAN_INCLUSIVE_INCLUSIVE);
+                noOfAttemptStartedTextView.setText(ss);
+            } else {
+                noOfAttemptStartedTextView.setText("Could not fetch data. Click here to try again.");
+            }
+            fetchingAttemptData = false;
+            jumpingBeans[1].stopJumping();
         });
     }
 
@@ -246,6 +296,10 @@ public class TeacherStartTestActivity extends AppCompatActivity {
                         for (String scoreRefString : scoresReference) {
                             DocumentReference scoreRef = firestore.document(testRefString + "/scores/" + scoreRefString);
                             transaction.delete(scoreRef);
+                        }
+                        for (String attemptRefString : attemptsReference) {
+                            DocumentReference attemptRef = firestore.document(testRefString + "/attempts/" + attemptRefString);
+                            transaction.delete(attemptRef);
                         }
                     }
                     return null;

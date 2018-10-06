@@ -187,7 +187,6 @@
                 android:layout_gravity="bottom"
                 android:layout_margin="8dp"
                 android:text="Clear choices"
-                android:textColor="#FFFFFF"
                 android:theme="@style/BlueButton" />
 
         </LinearLayout>

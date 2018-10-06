@@ -77,10 +77,12 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
 
         if (!test.getVisible()) {
             startTestButton.setEnabled(false);
-            testVisibilityToggleButton.setText("Make test public");
+            testVisibilityToggleButton.setText("Make Test Public");
+            editTestButton.setEnabled(true);
         } else {
-            testVisibilityToggleButton.setText("Make test private");
+            testVisibilityToggleButton.setText("Make Test Private");
             startTestButton.setEnabled(true);
+            editTestButton.setEnabled(false);
         }
 
         String testName = test.getTestName();

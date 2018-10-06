@@ -1,22 +1,22 @@
 package com.imad.quickclassquiz.activities;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -25,11 +25,15 @@ import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.recyclerview.RulesListAdapter;
 import com.imad.quickclassquiz.utils.NetworkUtils;
+import com.imad.quickclassquiz.utils.TimestampUtils;
 
 import net.frakbot.jumpingbeans.JumpingBeans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -97,13 +101,12 @@ public class StudentStartTestActivity extends AppCompatActivity {
             }
         });
 
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
         beginTestButton.setOnClickListener(v -> {
             new NetworkUtils(internet -> {
-                Intent toTest = new Intent(this, TestActivity.class);
-                toTest.putExtra("questions", questions);
-                toTest.putExtra("test", test);
-                if(internet) {
-                    startActivity(toTest);
+                if (internet) {
+                    addStudentToAttemptedList(account.getId());
                 } else {
                     Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
                 }
@@ -228,5 +231,33 @@ public class StudentStartTestActivity extends AppCompatActivity {
             Log.e("Button", "disabled");
             beginTestButton.setEnabled(false);
         }
+    }
+
+    private void addStudentToAttemptedList(String uid) {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle("Begin test");
+        dialog.setMessage("Please wait while your attempt is started...");
+        dialog.setCanceledOnTouchOutside(false);
+
+        HashMap<String, Object> attemptMap = new HashMap<>();
+        attemptMap.put("attemptStartTime", TimestampUtils.getISO8601StringForCurrentDate());
+        attemptMap.put("started", false);
+
+        CollectionReference attemptListRef = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/attempts", test.getTestId()));
+
+        dialog.show();
+        attemptListRef.document(uid).set(attemptMap).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                Toast.makeText(this, "Attempt started successfully!", Toast.LENGTH_SHORT).show();
+                Intent toTest = new Intent(this, TestActivity.class);
+                toTest.putExtra("questions", questions);
+                toTest.putExtra("test", test);
+                startActivity(toTest);
+                finish();
+            } else {
+                Toast.makeText(this, "Could not start attempt. Please try again.!", Toast.LENGTH_SHORT).show();
+            }
+            dialog.dismiss();
+        });
     }
 }

@@ -60,7 +60,7 @@ public class EvaluationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Evalution");
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDefaultDisplayHomeAsUpEnabled(true);
         }
         retry.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
@@ -154,6 +154,6 @@ public class EvaluationActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 }
