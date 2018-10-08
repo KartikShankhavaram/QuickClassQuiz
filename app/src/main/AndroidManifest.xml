@@ -48,7 +48,8 @@
         <activity android:name=".activities.StudentStartTestActivity" />
         <activity android:name=".activities.EvaluationActivity" />
         <activity android:name=".activities.StudentCompletedTestActivity" />
-        <activity android:name=".recyclerview.StudentCompletedTestAdapter"></activity>
+        <activity android:name=".recyclerview.StudentCompletedTestAdapter" />
+        <activity android:name=".fragments.AvailableTestFragemnet"></activity>
     </application>
 
 </manifest>

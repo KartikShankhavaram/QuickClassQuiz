@@ -6,5 +6,5 @@
         android:id="@+id/addQuestion"
         android:title="AddQuestion"
         android:icon="@drawable/ic_add_white_24dp"
-        app:showAsAction="always"/>
+        android:showAsAction="always" />
 </menu>

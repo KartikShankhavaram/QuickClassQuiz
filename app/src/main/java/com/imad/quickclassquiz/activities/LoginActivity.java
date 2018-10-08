@@ -3,7 +3,6 @@ package com.imad.quickclassquiz.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,6 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -74,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e(TAG, "document email -> " + document.get("email"));
                             Log.e(TAG, "email comparison -> " + account.getEmail().equals(document.get("email")));
                             found = true;
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class)
+                            startActivity(new Intent(LoginActivity.this, TeacherTestListActivity.class)
                                     .putExtra("teacher", true)
                                     .putExtra("rollNumber", "")
                                     .putExtra("from", "login"));
@@ -143,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e(TAG, "email comparison -> " + email.equals(document.get("email")));
                             progress.dismiss();
                             found = true;
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class)
+                            startActivity(new Intent(LoginActivity.this, TeacherTestListActivity.class)
                                     .putExtra("teacher", true)
                                     .putExtra("rollNumber", "")
                                     .putExtra("from", "login"));

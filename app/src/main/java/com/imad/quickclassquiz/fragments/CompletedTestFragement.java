@@ -1,7 +1,11 @@
-package com.imad.quickclassquiz.activities;
+package com.imad.quickclassquiz.fragments;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,51 +21,61 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
-public class StudentCompletedTestActivity extends AppCompatActivity {
 
+public class CompletedTestFragement extends Fragment {
     SwipeRefreshLayout refreshLayout;
     RecyclerView recyclerView;
     TextView noStartedTestsTextView;
     StudentCompletedTestAdapter adapter;
     FirebaseFirestore firestore;
 
+    public CompletedTestFragement() {
+        // Required empty public constructor
+    }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_completed_test);
         firestore = FirebaseFirestore.getInstance();
-        adapter = new StudentCompletedTestAdapter(this);
-        refreshLayout = findViewById(R.id.completedTestListSwipeRefresh);
-        recyclerView = findViewById(R.id.completedTestListRecyclerView);
-        noStartedTestsTextView = findViewById(R.id.noCompletedTestsTextView);
+        adapter = new StudentCompletedTestAdapter(getContext());
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView =  inflater.inflate(R.layout.fragment_completed_test_fragement, container, false);
+        refreshLayout = rootView.findViewById(R.id.completedTestListSwipeRefresh);
+        recyclerView = rootView.findViewById(R.id.completedTestListRecyclerView);
+        noStartedTestsTextView = rootView.findViewById(R.id.noCompletedTestsTextView);
 
         refreshLayout.setOnRefreshListener(() -> {
             new NetworkUtils(internet -> {
                 if(internet) {
                     fetchTests();
                 } else {
-                    Toast.makeText(StudentCompletedTestActivity.this, "No internet available.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "No internet available.", Toast.LENGTH_SHORT).show();
                     refreshLayout.setRefreshing(false);
                 }
             });
         });
         fetchTests();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new LandingAnimator());
         recyclerView.setAdapter(new AlphaInAnimationAdapter(adapter));
         noStartedTestsTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
+        return rootView;
     }
-
 
     public void fetchTests() {
         refreshLayout.setRefreshing(true);
@@ -80,7 +94,6 @@ public class StudentCompletedTestActivity extends AppCompatActivity {
                                 teacherTestList.add(test);
                             }
                         }
-                        Toast.makeText(StudentCompletedTestActivity.this, String.valueOf(teacherTestList.size()), Toast.LENGTH_SHORT).show();
                         adapter.setListContent(teacherTestList);
                         if (teacherTestList.size() == 0) {
                             noStartedTestsTextView.setVisibility(View.VISIBLE);
@@ -93,4 +106,5 @@ public class StudentCompletedTestActivity extends AppCompatActivity {
                     refreshLayout.setRefreshing(false);
                 });
     }
+
 }
