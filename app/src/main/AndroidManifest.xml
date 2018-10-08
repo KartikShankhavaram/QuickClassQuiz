@@ -44,10 +44,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activities.EditQuestionActivity" />
         <activity android:name=".activities.TeacherStartTestActivity" />
-        <activity android:name=".activities.StudentTestListActivity" />
         <activity android:name=".activities.StudentStartTestActivity" />
         <activity android:name=".activities.EvaluationActivity" />
-        <activity android:name=".activities.StudentCompletedTestActivity" />
         <activity android:name=".recyclerview.StudentCompletedTestAdapter" />
         <activity android:name=".fragments.AvailableTestFragemnet"></activity>
     </application>
