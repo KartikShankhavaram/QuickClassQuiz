@@ -1,11 +1,8 @@
 package com.imad.quickclassquiz.activities;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,6 +18,12 @@ import com.imad.quickclassquiz.fragments.TestFragment;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,11 +35,32 @@ public class TestActivity extends AppCompatActivity {
     FrameLayout testFragmentHolder;
     ArrayList<Question> questions = new ArrayList<>();
     Test test;
+    boolean proceedingToSubmit;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Toast.makeText(this, String.format("Window %s focus!", (hasFocus ? "has" : "lost")), Toast.LENGTH_SHORT).show();
+        if(!(hasFocus || proceedingToSubmit)) {
+            Toast.makeText(this, "Because of your leaving the app during the test, you have been kicked out.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+            NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, getPackageName())
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle("You have been kicked out")
+                    .setContentText("You have been kicked out of the test because you left the app during the test.")
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText("You have been kicked out of the test because you left the app during the test."))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(13371, nBuilder.build());
+
+            finish();
+        }
+//        Toast.makeText(this, String.format("Window %s focus!", (hasFocus ? "has" : "lost")), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -83,15 +107,15 @@ public class TestActivity extends AppCompatActivity {
         switch (fragmentType) {
             case ACCESS_CODE_ENTRY_FRAGMENT:
                 transaction = manager.beginTransaction();
-                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 fragment = CodeEntryFragment.newInstance(test);
                 transaction.replace(R.id.testFragmentHolder, fragment);
                 transaction.commit();
                 return true;
             case TEST_FRAGMENT:
                 transaction = manager.beginTransaction();
-                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                fragment = TestFragment.newInstance(questions,test);
+                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                fragment = TestFragment.newInstance(questions, test);
                 transaction.replace(R.id.testFragmentHolder, fragment);
                 transaction.commit();
                 return true;
@@ -108,5 +132,9 @@ public class TestActivity extends AppCompatActivity {
         } else {
             return super.onKeyDown(keyCode, event);
         }
+    }
+
+    public void setProceedingToSubmit(boolean proceedingToSubmit) {
+        this.proceedingToSubmit = proceedingToSubmit;
     }
 }

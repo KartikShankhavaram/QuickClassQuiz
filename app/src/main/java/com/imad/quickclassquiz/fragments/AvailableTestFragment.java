@@ -15,6 +15,8 @@ import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.recyclerview.StudentTestListAdapter;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
@@ -29,7 +31,7 @@ import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 
-public class AvailableTestFragement extends Fragment {
+public class AvailableTestFragment extends Fragment {
 
     @BindView(R.id.studentTestListToolbar)
     Toolbar toolbar;
@@ -43,21 +45,16 @@ public class AvailableTestFragement extends Fragment {
     @BindView(R.id.noActiveTestsTextView)
     TextView noActiveTestsTextView;
 
-
-
     FirebaseFirestore firestore;
     StudentTestListAdapter adapter;
 
-
-
-
-    public AvailableTestFragement() {
+    public AvailableTestFragment() {
         // Required empty public constructor
     }
 
 
-    public static AvailableTestFragement newInstance() {
-        AvailableTestFragement fragment = new AvailableTestFragement();
+    public static AvailableTestFragment newInstance() {
+        AvailableTestFragment fragment = new AvailableTestFragment();
         return fragment;
     }
 
@@ -71,7 +68,7 @@ public class AvailableTestFragement extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_available_test_fragement, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_available_tests_student, container, false);
         ButterKnife.bind(this, rootView);
 
 
@@ -124,7 +121,8 @@ public class AvailableTestFragement extends Fragment {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot snapshot : task.getResult()) {
                             Test test = snapshot.toObject(Test.class);
-                            list.add(test);
+                            if (test.getStartedAt() == null || new DateTime(test.getStartedAt()).plusMinutes(30).isAfter(new DateTime()))
+                                list.add(test);
                         }
                         adapter.setListContent(list);
                         if (list.size() == 0) {

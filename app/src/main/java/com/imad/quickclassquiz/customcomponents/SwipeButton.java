@@ -7,8 +7,10 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.CountDownTimer;
 import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
@@ -131,6 +133,15 @@ public class SwipeButton extends RelativeLayout {
                             slidingButton.getX() > 0) {
                         slidingButton.setX(0);
                     }
+                    Resources r = getResources();
+                    Drawable[] layers = new Drawable[2];
+                    layers[1] = r.getDrawable(R.drawable.ic_submit_filled);
+                    layers[0] = r.getDrawable(R.drawable.ic_submit_outline);
+                    int alphaValue = (int)(256 * (slidingButton.getX() + slidingButton.getWidth() / 2) / getWidth());
+                    layers[1].setAlpha(alphaValue);
+                    layers[0].setAlpha(256 - alphaValue);
+                    LayerDrawable layerDrawable = new LayerDrawable(layers);
+                    slidingButton.setImageDrawable(layerDrawable);
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (active) {
@@ -138,20 +149,9 @@ public class SwipeButton extends RelativeLayout {
                     } else {
                         initialButtonWidth = slidingButton.getWidth();
 
-                        if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.85) {
-                            expandButton();
+                        if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.99) {
+                            //expandButton();
                             v.performClick();
-                            new CountDownTimer(1000, 1000) {
-                                @Override
-                                public void onTick(long millisUntilFinished) {
-
-                                }
-
-                                @Override
-                                public void onFinish() {
-                                    collapseButton();
-                                }
-                            }.start();
                         } else {
                             moveButtonBack();
                         }
@@ -228,6 +228,15 @@ public class SwipeButton extends RelativeLayout {
     }
 
     private void moveButtonBack() {
+        Resources r = getResources();
+        Drawable[] layers = new Drawable[2];
+        layers[1] = r.getDrawable(R.drawable.ic_submit_filled);
+        layers[0] = r.getDrawable(R.drawable.ic_submit_outline);
+        layers[1].setAlpha(0);
+        layers[0].setAlpha(255);
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+        slidingButton.setImageDrawable(layerDrawable);
+
         final ValueAnimator positionAnimator =
                 ValueAnimator.ofFloat(slidingButton.getX(), 0);
         positionAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -244,5 +253,9 @@ public class SwipeButton extends RelativeLayout {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(objectAnimator, positionAnimator);
         animatorSet.start();
+    }
+
+    public void shrinkButton() {
+        moveButtonBack();
     }
 }

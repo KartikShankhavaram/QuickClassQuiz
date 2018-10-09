@@ -38,7 +38,7 @@ public class StudentCompletedTestAdapter extends RecyclerView.Adapter<StudentCom
     @NonNull
     @Override
     public StudentCompletedTestAdapter.TeacherStartedTestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = inflater.inflate(R.layout.activity_student_completed_test_adapter, parent, false);
+        View itemView = inflater.inflate(R.layout.card_student_completed_test, parent, false);
         JodaTimeAndroid.init(mContext);
         return new StudentCompletedTestAdapter.TeacherStartedTestViewHolder(itemView);
     }

@@ -4,7 +4,6 @@ import com.imad.quickclassquiz.datamodel.Test;
 
 public class StaticValues {
     private static Test currentTest;
-
     private static Boolean shouldRefresh = false;
 
     public static Test getCurrentTest() {

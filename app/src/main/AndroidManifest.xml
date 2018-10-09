@@ -17,7 +17,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.TestActivity" />
+        <activity android:name=".activities.TestActivity"
+            android:resizeableActivity="false"
+            tools:targetApi="n" />
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,8 +48,6 @@
         <activity android:name=".activities.TeacherStartTestActivity" />
         <activity android:name=".activities.StudentStartTestActivity" />
         <activity android:name=".activities.EvaluationActivity" />
-        <activity android:name=".recyclerview.StudentCompletedTestAdapter" />
-        <activity android:name=".fragments.AvailableTestFragemnet"></activity>
     </application>
 
 </manifest>

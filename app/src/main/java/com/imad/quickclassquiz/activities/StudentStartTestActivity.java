@@ -183,6 +183,7 @@ public class StudentStartTestActivity extends AppCompatActivity {
         new NetworkUtils(internet -> {
             if (internet) {
                 if (test != null) {
+                    questions = new ArrayList<>();
                     String url = String.format("tests/%s/questions", test.getTestId());
                     questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskExecuting));
                     questionsFetchedStatusTextView.setText("Fetching questions");

@@ -29,14 +29,14 @@ import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 
-public class CompletedTestFragement extends Fragment {
+public class CompletedTestFragment extends Fragment {
     SwipeRefreshLayout refreshLayout;
     RecyclerView recyclerView;
     TextView noStartedTestsTextView;
     StudentCompletedTestAdapter adapter;
     FirebaseFirestore firestore;
 
-    public CompletedTestFragement() {
+    public CompletedTestFragment() {
         // Required empty public constructor
     }
 

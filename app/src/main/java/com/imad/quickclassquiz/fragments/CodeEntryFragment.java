@@ -1,12 +1,10 @@
 package com.imad.quickclassquiz.fragments;
 
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +12,17 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.TestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
 
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -102,26 +106,39 @@ public class CodeEntryFragment extends Fragment {
 
     private void verifyCode(String enteredCode) {
 //        if (test.getAccessCode() == null) {
-            setLoadingState(true);
-            String url = "tests/" + test.getTestId();
-            firestore.document(url)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Test test = task.getResult().toObject(Test.class);
-                            String accessCode = test.getAccessCode();
-                            if (TextUtils.equals(enteredCode, accessCode)) {
-                                Toast.makeText(getContext(), "Access Code validated!", Toast.LENGTH_SHORT).show();
-                                ((TestActivity)getContext()).switchFragment(TestActivity.TEST_FRAGMENT);
-                            } else {
-                                Toast.makeText(getContext(), "Incorrect Code. Please try again.", Toast.LENGTH_SHORT).show();
-                                accessCodeInputLayout.setError("Incorrect code");
-                            }
-                        } else {
-                            Toast.makeText(getContext(), "Could not validate code. Try again.", Toast.LENGTH_SHORT).show();
-                        }
-                        setLoadingState(false);
-                    });
+        int PASSWORD_WRONG = 0;
+        int PASSWORD_CORRECT = 1;
+        setLoadingState(true);
+        String testUrl = "tests/" + test.getTestId();
+        String attemptUrl = "tests/" + test.getTestId() + "/attempts/" + GoogleSignIn.getLastSignedInAccount(getContext()).getId();
+        DocumentReference testRef = firestore.document(testUrl);
+        DocumentReference attemptRef = firestore.document(attemptUrl);
+        Log.e("attemptUrl", attemptUrl);
+        firestore.runTransaction(transaction -> {
+            DocumentSnapshot testDetails = transaction.get(testRef);
+            String accessCode = testDetails.toObject(Test.class).getAccessCode();
+            transaction.update(testRef, "accessCode", accessCode);
+            if (TextUtils.equals(enteredCode, accessCode)) {
+                transaction.update(attemptRef, "started", true);
+                return PASSWORD_CORRECT;
+            } else {
+                return PASSWORD_WRONG;
+            }
+        }).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult() == PASSWORD_CORRECT) {
+                    Toast.makeText(getContext(), "Access Code validated!", Toast.LENGTH_SHORT).show();
+                    ((TestActivity) getContext()).switchFragment(TestActivity.TEST_FRAGMENT);
+                } else {
+                    Toast.makeText(getContext(), "Incorrect Code. Please try again.", Toast.LENGTH_SHORT).show();
+                    accessCodeInputLayout.setError("Incorrect code");
+                }
+            } else {
+                Toast.makeText(getContext(), "Could not validate code. Try again.", Toast.LENGTH_SHORT).show();
+                task.getException().printStackTrace();
+            }
+            setLoadingState(false);
+        });
 //        }
     }
 

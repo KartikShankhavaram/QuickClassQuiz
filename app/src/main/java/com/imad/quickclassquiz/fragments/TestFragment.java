@@ -1,5 +1,6 @@
 package com.imad.quickclassquiz.fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.EvaluationActivity;
+import com.imad.quickclassquiz.activities.TestActivity;
 import com.imad.quickclassquiz.customcomponents.SwipeButton;
 import com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage;
 import com.imad.quickclassquiz.datamodel.Question;
@@ -34,6 +37,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
@@ -59,6 +63,8 @@ public class TestFragment extends Fragment {
     int numberOfAttemptedQuestions = 0;
     Test test;
     CountDownTimer countDownTimer;
+    int submissionTries = 0;
+
 
     ArrayList<Question> questions = new ArrayList<>();
 
@@ -96,9 +102,9 @@ public class TestFragment extends Fragment {
         countDownTimer = new CountDownTimer(50000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                DateTime timeLeft = new DateTime(millisUntilFinished);
+                Log.e("millis", millisUntilFinished + "");
                 DateTimeFormatter a = DateTimeFormat.forPattern("m:ss");
-                timerTextView.setText(a.print(timeLeft));
+                timerTextView.setText(a.print(millisUntilFinished));
                 if (millisUntilFinished > 30000) {
                     timerTextView.setTextColor(getResources().getColor(R.color.colorNormalRemainingTime));
                 } else {
@@ -147,12 +153,32 @@ public class TestFragment extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(),EvaluationActivity.class);
-            intent.putExtra("HashMap",attemptedAnswersMap);
-            intent.putExtra("Question",questions);
-            intent.putExtra("Test",test);
-            startActivity(intent);
-            getActivity().finish();
+            CountDownTimer a = new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    submissionTries = 0;
+                }
+            };
+            if(submissionTries == 0) {
+                submitButton.shrinkButton();
+                Toast.makeText(getContext(), "Swipe again to submit.", Toast.LENGTH_SHORT).show();
+                submissionTries = 1;
+                a.start();
+            } else if(submissionTries == 1) {
+                a.cancel();
+                ((TestActivity)getContext()).setProceedingToSubmit(true);
+                Intent intent = new Intent(getActivity(),EvaluationActivity.class);
+                intent.putExtra("HashMap",attemptedAnswersMap);
+                intent.putExtra("Question",questions);
+                intent.putExtra("Test",test);
+                startActivity(intent);
+                getActivity().finish();
+            }
         });
 
         return view;
@@ -168,11 +194,6 @@ public class TestFragment extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         countDownTimer.cancel();
     }
 

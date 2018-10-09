@@ -158,8 +158,8 @@ public class TeacherStartTestActivity extends AppCompatActivity {
 
             progressDialog.show();
 
-            accessCode = RandomCodeGenerator.getRandomCode(6);
-            masterCode = RandomCodeGenerator.getRandomCode(6);
+            accessCode = RandomCodeGenerator.getRandomCode(6, test.getTestId());
+            masterCode = RandomCodeGenerator.getRandomCode(6, test.getTestId());
 
             test.setAccessCode(accessCode);
             test.setMasterCode(masterCode);

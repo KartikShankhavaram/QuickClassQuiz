@@ -60,7 +60,7 @@ public class EvaluationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Evalution");
-            actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
         retry.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
@@ -89,19 +89,17 @@ public class EvaluationActivity extends AppCompatActivity {
                 retry.setEnabled(true);
             }
         });
-        retry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                new NetworkUtils(internet -> {
-                    if(internet){
-                        retry.setEnabled(false);
-                        sendToDatabase();
-                    }else{
-                        retry.setEnabled(true);
-                    }
-                });
-            }
+        retry.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            new NetworkUtils(internet -> {
+                if(internet){
+                    retry.setEnabled(false);
+                    sendToDatabase();
+                }else{
+                    retry.setEnabled(true);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
         });
     }
 
@@ -150,9 +148,11 @@ public class EvaluationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.home) {
-            onBackPressed();
-            return true;
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                this.onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
