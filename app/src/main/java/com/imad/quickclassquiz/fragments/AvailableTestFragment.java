@@ -20,7 +20,6 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,8 +32,7 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 public class AvailableTestFragment extends Fragment {
 
-    @BindView(R.id.studentTestListToolbar)
-    Toolbar toolbar;
+
 
     @BindView(R.id.activeTestListRecyclerView)
     RecyclerView recyclerView;

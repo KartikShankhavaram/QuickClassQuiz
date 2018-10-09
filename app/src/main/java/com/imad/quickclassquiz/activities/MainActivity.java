@@ -13,9 +13,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.fragments.AvailableTestFragment;
 import com.imad.quickclassquiz.fragments.CompletedTestFragment;
-import com.imad.quickclassquiz.utils.StaticValues;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FirebaseFirestore firestore;
     private FrameLayout frameLayout;
     private BottomNavigationView bottomNavigationView;
-
+    private Toolbar toolbar;
     private AvailableTestFragment availableTestFragment;
 
     @Override
@@ -40,7 +41,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        String username = getIntent().getStringExtra("rollNumber");
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Hi " + username);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         createNotificationChannel();
 
         frameLayout = findViewById(R.id.main_frame);

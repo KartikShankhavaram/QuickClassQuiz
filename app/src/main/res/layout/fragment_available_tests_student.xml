@@ -10,14 +10,6 @@
         android:layout_height="match_parent"
         tools:context=".activities.StudentTestListActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/studentTestListToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Base_ToolbarStyle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/activeTestListSwipeRefresh"
@@ -26,7 +18,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/studentTestListToolbar">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/activeTestListRecyclerView"
