@@ -117,6 +117,8 @@ public class StudentStartTestActivity extends AppCompatActivity {
         RulesListAdapter adapter = new RulesListAdapter(this, rules);
         rulesRecyclerView.setAdapter(adapter);
 
+        fetchTestQuestions();
+
         questionsFetchedStatusTextView.setOnClickListener(v -> {
             if (!questionsFetched)
                 fetchTestQuestions();
@@ -127,7 +129,6 @@ public class StudentStartTestActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         checkForCompletion();
-        fetchTestQuestions();
     }
 
     @Override

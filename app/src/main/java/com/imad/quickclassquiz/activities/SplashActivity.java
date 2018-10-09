@@ -1,6 +1,7 @@
 package com.imad.quickclassquiz.activities;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.NotificationChannel;
@@ -23,6 +24,9 @@ import com.imad.quickclassquiz.utils.NetworkUtils;
 
 public class SplashActivity extends AppCompatActivity {
 
+    FirebaseFirestore firestore;
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +34,33 @@ public class SplashActivity extends AppCompatActivity {
 
         createNotificationChannel();
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
-        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
+        proceedInApp();
+
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Kick Out Notification";
+            String description = "This notification informs you when you have been kicked out of the test for leaving the app.";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(getPackageName(), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void proceedInApp() {
+        progressBar.setVisibility(View.VISIBLE);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         new NetworkUtils(internet -> {
             if(internet) {
@@ -70,26 +96,18 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             } else {
-                Toast.makeText(this, "There is no internet connection. Connect to internet and open the app again.", Toast.LENGTH_SHORT).show();
-                finish();
+                progressBar.setVisibility(View.GONE);
+                new AlertDialog.Builder(this)
+                        .setCancelable(false)
+                        .setTitle("No internet connection")
+                        .setMessage("You need an internet connection to work with this app. Check your internet connection.")
+                        .setPositiveButton("Retry", (dialog, which) -> {
+                            dialog.dismiss();
+                            proceedInApp();
+                        })
+                        .show();
             }
         });
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Kick Out Notification";
-            String description = "This notification informs you when you have been kicked out of the test for leaving the app.";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(getPackageName(), name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 
 }
