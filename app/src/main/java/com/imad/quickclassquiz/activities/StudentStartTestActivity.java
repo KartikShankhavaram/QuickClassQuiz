@@ -72,7 +72,6 @@ public class StudentStartTestActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         handleAirplaneModeStatus();
 

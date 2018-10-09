@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.sign_in_button);
 
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         progress = new ProgressDialog(this);
         progress.setCanceledOnTouchOutside(false);
@@ -58,45 +58,15 @@ public class LoginActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        if (account != null) {
-            progress.show();
-            String email = account.getEmail();
-            String[] parts = email.split("@");
-            String username = parts[0];
-            CollectionReference teachers = firestore.collection("teachers");
-            teachers.get().addOnCompleteListener(task -> {
-                boolean found = false;
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (account.getEmail() != null && account.getEmail().equals(document.get("email"))) {
-                            progress.dismiss();
-                            Log.e(TAG, "document email -> " + document.get("email"));
-                            Log.e(TAG, "email comparison -> " + account.getEmail().equals(document.get("email")));
-                            found = true;
-                            startActivity(new Intent(LoginActivity.this, TeacherTestListActivity.class)
-                                    .putExtra("teacher", true)
-                                    .putExtra("rollNumber", "")
-                                    .putExtra("from", "login"));
-                            finish();
-                        }
-                    }
-                    if(!found) {
-                        progress.dismiss();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class)
-                                .putExtra("teacher", false)
-                                .putExtra("rollNumber", username)
-                                .putExtra("from", "login"));
-                        finish();
-                    }
+        signInButton.setOnClickListener(v -> {
+            new NetworkUtils(internet -> {
+                if(internet) {
+                    progress.show();
+                    signIn();
+                } else {
+                    Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-
-        signInButton.setOnClickListener(v -> {
-            progress.show();
-            signIn();
         });
     }
 
@@ -109,8 +79,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e(TAG, "onActivityResult");
-        Log.e(TAG, "requestCode -> " + requestCode);
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
             // The Task returned from this call is always completed, no need to attach
@@ -130,10 +98,6 @@ public class LoginActivity extends AppCompatActivity {
             String email = account.getEmail();
             String[] parts = email.split("@");
             String username = parts[0];
-            Log.e(TAG, "email -> " + email);
-            Log.e(TAG, "name -> " + account.getDisplayName());
-            Log.e(TAG, "Roll number -> " + username);
-            Log.e(TAG, "email matched -> ");
             CollectionReference teachers = firestore.collection("teachers");
             teachers.get().addOnCompleteListener(task -> {
                 boolean found = false;
@@ -157,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(this, "Please enter your email in the format \"16ucs088@lnmiit.ac.in\".", Toast.LENGTH_SHORT).show();
                             mGoogleSignInClient.signOut();
                         } else {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class)
+                            startActivity(new Intent(LoginActivity.this, StudentTestListActivity.class)
                                     .putExtra("teacher", false)
                                     .putExtra("rollNumber", username)
                                     .putExtra("from", "login"));

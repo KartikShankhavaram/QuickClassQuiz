@@ -48,7 +48,6 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
         mContext = context;
         inflater = LayoutInflater.from(mContext);
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
     }
 
     @NonNull

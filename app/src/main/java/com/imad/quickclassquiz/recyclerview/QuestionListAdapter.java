@@ -40,7 +40,6 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         this.editable = editable;
         inflater = LayoutInflater.from(mContext);
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
     }
 
     @Override

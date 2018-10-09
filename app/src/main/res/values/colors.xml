@@ -11,4 +11,5 @@
     <color name="colorTaskExecuting">@android:color/black</color>
     <color name="colorNormalRemainingTime">#00AA00</color>
     <color name="colorLessRemainingTime">#FF0000</color>
+    <color name="splashBackgroundColor">#FFFFFF</color>
 </resources>

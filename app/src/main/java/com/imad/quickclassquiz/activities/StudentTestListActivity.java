@@ -1,12 +1,12 @@
 package com.imad.quickclassquiz.activities;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class StudentTestListActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     GoogleSignInClient mGoogleSignInClient;
     FirebaseFirestore firestore;
@@ -40,16 +40,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_student_test_list);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        String username = getIntent().getStringExtra("rollNumber");
+
+        String name = "";
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null) {
+            name = account.getDisplayName();
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Hi " + username);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("Welcome,  " + name);
         }
-        createNotificationChannel();
 
         frameLayout = findViewById(R.id.main_frame);
         bottomNavigationView = findViewById(R.id.main_nav);
@@ -89,22 +96,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         return false;
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Kick Out Notification";
-            String description = "This notification informs you when you have been kicked out of the test for leaving the app.";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(getPackageName(), name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 }
 

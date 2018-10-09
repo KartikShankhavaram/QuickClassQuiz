@@ -16,17 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.TestActivity"
+        <activity android:name=".activities.StudentTestListActivity" />
+        <activity
+            android:name=".activities.TestActivity"
             android:resizeableActivity="false"
             tools:targetApi="n" />
-        <activity android:name=".activities.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activities.LoginActivity" />
         <activity
             android:name=".activities.AddQuestionActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -48,6 +43,15 @@
         <activity android:name=".activities.TeacherStartTestActivity" />
         <activity android:name=".activities.StudentStartTestActivity" />
         <activity android:name=".activities.EvaluationActivity" />
+        <activity
+            android:name=".activities.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

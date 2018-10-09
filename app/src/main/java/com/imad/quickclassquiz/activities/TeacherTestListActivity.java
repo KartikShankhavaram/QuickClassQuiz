@@ -13,6 +13,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -68,6 +70,17 @@ public class TeacherTestListActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+
+        String name = "";
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        if (account != null) {
+            name = account.getDisplayName();
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+
         actionBar.setTitle("Tests");
 
         TestListPagerAdapter pagerAdapter = new TestListPagerAdapter(getSupportFragmentManager());

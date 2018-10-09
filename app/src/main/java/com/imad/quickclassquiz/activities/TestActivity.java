@@ -42,12 +42,12 @@ public class TestActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if(!(hasFocus || proceedingToSubmit)) {
             Toast.makeText(this, "Because of your leaving the app during the test, you have been kicked out.", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, StudentTestListActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
             NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, getPackageName())
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentTitle("You have been kicked out")
                     .setContentText("You have been kicked out of the test because you left the app during the test.")
                     .setStyle(new NotificationCompat.BigTextStyle()

@@ -92,7 +92,6 @@ public class EditQuestionActivity extends AppCompatActivity {
         }
 
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
         Intent intent = getIntent();
         if (intent != null) {
             question = intent.getParcelableExtra("Question");

@@ -61,7 +61,6 @@ public class AvailableTestFragment extends Fragment {
         super.onCreate(savedInstanceState);
         adapter = new StudentTestListAdapter(getContext());
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
     }
 
     @Override

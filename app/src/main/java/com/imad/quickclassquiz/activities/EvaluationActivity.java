@@ -107,7 +107,6 @@ public class EvaluationActivity extends AppCompatActivity {
         String currentTime = TimestampUtils.getISO8601StringForCurrentDate();
         ScoreModel scoreModel = new ScoreModel(name,roll,String.valueOf(score), currentTime);
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         WriteBatch batch = firestore.batch();
 
@@ -142,7 +141,7 @@ public class EvaluationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(EvaluationActivity.this,MainActivity.class));
+        startActivity(new Intent(EvaluationActivity.this,StudentTestListActivity.class));
         finish();
     }
 

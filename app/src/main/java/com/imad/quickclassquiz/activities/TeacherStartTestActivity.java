@@ -87,7 +87,6 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
 
         Intent intent = getIntent();
         if (intent != null && (test = intent.getParcelableExtra("test")) != null) {
