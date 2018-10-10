@@ -23,6 +23,7 @@ import com.imad.quickclassquiz.utils.StaticValues;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -92,7 +93,7 @@ public class TeacherStartedTestListAdapter extends RecyclerView.Adapter<TeacherS
         });
         String timestamp = test.getStartedAt();
         DateTime dt = new DateTime(timestamp);
-        DateTimeFormatter format = DateTimeFormat.forPattern("'Started on 'MMM d' at 'h:mm a");
+        DateTimeFormatter format = DateTimeFormat.forPattern("'Started on 'MMM d' at 'h:mm a").withZone(DateTimeZone.forID("Asia/Kolkata"));
         String time = format.print(dt);
         testStartDateTextView.setText(time);
 

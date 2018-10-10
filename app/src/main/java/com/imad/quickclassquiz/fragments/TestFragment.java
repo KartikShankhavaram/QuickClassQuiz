@@ -64,7 +64,7 @@ public class TestFragment extends Fragment {
     Test test;
     CountDownTimer countDownTimer;
     int submissionTries = 0;
-
+    long millisLeft;
 
     ArrayList<Question> questions = new ArrayList<>();
 
@@ -102,7 +102,7 @@ public class TestFragment extends Fragment {
         countDownTimer = new CountDownTimer(50000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Log.e("millis", millisUntilFinished + "");
+                millisLeft = millisUntilFinished;
                 DateTimeFormatter a = DateTimeFormat.forPattern("m:ss");
                 timerTextView.setText(a.print(millisUntilFinished));
                 if (millisUntilFinished > 30000) {
@@ -153,31 +153,35 @@ public class TestFragment extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            CountDownTimer a = new CountDownTimer(5000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
+            if(millisLeft > 12000) {
+                Toast.makeText(getContext(), "You cannot submit until 2 minutes are left.", Toast.LENGTH_SHORT).show();
+            } else {
+                CountDownTimer a = new CountDownTimer(5000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
 
-                }
+                    }
 
-                @Override
-                public void onFinish() {
-                    submissionTries = 0;
+                    @Override
+                    public void onFinish() {
+                        submissionTries = 0;
+                    }
+                };
+                if (submissionTries == 0) {
+                    submitButton.shrinkButton();
+                    Toast.makeText(getContext(), "Swipe again to submit.", Toast.LENGTH_SHORT).show();
+                    submissionTries = 1;
+                    a.start();
+                } else if (submissionTries == 1) {
+                    a.cancel();
+                    ((TestActivity) getContext()).setProceedingToSubmit(true);
+                    Intent intent = new Intent(getActivity(), EvaluationActivity.class);
+                    intent.putExtra("HashMap", attemptedAnswersMap);
+                    intent.putExtra("Question", questions);
+                    intent.putExtra("Test", test);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
-            };
-            if(submissionTries == 0) {
-                submitButton.shrinkButton();
-                Toast.makeText(getContext(), "Swipe again to submit.", Toast.LENGTH_SHORT).show();
-                submissionTries = 1;
-                a.start();
-            } else if(submissionTries == 1) {
-                a.cancel();
-                ((TestActivity)getContext()).setProceedingToSubmit(true);
-                Intent intent = new Intent(getActivity(),EvaluationActivity.class);
-                intent.putExtra("HashMap",attemptedAnswersMap);
-                intent.putExtra("Question",questions);
-                intent.putExtra("Test",test);
-                startActivity(intent);
-                getActivity().finish();
             }
         });
 

@@ -24,6 +24,7 @@ import com.imad.quickclassquiz.utils.TimestampUtils;
 import net.frakbot.jumpingbeans.JumpingBeans;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -96,6 +97,10 @@ public class TeacherStartTestActivity extends AppCompatActivity {
             generated = intent.getBooleanExtra("generated", false);
         }
 
+        if(new DateTime(test.getStartedAt()).plusMinutes(30).isBeforeNow()) {
+            deleteCodesButton.setEnabled(false);
+        }
+
         deleteCodesButton.setOnClickListener(v -> {
             if (submissionCount != 0 || attemptCount != 0) {
                 String sCount = Integer.toString(submissionCount);
@@ -146,7 +151,7 @@ public class TeacherStartTestActivity extends AppCompatActivity {
             String startedAt = test.getStartedAt();
 
             DateTime dt = new DateTime(startedAt);
-            DateTimeFormatter format = DateTimeFormat.forPattern("'Started on 'MMM d' at 'h:mm a");
+            DateTimeFormatter format = DateTimeFormat.forPattern("'Started on 'MMM d' at 'h:mm a").withZone(DateTimeZone.forID("Asia/Kolkata"));
             String time = format.print(dt);
             startedAtTextView.setText(time);
         } else {

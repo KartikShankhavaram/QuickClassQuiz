@@ -28,6 +28,7 @@ import com.imad.quickclassquiz.utils.StaticValues;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -103,7 +104,7 @@ public class TeacherUpcomingTestListAdapter extends RecyclerView.Adapter<Teacher
 
         String timestamp = test.getCreatedAt();
         DateTime dt = new DateTime(timestamp);
-        DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a");
+        DateTimeFormatter format = DateTimeFormat.forPattern("'Added on 'MMM d' at 'h:mm a").withZone(DateTimeZone.forID("Asia/Kolkata"));
         String time = format.print(dt);
         testAddDateTextView.setText(time);
 

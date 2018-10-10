@@ -1,8 +1,6 @@
 package com.imad.quickclassquiz.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -22,13 +20,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
-import com.imad.quickclassquiz.activities.StudentTestListActivity;
 import com.imad.quickclassquiz.activities.TestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
 
 import org.joda.time.DateTime;
-
-import java.util.Locale;
 
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
@@ -50,7 +45,6 @@ public class CodeEntryFragment extends Fragment {
 
     FirebaseFirestore firestore;
     Test test;
-    CountDownTimer countDownTimer;
 
     public CodeEntryFragment() {
         // Required empty public constructor
@@ -112,33 +106,18 @@ public class CodeEntryFragment extends Fragment {
             }
         });
 
-        countDownTimer = new CountDownTimer(300000, 1000) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                DateTime dateTime = new DateTime(millisUntilFinished);
-                accessCodeTimerTextView.setText(String.format(Locale.ENGLISH, "Enter the code in the next %d minutes and %d seconds.", dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute()));
-            }
-
-            @Override
-            public void onFinish() {
-                getActivity().finish();
-            }
-        }.start();
-
         return view;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        countDownTimer.cancel();
     }
 
     private void verifyCode(String enteredCode) {
-//        if (test.getAccessCode() == null) {
         int PASSWORD_WRONG = 0;
         int PASSWORD_CORRECT = 1;
+        int TIME_EXPIRED = 2;
         setLoadingState(true);
         String testUrl = "tests/" + test.getTestId();
         String attemptUrl = "tests/" + test.getTestId() + "/attempts/" + GoogleSignIn.getLastSignedInAccount(getContext()).getId();
@@ -147,8 +126,13 @@ public class CodeEntryFragment extends Fragment {
         Log.e("attemptUrl", attemptUrl);
         firestore.runTransaction(transaction -> {
             DocumentSnapshot testDetails = transaction.get(testRef);
-            String accessCode = testDetails.toObject(Test.class).getAccessCode();
+            Test test = testDetails.toObject(Test.class);
+            String accessCode = test.getAccessCode();
             transaction.update(testRef, "accessCode", accessCode);
+            DateTime startedAt = new DateTime(test.getStartedAt());
+            if (startedAt.plusMinutes(3).isBeforeNow()) {
+                return TIME_EXPIRED;
+            }
             if (TextUtils.equals(enteredCode, accessCode)) {
                 transaction.update(attemptRef, "started", true);
                 return PASSWORD_CORRECT;
@@ -157,7 +141,10 @@ public class CodeEntryFragment extends Fragment {
             }
         }).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if (task.getResult() == PASSWORD_CORRECT) {
+                if (task.getResult() == TIME_EXPIRED) {
+                    Toast.makeText(getContext(), "Time to enter test has expired.", Toast.LENGTH_SHORT).show();
+                    ((TestActivity) getContext()).finish();
+                } else if (task.getResult() == PASSWORD_CORRECT) {
                     Toast.makeText(getContext(), "Access Code validated!", Toast.LENGTH_SHORT).show();
                     ((TestActivity) getContext()).switchFragment(TestActivity.TEST_FRAGMENT);
                 } else {
@@ -170,7 +157,6 @@ public class CodeEntryFragment extends Fragment {
             }
             setLoadingState(false);
         });
-//        }
     }
 
     private void setLoadingState(boolean state) {
