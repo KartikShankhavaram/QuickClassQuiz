@@ -74,6 +74,7 @@ public class StudentCompletedTestAdapter extends RecyclerView.Adapter<StudentCom
             Intent viewQuestions = new Intent(mContext, QuestionListActivity.class);
             viewQuestions.putExtra("test", test);
             viewQuestions.putExtra("started", true);
+            viewQuestions.putExtra("completed", true);
             StaticValues.setCurrentTest(test);
             mContext.startActivity(viewQuestions);
         });

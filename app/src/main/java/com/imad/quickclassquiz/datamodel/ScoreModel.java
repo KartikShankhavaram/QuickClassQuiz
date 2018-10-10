@@ -6,6 +6,8 @@ public class ScoreModel {
     private String userScore;
     private String submissionTime;
 
+    public ScoreModel() {}
+
     public ScoreModel(String userName, String userRollNumber, String userScore, String submissionTime){
         this.userName = userName;
         this.userRollNumber = userRollNumber;

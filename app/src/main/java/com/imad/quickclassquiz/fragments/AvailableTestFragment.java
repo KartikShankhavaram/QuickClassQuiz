@@ -8,11 +8,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.datamodel.Test;
-import com.imad.quickclassquiz.recyclerview.StudentTestListAdapter;
+import com.imad.quickclassquiz.recyclerview.StudentAvailableTestAdapter;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import org.joda.time.DateTime;
@@ -44,7 +43,7 @@ public class AvailableTestFragment extends Fragment {
     TextView noActiveTestsTextView;
 
     FirebaseFirestore firestore;
-    StudentTestListAdapter adapter;
+    StudentAvailableTestAdapter adapter;
 
     public AvailableTestFragment() {
         // Required empty public constructor
@@ -59,7 +58,7 @@ public class AvailableTestFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new StudentTestListAdapter(getContext());
+        adapter = new StudentAvailableTestAdapter(getContext());
         firestore = FirebaseFirestore.getInstance();
     }
 

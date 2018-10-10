@@ -77,7 +77,7 @@ public class EvaluationActivity extends AppCompatActivity {
         questions = getIntent().getParcelableArrayListExtra("Question");
         for (Map.Entry<String, String> entry : attemptedAnswersMap.entrySet()) {
             if(checkAnswer(entry.getKey(),entry.getValue())){
-                score = score + 4;
+                score = score + 1;
             }
         }
         new NetworkUtils(internet -> {

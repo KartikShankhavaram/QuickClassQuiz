@@ -11,18 +11,21 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.datamodel.Question;
+import com.imad.quickclassquiz.datamodel.ScoreModel;
 import com.imad.quickclassquiz.datamodel.Test;
 import com.imad.quickclassquiz.recyclerview.QuestionListAdapter;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -46,6 +49,8 @@ public class QuestionListActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.noQuestionsTextView)
     TextView noQuestionsTextView;
+    @BindView(R.id.scoreTextView)
+    TextView scoreTextView;
 
     ActionBar actionBar;
 
@@ -55,6 +60,11 @@ public class QuestionListActivity extends AppCompatActivity {
     String testUrl;
     Test test;
     ArrayList<Question> currentQuestionList;
+
+    boolean shouldShowScore = false;
+
+    boolean scoreFetched = false;
+    boolean questionsFetched = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +92,15 @@ public class QuestionListActivity extends AppCompatActivity {
                 addQuestionButton.show();
             }
 
+            shouldShowScore = intent.getBooleanExtra("completed", false);
+
             if (test != null) {
                 testUrl = String.format("tests/%s/questions", test.getTestId());
             }
+        }
+
+        if (!shouldShowScore) {
+            scoreTextView.setVisibility(View.GONE);
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -97,8 +113,10 @@ public class QuestionListActivity extends AppCompatActivity {
             new NetworkUtils(internet -> {
                 if (internet) {
                     fetchQuestions();
+                    fetchScore();
                 } else {
                     refreshLayout.setRefreshing(false);
+                    scoreTextView.setText("Marks: Could not fetch data");
                     Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -119,7 +137,9 @@ public class QuestionListActivity extends AppCompatActivity {
         new NetworkUtils(internet -> {
             if (internet) {
                 fetchQuestions();
+                fetchScore();
             } else {
+                scoreTextView.setText("Marks: Could not fetch data");
                 Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -137,13 +157,13 @@ public class QuestionListActivity extends AppCompatActivity {
 
     private void fetchQuestions() {
         refreshLayout.setRefreshing(true);
+        questionsFetched = false;
         ArrayList<Question> list = new ArrayList<>();
         adapter.setListContent(list);
         firestore.collection(testUrl).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                     Question question = documentSnapshot.toObject(Question.class);
-                    Log.e("question", question.getQuestion());
                     list.add(question);
                 }
                 currentQuestionList = list;
@@ -158,8 +178,40 @@ public class QuestionListActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Failed to fetch.", Toast.LENGTH_SHORT).show();
             }
-            refreshLayout.setRefreshing(false);
+            questionsFetched = true;
+            checkForCompletion();
         });
+    }
+
+    private void fetchScore() {
+        refreshLayout.setRefreshing(true);
+        scoreFetched = false;
+        String scoreUrl = String.format(Locale.ENGLISH, "tests/%s/scores", test.getTestId());
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        firestore.collection(scoreUrl).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                    ScoreModel score = documentSnapshot.toObject(ScoreModel.class);
+                    if(score != null && documentSnapshot.getId().equals(account.getId())) {
+                        scoreTextView.setText(String.format(Locale.ENGLISH, "Marks: %s/%d", score.getUserScore(), test.getQuestionCount()));
+                        refreshLayout.setRefreshing(false);
+                        return;
+                    }
+                }
+                scoreTextView.setText("Marks: Not Attempted");
+            } else {
+                scoreTextView.setText("Marks: Could not fetch data");
+                Toast.makeText(this, "Failed to fetch.", Toast.LENGTH_SHORT).show();
+            }
+            scoreFetched = true;
+            checkForCompletion();
+        });
+    }
+
+    private void checkForCompletion() {
+        if(questionsFetched && scoreFetched) {
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     @Override

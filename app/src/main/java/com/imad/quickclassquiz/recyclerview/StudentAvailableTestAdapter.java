@@ -20,27 +20,27 @@ import com.imad.quickclassquiz.datamodel.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestListAdapter.StudentTestListViewHolder> {
+public class StudentAvailableTestAdapter extends RecyclerView.Adapter<StudentAvailableTestAdapter.StudentAvailableTestViewHolder> {
 
     Context mContext;
     ArrayList<Test> list = new ArrayList<>();
     LayoutInflater inflater;
     View rootView;
 
-    public StudentTestListAdapter(Context mContext) {
+    public StudentAvailableTestAdapter(Context mContext) {
         this.mContext = mContext;
         inflater = LayoutInflater.from(mContext);
     }
 
     @NonNull
     @Override
-    public StudentTestListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StudentAvailableTestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         rootView = inflater.inflate(R.layout.card_test_student, parent, false);
-        return new StudentTestListViewHolder(rootView);
+        return new StudentAvailableTestViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StudentTestListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StudentAvailableTestViewHolder holder, int position) {
         TextView testNameTextView = holder.testNameTextView;
         TextView testDescTextView = holder.testDescTextView;
         TextView questionCountTextView = holder.questionCountTextView;
@@ -82,12 +82,12 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public class StudentTestListViewHolder extends RecyclerView.ViewHolder {
+    public class StudentAvailableTestViewHolder extends RecyclerView.ViewHolder {
 
         TextView testNameTextView, testDescTextView, questionCountTextView;
         CardView studentTestCardView;
 
-        public StudentTestListViewHolder(View itemView) {
+        public StudentAvailableTestViewHolder(View itemView) {
             super(itemView);
             testNameTextView = itemView.findViewById(R.id.testNameTextView);
             testDescTextView = itemView.findViewById(R.id.testDescTextView);
