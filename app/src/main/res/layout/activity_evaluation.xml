@@ -13,15 +13,16 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         style="@style/Base_ToolbarStyle"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retry"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button"
-        android:theme="@style/BlueButton"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:text="Retry"
-        android:layout_centerHorizontal="true"/>
+        android:theme="@style/BlueButton" />
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_below="@id/retry"
@@ -35,4 +36,5 @@
         android:layout_below="@id/progressBar"
         android:layout_centerHorizontal="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
 </RelativeLayout>

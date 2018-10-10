@@ -4,11 +4,11 @@
     <item
         android:id="@+id/Available"
         android:title="Available Tests"
-        android:icon="@drawable/ic_delete_black_24dp"/>
+        android:icon="@drawable/ic_test"/>
     <item
         android:id="@+id/Completed"
         android:title="Completed Tests"
-        android:icon="@drawable/ic_delete_black_24dp"/>
+        android:icon="@drawable/ic_done"/>
 
 
 </menu>
