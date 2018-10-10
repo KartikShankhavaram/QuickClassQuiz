@@ -260,14 +260,16 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         noOfAttemptStartedTextView.setText("Fetching number of students who have started test ");
         jumpingBeans[1] = JumpingBeans.with(noOfAttemptStartedTextView).appendJumpingDots().build();
         fetchingAttemptData = true;
-        ref.whereEqualTo("started", true)
-                .get().addOnCompleteListener(task -> {
+        ref.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 attemptsReference = new ArrayList<>();
+                attemptCount = 0;
                 for (QueryDocumentSnapshot snapshot : task.getResult()) {
                     attemptsReference.add(snapshot.getId());
+                    if((boolean) snapshot.get("started")) {
+                        attemptCount++;
+                    }
                 }
-                attemptCount = task.getResult().size();
                 String count = Integer.toString(attemptCount);
                 String countString = String.format(Locale.ENGLISH, "%s student%s started the test.", attemptCount, attemptCount == 1 ? " has" : "s have");
                 SpannableStringBuilder ss = new SpannableStringBuilder(countString);

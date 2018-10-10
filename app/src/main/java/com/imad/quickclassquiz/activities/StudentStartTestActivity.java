@@ -62,6 +62,8 @@ public class StudentStartTestActivity extends AppCompatActivity {
     IntentFilter intentFilter;
     BroadcastReceiver receiver;
 
+    ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,8 @@ public class StudentStartTestActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         firestore = FirebaseFirestore.getInstance();
+
+        dialog = new ProgressDialog(this);
 
         handleAirplaneModeStatus();
 
@@ -100,12 +104,10 @@ public class StudentStartTestActivity extends AppCompatActivity {
             }
         });
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
         beginTestButton.setOnClickListener(v -> {
             new NetworkUtils(internet -> {
                 if (internet) {
-                    addStudentToAttemptedList(account.getId());
+                    getTest();
                 } else {
                     Toast.makeText(this, "No internet available.", Toast.LENGTH_SHORT).show();
                 }
@@ -235,8 +237,9 @@ public class StudentStartTestActivity extends AppCompatActivity {
         }
     }
 
-    private void addStudentToAttemptedList(String uid) {
-        ProgressDialog dialog = new ProgressDialog(this);
+    private void addStudentToAttemptedList() {
+        String uid = GoogleSignIn.getLastSignedInAccount(this).getId();
+
         dialog.setTitle("Begin test");
         dialog.setMessage("Please wait while your attempt is started...");
         dialog.setCanceledOnTouchOutside(false);
@@ -247,7 +250,6 @@ public class StudentStartTestActivity extends AppCompatActivity {
 
         CollectionReference attemptListRef = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/attempts", test.getTestId()));
 
-        dialog.show();
         attemptListRef.document(uid).set(attemptMap).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 Toast.makeText(this, "Attempt started successfully!", Toast.LENGTH_SHORT).show();
@@ -260,6 +262,27 @@ public class StudentStartTestActivity extends AppCompatActivity {
                 Toast.makeText(this, "Could not start attempt. Please try again.!", Toast.LENGTH_SHORT).show();
             }
             dialog.dismiss();
+        });
+    }
+
+    private void getTest() {
+        dialog.setTitle("Checking");
+        dialog.setMessage("Please wait while we check if access code has been generated...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        String url = String.format(Locale.ENGLISH, "tests/%s", test.getTestId());
+        firestore.document(url)
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        test = task.getResult().toObject(Test.class);
+                        if(test.getAccessCode() != null) {
+                            Toast.makeText(this, "Access Code has already been generated. You cannot enter the test now.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            finish();
+                        } else {
+                            addStudentToAttemptedList();
+                        }
+                    }
         });
     }
 }

@@ -99,7 +99,7 @@ public class TestFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_test, container, false);
         ButterKnife.bind(this, view);
         setAttemptedText(String.format(Locale.ENGLISH, "%d / %d", numberOfAttemptedQuestions, questions.size()));
-        countDownTimer = new CountDownTimer(50000, 1000) {
+        countDownTimer = new CountDownTimer(300000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 millisLeft = millisUntilFinished;
@@ -121,6 +121,7 @@ public class TestFragment extends Fragment {
             @Override
             public void onFinish() {
                 timerTextView.setText("0:00");
+                ((TestActivity) getContext()).setProceedingToSubmit(true);
                 Intent intent = new Intent(getActivity(),EvaluationActivity.class);
                 intent.putExtra("HashMap",attemptedAnswersMap);
                 intent.putExtra("Question",questions);
@@ -155,6 +156,7 @@ public class TestFragment extends Fragment {
         submitButton.setOnClickListener(v -> {
             if(millisLeft > 12000) {
                 Toast.makeText(getContext(), "You cannot submit until 2 minutes are left.", Toast.LENGTH_SHORT).show();
+                submitButton.shrinkButton();
             } else {
                 CountDownTimer a = new CountDownTimer(5000, 1000) {
                     @Override

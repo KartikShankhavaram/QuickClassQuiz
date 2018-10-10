@@ -114,7 +114,6 @@ public class UpcomingTestsTeacherFragment extends Fragment {
         adapter.setListContent(teacherTestList);
         CollectionReference testsCollection = firestore.collection("tests");
         testsCollection.whereEqualTo("accessCode", null)
-                .whereEqualTo("masterCode", null)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -145,7 +144,6 @@ public class UpcomingTestsTeacherFragment extends Fragment {
         ArrayList<Test> teacherTestList = new ArrayList<>();
         CollectionReference testsCollection = firestore.collection("tests");
         testsCollection.whereEqualTo("accessCode", null)
-                .whereEqualTo("masterCode", null)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
