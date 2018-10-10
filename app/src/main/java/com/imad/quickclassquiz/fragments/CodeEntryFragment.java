@@ -1,6 +1,8 @@
 package com.imad.quickclassquiz.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -19,8 +22,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.imad.quickclassquiz.R;
+import com.imad.quickclassquiz.activities.StudentTestListActivity;
 import com.imad.quickclassquiz.activities.TestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
+
+import org.joda.time.DateTime;
+
+import java.util.Locale;
 
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
@@ -37,9 +45,12 @@ public class CodeEntryFragment extends Fragment {
     Button accessCodeButton;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    @BindView(R.id.accessCodeTimerTextView)
+    TextView accessCodeTimerTextView;
 
     FirebaseFirestore firestore;
     Test test;
+    CountDownTimer countDownTimer;
 
     public CodeEntryFragment() {
         // Required empty public constructor
@@ -101,7 +112,27 @@ public class CodeEntryFragment extends Fragment {
             }
         });
 
+        countDownTimer = new CountDownTimer(300000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                DateTime dateTime = new DateTime(millisUntilFinished);
+                accessCodeTimerTextView.setText(String.format(Locale.ENGLISH, "Enter the code in the next %d minutes and %d seconds.", dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute()));
+            }
+
+            @Override
+            public void onFinish() {
+                getActivity().finish();
+            }
+        }.start();
+
         return view;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        countDownTimer.cancel();
     }
 
     private void verifyCode(String enteredCode) {

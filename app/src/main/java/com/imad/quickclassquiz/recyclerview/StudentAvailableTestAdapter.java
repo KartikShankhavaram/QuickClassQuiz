@@ -1,24 +1,33 @@
 package com.imad.quickclassquiz.recyclerview;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.StudentStartTestActivity;
 import com.imad.quickclassquiz.datamodel.Test;
+import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class StudentAvailableTestAdapter extends RecyclerView.Adapter<StudentAvailableTestAdapter.StudentAvailableTestViewHolder> {
 
@@ -26,10 +35,12 @@ public class StudentAvailableTestAdapter extends RecyclerView.Adapter<StudentAva
     ArrayList<Test> list = new ArrayList<>();
     LayoutInflater inflater;
     View rootView;
+    FirebaseFirestore firestore;
 
     public StudentAvailableTestAdapter(Context mContext) {
         this.mContext = mContext;
         inflater = LayoutInflater.from(mContext);
+        firestore = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -62,9 +73,13 @@ public class StudentAvailableTestAdapter extends RecyclerView.Adapter<StudentAva
         }
 
         studentTestCardView.setOnClickListener(v -> {
-            Intent toStartTest = new Intent(mContext, StudentStartTestActivity.class);
-            toStartTest.putExtra("test", test);
-            mContext.startActivity(toStartTest);
+            new NetworkUtils(internet -> {
+                if (internet) {
+                    checkIfAlreadyAttempted(test);
+                } else {
+                    Toast.makeText(mContext, "No internet connection.", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 
@@ -80,6 +95,32 @@ public class StudentAvailableTestAdapter extends RecyclerView.Adapter<StudentAva
         this.list.clear();
         this.list.addAll(list);
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    private void checkIfAlreadyAttempted(Test test) {
+        ProgressDialog dialog = new ProgressDialog(mContext);
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Checking for previous attempts...");
+        dialog.show();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mContext);
+        String url = String.format(Locale.ENGLISH, "tests/%s/attempts", test.getTestId());
+        firestore.collection(url).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                    if (account.getId().equals(snapshot.getId())) {
+                        dialog.dismiss();
+                        Toast.makeText(mContext, "You have already attempted this test.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+                Intent toStartTest = new Intent(mContext, StudentStartTestActivity.class);
+                toStartTest.putExtra("test", test);
+                mContext.startActivity(toStartTest);
+            } else {
+                Toast.makeText(mContext, "Please try again.", Toast.LENGTH_SHORT).show();
+            }
+            dialog.dismiss();
+        });
     }
 
     public class StudentAvailableTestViewHolder extends RecyclerView.ViewHolder {
