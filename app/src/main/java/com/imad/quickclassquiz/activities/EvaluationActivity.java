@@ -35,7 +35,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class EvaluationActivity extends AppCompatActivity {
 
-    HashMap<String, String> attemptedAnswersMap = new HashMap<>();
+    HashMap<String, Object> attemptedAnswersMap = new HashMap<>();
     ArrayList<Question> questions = new ArrayList<>();
     private String roll;
     private String name;
@@ -73,16 +73,18 @@ public class EvaluationActivity extends AppCompatActivity {
         name = account.getDisplayName();
         test = getIntent().getParcelableExtra("Test");
         url = String.format("tests/%s/scores", test.getTestId());
-        attemptedAnswersMap = (HashMap<String, String>) Objects.requireNonNull(getIntent().getExtras()).getSerializable("HashMap");
+        attemptedAnswersMap = (HashMap<String, Object>) Objects.requireNonNull(getIntent().getExtras()).getSerializable("HashMap");
         questions = getIntent().getParcelableArrayListExtra("Question");
-        for (Map.Entry<String, String> entry : attemptedAnswersMap.entrySet()) {
-            if(checkAnswer(entry.getKey(),entry.getValue())){
+        for (Map.Entry<String, Object> entry : attemptedAnswersMap.entrySet()) {
+            if(checkAnswer(entry.getKey(),(String)entry.getValue())){
                 score = score + 1;
             }
         }
+        String currentTime = TimestampUtils.getISO8601StringForCurrentDate();
+        ScoreModel scoreModel = new ScoreModel(name, roll, Integer.toString(score), currentTime, attemptedAnswersMap);
         new NetworkUtils(internet -> {
             if(internet){
-                sendToDatabase();
+                sendToDatabase(scoreModel);
             }else{
                 progressBar.setVisibility(View.GONE);
                 textView.setText("No Internet");
@@ -94,7 +96,7 @@ public class EvaluationActivity extends AppCompatActivity {
             new NetworkUtils(internet -> {
                 if(internet){
                     retry.setEnabled(false);
-                    sendToDatabase();
+                    sendToDatabase(scoreModel);
                 }else{
                     retry.setEnabled(true);
                     progressBar.setVisibility(View.GONE);
@@ -103,14 +105,11 @@ public class EvaluationActivity extends AppCompatActivity {
         });
     }
 
-    private void sendToDatabase() {
-        String currentTime = TimestampUtils.getISO8601StringForCurrentDate();
-        ScoreModel scoreModel = new ScoreModel(name,roll,String.valueOf(score), currentTime);
+    private void sendToDatabase(ScoreModel scoreModel) {
         firestore = FirebaseFirestore.getInstance();
 
         WriteBatch batch = firestore.batch();
-
-        batch.set(firestore.collection(url).document( account.getId().toString()), scoreModel);
+        batch.set(firestore.collection(url).document(account.getId()), scoreModel);
         batch.commit().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 Toast.makeText(this, "Successfully submitted", Toast.LENGTH_SHORT).show();

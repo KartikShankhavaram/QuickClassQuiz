@@ -4,10 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,23 +13,30 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.activities.EditQuestionActivity;
 import com.imad.quickclassquiz.datamodel.Question;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapter.MyViewHolder> {
 
     private Context mContext;
     private LayoutInflater inflater;
     private ArrayList<Question> list = new ArrayList<>();
+    private HashMap<String, Object> attemptedAnswers = new HashMap<>();
     private FirebaseFirestore firestore;
     private View rootView;
     private Boolean editable;
+    private Boolean showAttempted;
 
     public QuestionListAdapter(Context mContext, Boolean editable) {
         this.mContext = mContext;
@@ -56,12 +59,20 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         String options[] = {obj.getOption1(), obj.getOption2(), obj.getOption3(), obj.getOption4()};
         TextView optionView[] = {holder.option1, holder.option2, holder.option3, holder.option4};
 
-        for (int i = 0; i < options.length; i++) {
+        for (int i = 0; i < optionView.length; i++) {
+            boolean optionCorrect = false;
             if (options[i].equals(obj.getCorrectOption())) {
                 optionView[i].setTypeface(optionView[i].getTypeface(), Typeface.BOLD);
-                break;
+                optionCorrect = true;
+            }
+            if (attemptedAnswers.containsKey(obj.getQuestionId()) && options[i].equals(attemptedAnswers.get(obj.getQuestionId()))) {
+                if(optionCorrect)
+                    optionView[i].setTextColor(mContext.getResources().getColor(R.color.colorTaskCompleted));
+                else
+                    optionView[i].setTextColor(mContext.getResources().getColor(R.color.colorTaskIncomplete));
             }
         }
+
 
         holder.question.setText(obj.getQuestion());
         holder.option1.setText(String.format("A. %s", obj.getOption1()));
@@ -137,6 +148,11 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         this.list.clear();
         this.list.addAll(list);
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    public void setAttemptedAnswersHashMap(HashMap<String, Object> attemptedAnswers) {
+        this.attemptedAnswers = attemptedAnswers;
+        notifyDataSetChanged();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

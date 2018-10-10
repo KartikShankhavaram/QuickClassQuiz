@@ -161,6 +161,7 @@ public class StudentStartTestActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 boolean isAirplaneModeOn = intent.getBooleanExtra("state", false);
                 airplaneModeEnabled = isAirplaneModeOn;
+                Log.e("airplane mode", isAirplaneModeOn + "");
                 if (isAirplaneModeOn) {
                     airplaneModeEnabledTextView.setText(tick + " Airplane Mode Enabled.");
                     airplaneModeEnabledTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));

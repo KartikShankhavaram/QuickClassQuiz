@@ -25,6 +25,7 @@ import com.imad.quickclassquiz.utils.NetworkUtils;
 import com.imad.quickclassquiz.utils.StaticValues;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import androidx.appcompat.app.ActionBar;
@@ -60,6 +61,8 @@ public class QuestionListActivity extends AppCompatActivity {
     String testUrl;
     Test test;
     ArrayList<Question> currentQuestionList;
+
+    ScoreModel scoreModel;
 
     boolean shouldShowScore = false;
 
@@ -101,6 +104,7 @@ public class QuestionListActivity extends AppCompatActivity {
 
         if (!shouldShowScore) {
             scoreTextView.setVisibility(View.GONE);
+            scoreFetched = true;
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -113,6 +117,7 @@ public class QuestionListActivity extends AppCompatActivity {
             new NetworkUtils(internet -> {
                 if (internet) {
                     fetchQuestions();
+                    if(shouldShowScore)
                     fetchScore();
                 } else {
                     refreshLayout.setRefreshing(false);
@@ -137,6 +142,7 @@ public class QuestionListActivity extends AppCompatActivity {
         new NetworkUtils(internet -> {
             if (internet) {
                 fetchQuestions();
+                if(shouldShowScore)
                 fetchScore();
             } else {
                 scoreTextView.setText("Marks: Could not fetch data");
@@ -194,7 +200,9 @@ public class QuestionListActivity extends AppCompatActivity {
                     ScoreModel score = documentSnapshot.toObject(ScoreModel.class);
                     if(score != null && documentSnapshot.getId().equals(account.getId())) {
                         scoreTextView.setText(String.format(Locale.ENGLISH, "Marks: %s/%d", score.getUserScore(), test.getQuestionCount()));
-                        refreshLayout.setRefreshing(false);
+                        scoreFetched = true;
+                        scoreModel = score;
+                        checkForCompletion();
                         return;
                     }
                 }
@@ -210,7 +218,14 @@ public class QuestionListActivity extends AppCompatActivity {
 
     private void checkForCompletion() {
         if(questionsFetched && scoreFetched) {
+            if(scoreModel != null) {
+                HashMap<String, Object> attemptedAnswers = scoreModel.getAttemptedAnswers();
+                if(attemptedAnswers != null) {
+                    adapter.setAttemptedAnswersHashMap(attemptedAnswers);
+                }
+            }
             refreshLayout.setRefreshing(false);
+
         }
     }
 
