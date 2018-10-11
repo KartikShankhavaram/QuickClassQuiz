@@ -200,9 +200,13 @@ public class StudentStartTestActivity extends AppCompatActivity {
                                         questions.add(question);
                                     }
                                     Log.e("questions", questions.toString());
-                                    questionsFetched = true;
-                                    questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));
-                                    questionsFetchedStatusTextView.setText(tick + " Questions fetched!");
+                                    if(questions.size() == 0) {
+                                        fetchTestQuestions();
+                                    } else {
+                                        questionsFetched = true;
+                                        questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskCompleted));
+                                        questionsFetchedStatusTextView.setText(tick + " Questions fetched!");
+                                    }
                                 } else {
                                     questionsFetched = false;
                                     questionsFetchedStatusTextView.setTextColor(getResources().getColor(R.color.colorTaskIncomplete));
