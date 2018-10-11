@@ -63,6 +63,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             boolean optionCorrect = false;
             if (options[i].equals(obj.getCorrectOption())) {
                 optionView[i].setTypeface(optionView[i].getTypeface(), Typeface.BOLD);
+                optionView[i].setTextSize(18);
                 optionCorrect = true;
             }
             if (attemptedAnswers.containsKey(obj.getQuestionId()) && options[i].equals(attemptedAnswers.get(obj.getQuestionId()))) {

@@ -16,35 +16,55 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.StudentTestListActivity" />
+        <activity
+            android:name=".activities.StudentTestListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TestActivity"
             android:resizeableActivity="false"
+            android:screenOrientation="portrait"
             tools:targetApi="n" />
-        <activity android:name=".activities.LoginActivity" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddQuestionActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activities.TeacherTestListActivity" />
+        <activity
+            android:name=".activities.TeacherTestListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.QuestionListActivity"
-            android:parentActivityName=".activities.TeacherTestListActivity" />
+            android:parentActivityName=".activities.TeacherTestListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddTestActivity"
             android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.UpdateTestActivity"
             android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activities.EditQuestionActivity" />
-        <activity android:name=".activities.TeacherStartTestActivity" />
-        <activity android:name=".activities.StudentStartTestActivity" />
-        <activity android:name=".activities.EvaluationActivity" />
+        <activity
+            android:name=".activities.EditQuestionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TeacherStartTestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.StudentStartTestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.EvaluationActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -66,15 +66,6 @@ public class TestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
-
-        ButterKnife.bind(this);
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            questions = intent.getParcelableArrayListExtra("questions");
-            test = intent.getParcelableExtra("test");
-        }
 
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -96,6 +87,16 @@ public class TestActivity extends AppCompatActivity {
             }
             Log.e("System visibility", visibility + "");
         });
+
+        setContentView(R.layout.activity_test);
+
+        ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            questions = intent.getParcelableArrayListExtra("questions");
+            test = intent.getParcelableExtra("test");
+        }
 
         switchFragment(ACCESS_CODE_ENTRY_FRAGMENT);
     }

@@ -15,10 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.datamodel.Question;
@@ -49,6 +47,8 @@ public class StudentStartTestActivity extends AppCompatActivity {
     TextView questionsFetchedStatusTextView;
     @BindView(R.id.beginTestButton)
     Button beginTestButton;
+    @BindView(R.id.testNameTextView)
+    TextView testNameTextView;
 
     FirebaseFirestore firestore;
     boolean airplaneModeEnabled = false;
@@ -67,22 +67,6 @@ public class StudentStartTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_start_test);
-
-        tick = getResources().getString(R.string.tick);
-        cross = getResources().getString(R.string.cross);
-
-        ButterKnife.bind(this);
-        firestore = FirebaseFirestore.getInstance();
-
-        dialog = new ProgressDialog(this);
-
-        handleAirplaneModeStatus();
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            test = intent.getParcelableExtra("test");
-        }
 
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -103,6 +87,24 @@ public class StudentStartTestActivity extends AppCompatActivity {
                 decorView.setSystemUiVisibility(flags);
             }
         });
+
+        setContentView(R.layout.activity_student_start_test);
+
+        tick = getResources().getString(R.string.tick);
+        cross = getResources().getString(R.string.cross);
+
+        ButterKnife.bind(this);
+        firestore = FirebaseFirestore.getInstance();
+
+        dialog = new ProgressDialog(this);
+
+        handleAirplaneModeStatus();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            test = intent.getParcelableExtra("test");
+            testNameTextView.setText(test.getTestName());
+        }
 
         beginTestButton.setOnClickListener(v -> {
             new NetworkUtils(internet -> {
@@ -200,7 +202,7 @@ public class StudentStartTestActivity extends AppCompatActivity {
                                         questions.add(question);
                                     }
                                     Log.e("questions", questions.toString());
-                                    if(questions.size() == 0) {
+                                    if (questions.size() == 0) {
                                         fetchTestQuestions();
                                     } else {
                                         questionsFetched = true;
@@ -255,7 +257,7 @@ public class StudentStartTestActivity extends AppCompatActivity {
         CollectionReference attemptListRef = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/attempts", test.getTestId()));
 
         attemptListRef.document(uid).set(attemptMap).addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
+            if (task.isSuccessful()) {
                 Toast.makeText(this, "Attempt started successfully!", Toast.LENGTH_SHORT).show();
                 Intent toTest = new Intent(this, TestActivity.class);
                 toTest.putExtra("questions", questions);
@@ -277,16 +279,16 @@ public class StudentStartTestActivity extends AppCompatActivity {
         String url = String.format(Locale.ENGLISH, "tests/%s", test.getTestId());
         firestore.document(url)
                 .get().addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
-                        test = task.getResult().toObject(Test.class);
-                        if(test.getAccessCode() != null) {
-                            Toast.makeText(this, "Access Code has already been generated. You cannot enter the test now.", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                            finish();
-                        } else {
-                            addStudentToAttemptedList();
-                        }
-                    }
+            if (task.isSuccessful()) {
+                test = task.getResult().toObject(Test.class);
+                if (test.getAccessCode() != null) {
+                    Toast.makeText(this, "Access Code has already been generated. You cannot enter the test now.", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    finish();
+                } else {
+                    addStudentToAttemptedList();
+                }
+            }
         });
     }
 }

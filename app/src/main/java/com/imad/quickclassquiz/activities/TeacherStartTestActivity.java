@@ -89,6 +89,8 @@ public class TeacherStartTestActivity extends AppCompatActivity {
 
         firestore = FirebaseFirestore.getInstance();
 
+        deleteCodesButton.setEnabled(false);
+
         Intent intent = getIntent();
         if (intent != null && (test = intent.getParcelableExtra("test")) != null) {
             testNameTextView.setText(test.getTestName());
@@ -102,25 +104,8 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         }
 
         deleteCodesButton.setOnClickListener(v -> {
-            if (submissionCount != 0 || attemptCount != 0) {
-                String sCount = Integer.toString(submissionCount);
-                String aCount = Integer.toString(attemptCount);
-                String message = String.format("%s student%s already submitted and %s student%s started the test. Do you want to delete the codes and clear all the submissions?", sCount, submissionCount == 1 ? " has" : "s have", aCount, attemptCount == 1 ? " has" : "s have");
-                SpannableStringBuilder ss = new SpannableStringBuilder(message);
-                ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, sCount.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                ss.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), message.indexOf("and") + 4, message.indexOf("and") + 4 + aCount.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                new AlertDialog.Builder(this)
-                        .setTitle("Delete Codes")
-                        .setMessage(ss)
-                        .setPositiveButton("Delete", (dialogInterface, i) -> {
-                            deleteCodes(true);
-                        })
-                        .setNegativeButton("Cancel", (dialogInterface, i) -> {
-                        })
-                        .show();
-            } else {
-                deleteCodes(false);
-            }
+            showNoOfAttempts(true);
+            showNumberOfSubmissions();
         });
 
         noOfSubmissionsTextView.setOnClickListener(v -> {
@@ -138,7 +123,7 @@ public class TeacherStartTestActivity extends AppCompatActivity {
             if (!fetchingAttemptData)
                 new NetworkUtils(internet -> {
                     if (internet) {
-                        showNoOfAttempts();
+                        showNoOfAttempts(false);
                     } else {
                         noOfSubmissionsTextView.setText("No internet available. Click here to try again.");
                     }
@@ -211,7 +196,7 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         new NetworkUtils(internet -> {
             if (internet) {
                 showNumberOfSubmissions();
-                showNoOfAttempts();
+                showNoOfAttempts(false);
             } else {
                 noOfSubmissionsTextView.setText("No internet available. Click here to try again.");
                 noOfAttemptStartedTextView.setText("No internet available. Click here to try again.");
@@ -255,7 +240,7 @@ public class TeacherStartTestActivity extends AppCompatActivity {
         });
     }
 
-    private void showNoOfAttempts() {
+    private void showNoOfAttempts(boolean shouldDelete) {
         CollectionReference ref = firestore.collection(String.format(Locale.ENGLISH, "tests/%s/attempts", test.getTestId()));
         noOfAttemptStartedTextView.setText("Fetching number of students who have started test ");
         jumpingBeans[1] = JumpingBeans.with(noOfAttemptStartedTextView).appendJumpingDots().build();
@@ -269,6 +254,15 @@ public class TeacherStartTestActivity extends AppCompatActivity {
                     if((boolean) snapshot.get("started")) {
                         attemptCount++;
                     }
+                }
+                if(attemptCount > 0) {
+                    if(shouldDelete)
+                        Toast.makeText(this, "You cannot delete codes now as " + attemptCount + " student(s) have started the test.", Toast.LENGTH_SHORT).show();
+                    deleteCodesButton.setEnabled(false);
+                } else {
+                    if(shouldDelete)
+                        deleteCodes(true);
+                    deleteCodesButton.setEnabled(true);
                 }
                 String count = Integer.toString(attemptCount);
                 String countString = String.format(Locale.ENGLISH, "%s student%s started the test.", attemptCount, attemptCount == 1 ? " has" : "s have");
