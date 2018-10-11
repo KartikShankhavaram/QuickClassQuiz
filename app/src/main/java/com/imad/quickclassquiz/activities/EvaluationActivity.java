@@ -112,9 +112,12 @@ public class EvaluationActivity extends AppCompatActivity {
         batch.set(firestore.collection(url).document(account.getId()), scoreModel);
         batch.commit().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                String str = "Congrats, " + account.getDisplayName() + " You have submitted Successfully you can view result after 30 minutes in completed test";
                 Toast.makeText(this, "Successfully submitted", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
-                textView.setText("Successfully submitted");
+                textView.setText(str);
+                retry.setVisibility(View.GONE);
             } else {
                 Toast.makeText(this, "Submission Failed", Toast.LENGTH_SHORT).show();
                 textView.setText("Submission Failed");
