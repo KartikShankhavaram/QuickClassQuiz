@@ -62,7 +62,7 @@ public class EvaluationActivity extends AppCompatActivity {
             actionBar.setTitle("Evalution");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        retry.setEnabled(false);
+        retry.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         account = GoogleSignIn.getLastSignedInAccount(this);
         assert account != null;
@@ -88,17 +88,18 @@ public class EvaluationActivity extends AppCompatActivity {
             }else{
                 progressBar.setVisibility(View.GONE);
                 textView.setText("No Internet");
-                retry.setEnabled(true);
+                retry.setVisibility(View.VISIBLE);
             }
         });
         retry.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             new NetworkUtils(internet -> {
                 if(internet){
-                    retry.setEnabled(false);
+                    retry.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
                     sendToDatabase(scoreModel);
                 }else{
-                    retry.setEnabled(true);
+                    retry.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
             });
@@ -122,6 +123,7 @@ public class EvaluationActivity extends AppCompatActivity {
                 Toast.makeText(this, "Submission Failed", Toast.LENGTH_SHORT).show();
                 textView.setText("Submission Failed");
                 progressBar.setVisibility(View.GONE);
+                retry.setVisibility(View.VISIBLE);
             }
         });
     }

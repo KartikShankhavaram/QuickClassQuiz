@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import androidx.annotation.Keep;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -47,6 +48,7 @@ import static android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_ADDED;
 import static com.imad.quickclassquiz.datamodel.AttemptedQuestionsMessage.ATTEMPT_REPLACED;
 
+@Keep
 public class TestFragment extends Fragment {
 
     @BindView(R.id.testViewPager)
@@ -154,7 +156,7 @@ public class TestFragment extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            if(millisLeft > 12000) {
+            if(millisLeft > 120000) {
                 Toast.makeText(getContext(), "You cannot submit until 2 minutes are left.", Toast.LENGTH_SHORT).show();
                 submitButton.shrinkButton();
             } else {
@@ -212,6 +214,7 @@ public class TestFragment extends Fragment {
         return fragmentList;
     }
 
+    @Keep
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAttempt(AttemptedQuestionsMessage message) {
         int attemptCode = message.getAttemptCode();

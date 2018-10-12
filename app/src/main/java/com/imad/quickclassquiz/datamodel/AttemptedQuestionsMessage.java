@@ -1,5 +1,8 @@
 package com.imad.quickclassquiz.datamodel;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class AttemptedQuestionsMessage {
 
     private int attemptCode;

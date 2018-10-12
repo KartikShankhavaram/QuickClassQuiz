@@ -2,6 +2,9 @@ package com.imad.quickclassquiz.datamodel;
 
 import java.util.HashMap;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class ScoreModel {
     private String userName;
     private String userRollNumber;
