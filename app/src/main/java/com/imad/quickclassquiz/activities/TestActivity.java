@@ -27,6 +27,10 @@ import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/*This activity contans two fragment,(Code entry fragment and Test Fragment) if user try to open
+* navigation bar or try to move out of the test then he/she will be kicked out of the test in test fragment
+* user can submit test either sliding the submit button twice after stipulated time limit or once the
+* test time limit finishes*/
 public class TestActivity extends AppCompatActivity {
 
     public final static int ACCESS_CODE_ENTRY_FRAGMENT = 1337;

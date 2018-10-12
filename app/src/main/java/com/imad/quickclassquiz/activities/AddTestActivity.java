@@ -28,7 +28,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+/*This activity is meant for teachers to create test*/
 public class AddTestActivity extends AppCompatActivity {
 
     @BindView(R.id.testNameEditText)

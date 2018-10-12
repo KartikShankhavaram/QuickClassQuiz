@@ -27,7 +27,8 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+/* This activity is meant for faculty members to add question and four options for that respective
+* question and one correct answer*/
 public class AddQuestionActivity extends AppCompatActivity {
 
     @BindView(R.id.questionEditText)

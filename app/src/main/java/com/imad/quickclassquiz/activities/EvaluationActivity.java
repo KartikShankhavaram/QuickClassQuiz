@@ -32,7 +32,7 @@ import java.util.Objects;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+/* As name supposed this activity is for evalution after this activity student has completed the test succesfully*/
 public class EvaluationActivity extends AppCompatActivity {
 
     HashMap<String, Object> attemptedAnswersMap = new HashMap<>();

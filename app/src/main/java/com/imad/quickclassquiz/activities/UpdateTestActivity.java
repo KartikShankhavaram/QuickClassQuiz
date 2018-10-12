@@ -24,7 +24,7 @@ import com.imad.quickclassquiz.utils.StaticValues;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+/* This activity is to update a test*/
 public class UpdateTestActivity extends AppCompatActivity {
 
     @BindView(R.id.testNameEditText)

@@ -25,7 +25,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-
+/* This activity contains two fragments,available test and completed test in the bottom navigation view
+after pressing in any of these,student can view testlist of available tests or completed(past) test
+ */
 public class StudentTestListActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     GoogleSignInClient mGoogleSignInClient;

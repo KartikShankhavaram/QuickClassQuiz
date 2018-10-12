@@ -21,7 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.utils.NetworkUtils;
-
+/* This is the welcome and front screen of app*/
 public class SplashActivity extends AppCompatActivity {
 
     FirebaseFirestore firestore;

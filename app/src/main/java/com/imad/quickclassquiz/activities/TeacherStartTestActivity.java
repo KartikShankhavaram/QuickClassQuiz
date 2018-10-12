@@ -37,7 +37,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE;
-
+/*in this activity teacher can delete the code if it is in under some condition or they can see
+how many students are attempting the test and how many have submit the test also they can view access code
+and master code of app
+ */
 public class TeacherStartTestActivity extends AppCompatActivity {
 
     @BindView(R.id.testNameTextView)

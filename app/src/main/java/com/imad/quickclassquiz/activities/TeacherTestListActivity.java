@@ -44,7 +44,9 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+/* This activity contails two tab layouts(Upcoming tests and Ongoing/Completed test) any of these
+ * fragment contains their respective test list if a teacher starts a test(In upcoming fragment) after made it public then
+  * it will move into the completes test fragment and access code will be generated*/
 public class TeacherTestListActivity extends AppCompatActivity {
 
     @BindView(R.id.testListToolbar)

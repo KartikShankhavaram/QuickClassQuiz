@@ -37,7 +37,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+/* In this activity we are fetching all the question and their options,user's marked answer,their score
+* and populating them in UI so that student can view them in completed test fragement*/
 public class QuestionListActivity extends AppCompatActivity {
 
     @BindView(R.id.addQuestionFAB)

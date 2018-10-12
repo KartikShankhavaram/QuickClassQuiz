@@ -37,6 +37,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/* This activity contains all rules that must needed to start a test and it also fetch all questions from Firebase
+ * if airplane mode is enabled and teacher has not started the test(acces code is null) only then
+ * a student can enter into code entry fragment(to prevent cheating)*/
 public class StudentStartTestActivity extends AppCompatActivity {
 
     @BindView(R.id.rulesRecyclerView)

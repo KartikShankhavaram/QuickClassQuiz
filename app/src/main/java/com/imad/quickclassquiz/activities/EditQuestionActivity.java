@@ -22,7 +22,7 @@ import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+/* This activity is for editing the question and their answers or options*/
 public class EditQuestionActivity extends AppCompatActivity {
 
     @BindView(R.id.questionEditText)

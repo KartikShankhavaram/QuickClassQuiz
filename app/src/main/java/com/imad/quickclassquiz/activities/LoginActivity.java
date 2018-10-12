@@ -21,7 +21,8 @@ import com.imad.quickclassquiz.R;
 import com.imad.quickclassquiz.utils.NetworkUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+/* this is the login activity in which only LNMIIT domain ID user is allowed and we are checking
+* who is registere as faculty and who is students*/
 public class LoginActivity extends AppCompatActivity {
 
     private static String TAG;
